@@ -1,2 +1,4 @@
-packages: 
-  - "apps/*"
+packages:
+  - 'apps/*'
+  - 'user-portal'
+  - 'shared'
