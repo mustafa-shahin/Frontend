@@ -7,28 +7,17 @@ import {
   ConfirmModal,
   PagedResult,
   PageStatus,
+  PageListDto,
+  CreatePageFormData,
+  UpdatePageFormData,
   formatDateTime,
 } from '@frontend/shared';
 import { CrudModal } from '../../components/auth/crud/CrudModal';
 import { PageForm } from './components/PageForm';
 import { usePagesApi } from './hooks/usePagesApi';
 
-interface PageListItem {
-  id: number;
-  name: string;
-  title: string;
-  slug: string;
-  status: PageStatus;
-  createdAt: string;
-  updatedAt: string;
-  publishedOn?: string;
-  hasChildren: boolean;
-  versionCount: number;
-  currentVersion: number;
-}
-
 export const Pages: React.FC = () => {
-  const [pages, setPages] = useState<PageListItem[]>([]);
+  const [pages, setPages] = useState<PageListDto[]>([]);
   const [loading, setLoading] = useState(true);
   const [pagination, setPagination] = useState({
     current: 1,
@@ -40,10 +29,12 @@ export const Pages: React.FC = () => {
   const [createModalOpen, setCreateModalOpen] = useState(false);
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
-  const [selectedPage, setSelectedPage] = useState<PageListItem | null>(null);
+  const [selectedPage, setSelectedPage] = useState<PageListDto | null>(null);
+  const [editPageData, setEditPageData] = useState<any>(null);
 
   const {
     getPages,
+    getPageById,
     createPage,
     updatePage,
     deletePage,
@@ -56,12 +47,7 @@ export const Pages: React.FC = () => {
     try {
       setLoading(true);
       const result = await getPages(page, pageSize, search);
-      setPages(
-        result.items.map((item: any) => ({
-          ...item,
-          status: item.status as PageStatus,
-        }))
-      );
+      setPages(result.items);
       setPagination({
         current: page,
         pageSize,
@@ -78,27 +64,46 @@ export const Pages: React.FC = () => {
     loadPages();
   }, []);
 
-  const handleCreatePage = async (data: any) => {
+  const handleCreatePage = async (data: CreatePageFormData) => {
     try {
       await createPage(data);
       setCreateModalOpen(false);
       loadPages(pagination.current, pagination.pageSize);
     } catch (error) {
       console.error('Failed to create page:', error);
+      // You might want to show a toast notification here
     }
   };
 
-  const handleEditPage = async (data: any) => {
+  const handleEditClick = async (page: PageListDto) => {
+    try {
+      // Load full page data for editing
+      const fullPageData = await getPageById(page.id);
+      setEditPageData(fullPageData);
+      setSelectedPage(page);
+      setEditModalOpen(true);
+    } catch (error) {
+      console.error('Failed to load page for editing:', error);
+    }
+  };
+
+  const handleEditPage = async (data: UpdatePageFormData) => {
     if (!selectedPage) return;
 
     try {
       await updatePage(selectedPage.id, data);
       setEditModalOpen(false);
       setSelectedPage(null);
+      setEditPageData(null);
       loadPages(pagination.current, pagination.pageSize);
     } catch (error) {
       console.error('Failed to update page:', error);
     }
+  };
+
+  const handleDeleteClick = (page: PageListDto) => {
+    setSelectedPage(page);
+    setDeleteModalOpen(true);
   };
 
   const handleDeletePage = async () => {
@@ -114,7 +119,7 @@ export const Pages: React.FC = () => {
     }
   };
 
-  const handlePublishToggle = async (page: PageListItem) => {
+  const handlePublishToggle = async (page: PageListDto) => {
     try {
       if (page.status === PageStatus.Published) {
         await unpublishPage(page.id);
@@ -127,7 +132,7 @@ export const Pages: React.FC = () => {
     }
   };
 
-  const columns: TableColumn<PageListItem>[] = [
+  const columns: TableColumn<PageListDto>[] = [
     {
       key: 'name',
       title: 'Name',
@@ -200,10 +205,7 @@ export const Pages: React.FC = () => {
           </Link>
 
           <button
-            onClick={() => {
-              setSelectedPage(record);
-              setEditModalOpen(true);
-            }}
+            onClick={() => handleEditClick(record)}
             className="text-green-600 hover:text-green-900 dark:text-green-400 dark:hover:text-green-300"
             title="Edit"
           >
@@ -231,10 +233,7 @@ export const Pages: React.FC = () => {
           </button>
 
           <button
-            onClick={() => {
-              setSelectedPage(record);
-              setDeleteModalOpen(true);
-            }}
+            onClick={() => handleDeleteClick(record)}
             className="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300"
             title="Delete"
           >
@@ -286,6 +285,7 @@ export const Pages: React.FC = () => {
         isOpen={createModalOpen}
         onClose={() => setCreateModalOpen(false)}
         title="Create New Page"
+        size="xl"
       >
         <PageForm
           onSubmit={handleCreatePage}
@@ -300,16 +300,28 @@ export const Pages: React.FC = () => {
         onClose={() => {
           setEditModalOpen(false);
           setSelectedPage(null);
+          setEditPageData(null);
         }}
         title="Edit Page"
+        size="xl"
       >
-        {selectedPage && (
+        {selectedPage ? (
+          <div className="mb-4 text-gray-700 dark:text-gray-300">
+            Modify settings for "{selectedPage.name}"
+          </div>
+        ) : (
+          <div className="mb-4 text-gray-700 dark:text-gray-300">
+            Edit page settings
+          </div>
+        )}
+        {editPageData && (
           <PageForm
-            initialData={selectedPage}
+            initialData={editPageData}
             onSubmit={handleEditPage}
             onCancel={() => {
               setEditModalOpen(false);
               setSelectedPage(null);
+              setEditPageData(null);
             }}
             isLoading={apiLoading}
           />

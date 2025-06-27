@@ -3,6 +3,8 @@ import {
   createPageSchema,
   PageStatus,
   CreatePageFormData,
+  UpdatePageFormData,
+  PageDto,
   slugify,
 } from '@frontend/shared';
 import {
@@ -11,8 +13,8 @@ import {
 } from '../../../components/auth/forms/GenericForm';
 
 interface PageFormProps {
-  initialData?: any;
-  onSubmit: (data: CreatePageFormData) => void;
+  initialData?: PageDto;
+  onSubmit: (data: CreatePageFormData | UpdatePageFormData) => void;
   onCancel: () => void;
   isLoading?: boolean;
 }
@@ -96,6 +98,13 @@ export const PageForm: React.FC<PageFormProps> = ({
       helper: 'Current status of the page',
     },
     {
+      name: 'template',
+      label: 'Template',
+      type: 'text',
+      placeholder: 'Enter template name (optional)',
+      helper: 'Template to use for rendering this page',
+    },
+    {
       name: 'requiresLogin',
       label: 'Requires Login',
       type: 'checkbox',
@@ -109,25 +118,33 @@ export const PageForm: React.FC<PageFormProps> = ({
     },
   ];
 
-  const defaultValues = {
-    name: '',
-    title: '',
-    slug: '',
-    description: '',
-    metaTitle: '',
-    metaDescription: '',
-    metaKeywords: '',
-    status: PageStatus.Draft,
-    template: '',
-    priority: 0,
-    parentPageId: undefined,
-    requiresLogin: false,
-    adminOnly: false,
-    content: {},
-    layout: {},
-    settings: {},
-    styles: {},
-    ...initialData,
+  const defaultValues: CreatePageFormData = {
+    name: initialData?.name || '',
+    title: initialData?.title || '',
+    slug: initialData?.slug || '',
+    description: initialData?.description || '',
+    metaTitle: initialData?.metaTitle || '',
+    metaDescription: initialData?.metaDescription || '',
+    metaKeywords: initialData?.metaKeywords || '',
+    status: initialData?.status || PageStatus.Draft,
+    template: initialData?.template || '',
+    priority: initialData?.priority || 0,
+    parentPageId: initialData?.parentPageId || undefined,
+    requiresLogin: initialData?.requiresLogin || false,
+    adminOnly: initialData?.adminOnly || false,
+    content: initialData?.content || {},
+    layout: initialData?.layout || {},
+    settings: initialData?.settings || {},
+    styles: initialData?.styles || {},
+  };
+
+  const handleSubmit = (data: CreatePageFormData) => {
+    // Auto-generate slug if not provided
+    if (!data.slug && data.title) {
+      data.slug = slugify(data.title);
+    }
+
+    onSubmit(data);
   };
 
   return (
@@ -139,13 +156,13 @@ export const PageForm: React.FC<PageFormProps> = ({
           </div>
           <div className="ml-3">
             <h3 className="text-sm font-medium text-blue-800 dark:text-blue-200">
-              Page Creation
+              Page {initialData ? 'Update' : 'Creation'}
             </h3>
             <div className="mt-2 text-sm text-blue-700 dark:text-blue-300">
               <p>
-                After creating the page, you can use the visual designer to add
-                content and components. The page will be accessible to visitors
-                only when published.
+                {initialData
+                  ? 'Update the page information below. Changes will be saved immediately.'
+                  : 'After creating the page, you can use the visual designer to add content and components. The page will be accessible to visitors only when published.'}
               </p>
             </div>
           </div>
@@ -156,7 +173,7 @@ export const PageForm: React.FC<PageFormProps> = ({
         fields={fields}
         schema={createPageSchema}
         defaultValues={defaultValues}
-        onSubmit={onSubmit}
+        onSubmit={handleSubmit}
         onCancel={onCancel}
         submitText={initialData ? 'Update Page' : 'Create Page'}
         isLoading={isLoading}

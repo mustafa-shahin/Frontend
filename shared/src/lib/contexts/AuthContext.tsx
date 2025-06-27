@@ -5,12 +5,12 @@ import React, {
   useState,
   ReactNode,
 } from 'react';
-import { User, UserRole } from '../types';
+import { UserDto, UserRole } from '../types';
 import { apiClient } from '../api/client';
 import { ENDPOINTS } from '../config/api';
 
 interface AuthContextType {
-  user: User | null;
+  user: UserDto | null;
   isLoading: boolean;
   isAuthenticated: boolean;
   login: (
@@ -32,7 +32,7 @@ interface AuthProviderProps {
 }
 
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<UserDto | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
   const isAuthenticated = !!user && !!apiClient.getAccessToken();
@@ -92,7 +92,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   const refreshUser = async () => {
     try {
-      const userData = await apiClient.get<User>(ENDPOINTS.auth.me);
+      const userData = await apiClient.get<UserDto>(ENDPOINTS.auth.me);
       setUser(userData);
     } catch (error) {
       console.error('Failed to refresh user:', error);

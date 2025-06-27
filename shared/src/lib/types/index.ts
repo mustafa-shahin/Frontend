@@ -23,14 +23,9 @@ export enum ComponentType {
   Form = 'Form',
 }
 
-// Base Types
-export interface BaseEntity {
+// User DTOs
+export interface UserDto {
   id: number;
-  createdAt: string;
-  updatedAt: string;
-}
-
-export interface User extends BaseEntity {
   email: string;
   username: string;
   firstName: string;
@@ -43,9 +38,13 @@ export interface User extends BaseEntity {
   emailVerifiedAt?: string;
   role: UserRole;
   roleName: string;
+  createdAt: string;
+  updatedAt: string;
 }
 
-export interface Page extends BaseEntity {
+// Page DTOs (matching backend)
+export interface PageDto {
+  id: number;
   name: string;
   title: string;
   slug: string;
@@ -61,14 +60,56 @@ export interface Page extends BaseEntity {
   adminOnly: boolean;
   publishedOn?: string;
   publishedBy?: string;
+  createdAt: string;
+  updatedAt: string;
   content: Record<string, any>;
   layout: Record<string, any>;
   settings: Record<string, any>;
   styles: Record<string, any>;
-  childPages: Page[];
+  childPages: PageDto[];
 }
 
-export interface PageListItem {
+export interface CreatePageDto {
+  name: string;
+  title: string;
+  slug: string;
+  description?: string;
+  metaTitle?: string;
+  metaDescription?: string;
+  metaKeywords?: string;
+  status: PageStatus;
+  template?: string;
+  priority?: number;
+  parentPageId?: number;
+  requiresLogin: boolean;
+  adminOnly: boolean;
+  content: Record<string, any>;
+  layout: Record<string, any>;
+  settings: Record<string, any>;
+  styles: Record<string, any>;
+}
+
+export interface UpdatePageDto {
+  name: string;
+  title: string;
+  slug: string;
+  description?: string;
+  metaTitle?: string;
+  metaDescription?: string;
+  metaKeywords?: string;
+  status: PageStatus;
+  template?: string;
+  priority?: number;
+  parentPageId?: number;
+  requiresLogin: boolean;
+  adminOnly: boolean;
+  content: Record<string, any>;
+  layout: Record<string, any>;
+  settings: Record<string, any>;
+  styles: Record<string, any>;
+}
+
+export interface PageListDto {
   id: number;
   name: string;
   title: string;
@@ -82,7 +123,17 @@ export interface PageListItem {
   currentVersion: number;
 }
 
-export interface PageVersion {
+export interface DuplicatePageDto {
+  newName: string;
+  duplicateContent: boolean;
+}
+
+export interface CreatePageVersionDto {
+  changeNotes?: string;
+  metadata?: Record<string, any>;
+}
+
+export interface PageVersionDto {
   id: number;
   versionNumber: number;
   changeNotes?: string;
@@ -94,7 +145,8 @@ export interface PageVersion {
   metadata: Record<string, any>;
 }
 
-export interface DesignerPage {
+// Designer DTOs
+export interface DesignerPageDto {
   id: number;
   name: string;
   title: string;
@@ -112,7 +164,36 @@ export interface DesignerPage {
   currentVersion: number;
 }
 
-export interface DesignerState {
+export interface SaveDesignerPageDto {
+  pageId: number;
+  content: Record<string, any>;
+  layout: Record<string, any>;
+  settings: Record<string, any>;
+  styles: Record<string, any>;
+  changeDescription?: string;
+  createVersion: boolean;
+  autoSave: boolean;
+}
+
+export interface SavePageStructureDto {
+  pageId: number;
+  content: Record<string, any>;
+  layout: Record<string, any>;
+  settings: Record<string, any>;
+  styles: Record<string, any>;
+  changeDescription?: string;
+  createVersion: boolean;
+}
+
+export interface DesignerPreviewDto {
+  pageId: number;
+  previewUrl: string;
+  previewToken: string;
+  expiresAt: string;
+  settings: Record<string, any>;
+}
+
+export interface DesignerStateDto {
   pageId: number;
   selectedComponentKey?: string;
   expandedComponents: string[];
@@ -126,14 +207,7 @@ export interface DesignerState {
   lastModified: string;
 }
 
-export interface DesignerPreview {
-  pageId: number;
-  previewUrl: string;
-  previewToken: string;
-  expiresAt: string;
-  settings: Record<string, any>;
-}
-
+// Paged Result
 export interface PagedResult<T> {
   items: T[];
   page: number;
@@ -142,7 +216,7 @@ export interface PagedResult<T> {
   totalPages: number;
 }
 
-// Component Types for Designer
+// Component DTOs for Designer
 export interface BaseComponent {
   id: string;
   type: ComponentType;
@@ -164,20 +238,10 @@ export interface ButtonComponent extends BaseComponent {
     variant: 'primary' | 'secondary' | 'danger' | 'outline';
     size: 'sm' | 'md' | 'lg';
     disabled?: boolean;
-    onClick?: string; // Action name or URL
+    onClick?: string;
     icon?: string;
     loading?: boolean;
   };
-}
-
-export interface GridLayout {
-  rows: GridRow[];
-}
-
-export interface GridRow {
-  id: string;
-  components: BaseComponent[];
-  styles?: Record<string, any>;
 }
 
 // Zod Schemas for validation
@@ -221,34 +285,15 @@ export const createPageSchema = z.object({
   styles: z.record(z.any()).default({}),
 });
 
-export const updatePageSchema = createPageSchema.partial().extend({
-  id: z.number(),
-});
-
-export const buttonComponentSchema = z.object({
-  id: z.string(),
-  type: z.literal(ComponentType.Button),
-  name: z.string(),
-  props: z.object({
-    text: z.string(),
-    variant: z.enum(['primary', 'secondary', 'danger', 'outline']),
-    size: z.enum(['sm', 'md', 'lg']),
-    disabled: z.boolean().optional(),
-    onClick: z.string().optional(),
-    icon: z.string().optional(),
-    loading: z.boolean().optional(),
-  }),
-  styles: z.record(z.any()),
-  position: z.object({
-    row: z.number(),
-    column: z.number(),
-    span: z.number().min(1).max(12),
-  }),
-});
+export const updatePageSchema = createPageSchema;
 
 // Type exports for forms
 export type LoginFormData = z.infer<typeof loginSchema>;
 export type RegisterFormData = z.infer<typeof registerSchema>;
 export type CreatePageFormData = z.infer<typeof createPageSchema>;
 export type UpdatePageFormData = z.infer<typeof updatePageSchema>;
-export type ButtonComponentData = z.infer<typeof buttonComponentSchema>;
+
+// Utility types
+export type User = UserDto;
+export type Page = PageDto;
+export type PageListItem = PageListDto;
