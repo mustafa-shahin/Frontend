@@ -5,8 +5,8 @@ export interface DesignerComponent {
   id: string;
   type: ComponentType;
   name: string;
-  props: Record<string, any>;
-  styles: Record<string, any>;
+  props: Record<string, unknown>;
+  styles: Record<string, unknown>;
   position: {
     row: number;
     column: number;
@@ -21,10 +21,10 @@ export interface DesignerPage {
   title: string;
   slug: string;
   status: string;
-  content: Record<string, any>;
-  layout: Record<string, any>;
-  settings: Record<string, any>;
-  styles: Record<string, any>;
+  content: Record<string, unknown>;
+  layout: Record<string, unknown>;
+  settings: Record<string, unknown>;
+  styles: Record<string, unknown>;
 }
 
 export const useDesignerState = () => {
@@ -101,15 +101,16 @@ export const useDesignerState = () => {
         }
       }
 
+      const defaultProps =
+        DEFAULT_COMPONENT_PROPS[
+          componentType as keyof typeof DEFAULT_COMPONENT_PROPS
+        ] || {};
+
       const newComponent: DesignerComponent = {
         id,
         type: componentType as ComponentType,
         name: `${componentType} ${components.length + 1}`,
-        props: {
-          ...(DEFAULT_COMPONENT_PROPS[
-            componentType as keyof typeof DEFAULT_COMPONENT_PROPS
-          ] ?? {}),
-        },
+        props: { ...defaultProps },
         styles: {},
         position,
       };
@@ -239,7 +240,10 @@ export const useDesignerState = () => {
       if (!rowMap.has(row)) {
         rowMap.set(row, []);
       }
-      rowMap.get(row)!.push(component);
+      const rowComponents = rowMap.get(row);
+      if (rowComponents) {
+        rowComponents.push(component);
+      }
     });
 
     // Sort components within each row by column

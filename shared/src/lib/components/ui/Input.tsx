@@ -42,8 +42,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
 
     const wrapperStyles = ['relative', fullWidth && 'w-full'];
 
-    const iconStyles =
-      'absolute top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400';
+    const iconStyles = 'absolute inset-y-0 flex items-center text-gray-400 ';
 
     return (
       <div className={cn(wrapperStyles, className)}>

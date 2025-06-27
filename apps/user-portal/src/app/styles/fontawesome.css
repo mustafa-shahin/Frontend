@@ -1,0 +1,94 @@
+@font-face {
+  font-family: 'Font Awesome 6 Free';
+  font-style: normal;
+  font-weight: 900;
+  font-display: block;
+  src: url('data:font/woff2;base64,') format('woff2');
+}
+
+.fa,
+.fas {
+  font-family: 'Font Awesome 6 Free';
+  font-weight: 900;
+  font-style: normal;
+  font-variant: normal;
+  text-rendering: auto;
+  line-height: 1;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Basic Icons */
+.fa-home::before {
+  content: '\1f3e0';
+}
+.fa-file-alt::before {
+  content: '\1f4c4';
+}
+.fa-calendar::before {
+  content: '\1f4c5';
+}
+.fa-arrow-right::before {
+  content: '\2192';
+}
+.fa-exclamation-triangle::before {
+  content: '\26a0';
+}
+.fa-sun::before {
+  content: '\2600';
+}
+.fa-moon::before {
+  content: '\1f319';
+}
+.fa-bars::before {
+  content: '\2630';
+}
+.fa-user::before {
+  content: '\1f464';
+}
+.fa-chevron-down::before {
+  content: '\2304';
+}
+.fa-sign-out-alt::before {
+  content: '\1f6aa';
+}
+.fa-cog::before {
+  content: '\2699';
+}
+.fa-paint-brush::before {
+  content: '\1f58c';
+}
+.fa-mobile-alt::before {
+  content: '\1f4f1';
+}
+.fa-bolt::before {
+  content: '\26a1';
+}
+
+/* Additional utility classes */
+.fa-fw {
+  text-align: center;
+  width: 1.25em;
+}
+
+.fa-sm {
+  font-size: 0.875em;
+}
+
+.fa-lg {
+  font-size: 1.33333em;
+  line-height: 0.75em;
+  vertical-align: -0.0667em;
+}
+
+.fa-xl {
+  font-size: 1.5em;
+}
+
+.fa-2x {
+  font-size: 2em;
+}
+
+.fa-3x {
+  font-size: 3em;
+}

@@ -25,31 +25,35 @@ export const DashboardHome: React.FC = () => {
   const quickActions = [
     {
       name: 'Create New Page',
-      href: '/dashboard/pages/new',
+      to: '/dashboard/pages',
       icon: 'fas fa-plus',
       color: 'blue',
       description: 'Create a new page with the visual designer',
+      requiresDesigner: true,
     },
     {
       name: 'Manage Pages',
-      href: '/dashboard/pages',
+      to: '/dashboard/pages',
       icon: 'fas fa-list',
       color: 'green',
       description: 'View and manage all your pages',
+      requiresDesigner: true,
     },
     {
       name: 'Media Library',
-      href: '/dashboard/media',
+      to: '/dashboard/media',
       icon: 'fas fa-images',
       color: 'purple',
       description: 'Upload and manage media files',
+      requiresDesigner: false,
     },
     {
       name: 'Settings',
-      href: '/dashboard/settings',
+      to: '/dashboard/settings',
       icon: 'fas fa-cog',
       color: 'gray',
       description: 'Configure application settings',
+      requiresDesigner: false,
     },
   ];
 
@@ -82,7 +86,7 @@ export const DashboardHome: React.FC = () => {
                 </p>
               </div>
               <div
-                className={`p-3 rounded-full bg-${stat.color}-100 dark:bg-${stat.color}-900`}
+                className={`p-3 rounded-full bg-${stat.color}-100 dark:bg-${stat.color}-900/50`}
               >
                 <i
                   className={`${stat.icon} text-${stat.color}-600 dark:text-${stat.color}-400 text-xl`}
@@ -105,23 +109,21 @@ export const DashboardHome: React.FC = () => {
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 p-6">
           {quickActions.map((action) => {
-            const canAccess =
-              action.href === '/dashboard/pages/new' ||
-              action.href === '/dashboard/pages'
-                ? canAccessDesigner()
-                : true;
+            const canAccess = action.requiresDesigner
+              ? canAccessDesigner()
+              : true;
 
             if (!canAccess) return null;
 
             return (
               <Link
                 key={action.name}
-                to={action.href}
-                className="group p-4 border border-gray-200 dark:border-gray-700 rounded-lg hover:border-blue-500 dark:hover:border-blue-400 hover:shadow-md transition-all"
+                to={action.to}
+                className="group p-4 border border-gray-200 dark:border-gray-700 rounded-lg hover:border-blue-500 dark:hover:border-blue-400 hover:shadow-md transition-all duration-200"
               >
                 <div className="flex items-start space-x-4">
                   <div
-                    className={`p-3 rounded-lg bg-${action.color}-100 dark:bg-${action.color}-900 group-hover:bg-${action.color}-200 dark:group-hover:bg-${action.color}-800 transition-colors`}
+                    className={`p-3 rounded-lg bg-${action.color}-100 dark:bg-${action.color}-900/50 group-hover:bg-${action.color}-200 dark:group-hover:bg-${action.color}-800 transition-colors`}
                   >
                     <i
                       className={`${action.icon} text-${action.color}-600 dark:text-${action.color}-400 text-xl`}
@@ -153,7 +155,7 @@ export const DashboardHome: React.FC = () => {
         <div className="p-6">
           <div className="space-y-4">
             <div className="flex items-center space-x-3">
-              <div className="w-8 h-8 bg-blue-100 dark:bg-blue-900 rounded-full flex items-center justify-center">
+              <div className="w-8 h-8 bg-blue-100 dark:bg-blue-900/50 rounded-full flex items-center justify-center">
                 <i className="fas fa-edit text-blue-600 dark:text-blue-400 text-sm"></i>
               </div>
               <div className="flex-1">
@@ -166,7 +168,7 @@ export const DashboardHome: React.FC = () => {
               </div>
             </div>
             <div className="flex items-center space-x-3">
-              <div className="w-8 h-8 bg-green-100 dark:bg-green-900 rounded-full flex items-center justify-center">
+              <div className="w-8 h-8 bg-green-100 dark:bg-green-900/50 rounded-full flex items-center justify-center">
                 <i className="fas fa-plus text-green-600 dark:text-green-400 text-sm"></i>
               </div>
               <div className="flex-1">
@@ -179,7 +181,7 @@ export const DashboardHome: React.FC = () => {
               </div>
             </div>
             <div className="flex items-center space-x-3">
-              <div className="w-8 h-8 bg-purple-100 dark:bg-purple-900 rounded-full flex items-center justify-center">
+              <div className="w-8 h-8 bg-purple-100 dark:bg-purple-900/50 rounded-full flex items-center justify-center">
                 <i className="fas fa-globe text-purple-600 dark:text-purple-400 text-sm"></i>
               </div>
               <div className="flex-1">

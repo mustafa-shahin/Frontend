@@ -1,6 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useParams } from 'react-router-dom';
-import { LoadingPage, apiClient, ENDPOINTS, useAuth } from '@frontend/shared';
+import {
+  LoadingPage,
+  apiClient,
+  ENDPOINTS,
+  useAuth,
+  UserRole,
+} from '@frontend/shared';
 import { UserButton } from './user-components/UserButton';
 import { NotFoundPage } from '../pages/NotFoundPage';
 
@@ -16,23 +22,30 @@ interface PageData {
   status: string;
   requiresLogin: boolean;
   adminOnly: boolean;
-  content: Record<string, any>;
-  layout: Record<string, any>;
-  settings: Record<string, any>;
-  styles: Record<string, any>;
+  content: Record<string, unknown>;
+  layout: Record<string, unknown>;
+  settings: Record<string, unknown>;
+  styles: Record<string, unknown>;
 }
 
 interface ComponentData {
   id: string;
   type: string;
   name: string;
-  props: Record<string, any>;
-  styles: Record<string, any>;
+  props: Record<string, unknown>;
+  styles: Record<string, unknown>;
   position: {
     row: number;
     column: number;
     span: number;
   };
+}
+
+interface ComponentProps {
+  key?: string;
+  className?: string;
+  style?: React.CSSProperties;
+  [key: string]: unknown;
 }
 
 export const PageRenderer: React.FC = () => {
@@ -42,11 +55,50 @@ export const PageRenderer: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string>('');
 
+  const loadPage = useCallback(async () => {
+    if (!slug) return;
+
+    setLoading(true);
+    setError('');
+
+    try {
+      const pageData = await apiClient.get<PageData>(
+        ENDPOINTS.pages.getBySlug(slug)
+      );
+
+      // Check access permissions
+      if (pageData.requiresLogin && !isAuthenticated) {
+        setError('This page requires you to be logged in.');
+        return;
+      }
+
+      if (pageData.adminOnly && !hasAnyRole([UserRole.Admin])) {
+        setError('You do not have permission to view this page.');
+        return;
+      }
+
+      setPage(pageData);
+    } catch (err: unknown) {
+      if (err && typeof err === 'object' && 'status' in err) {
+        const apiError = err as { status: number };
+        if (apiError.status === 404) {
+          setError('Page not found');
+        } else {
+          setError('Failed to load page. Please try again later.');
+        }
+      } else {
+        setError('Failed to load page. Please try again later.');
+      }
+    } finally {
+      setLoading(false);
+    }
+  }, [slug, isAuthenticated, hasAnyRole]);
+
   useEffect(() => {
     if (slug) {
       loadPage();
     }
-  }, [slug]);
+  }, [slug, loadPage]);
 
   // Update page metadata when page loads
   useEffect(() => {
@@ -78,42 +130,8 @@ export const PageRenderer: React.FC = () => {
     }
   }, [page]);
 
-  const loadPage = async () => {
-    if (!slug) return;
-
-    setLoading(true);
-    setError('');
-
-    try {
-      const pageData = await apiClient.get<PageData>(
-        ENDPOINTS.pages.getBySlug(slug)
-      );
-
-      // Check access permissions
-      if (pageData.requiresLogin && !isAuthenticated) {
-        setError('This page requires you to be logged in.');
-        return;
-      }
-
-      if (pageData.adminOnly && !hasAnyRole(['Admin'])) {
-        setError('You do not have permission to view this page.');
-        return;
-      }
-
-      setPage(pageData);
-    } catch (err: any) {
-      if (err.status === 404) {
-        setError('Page not found');
-      } else {
-        setError('Failed to load page. Please try again later.');
-      }
-    } finally {
-      setLoading(false);
-    }
-  };
-
   const renderComponent = (component: ComponentData) => {
-    const commonProps = {
+    const commonProps: ComponentProps = {
       key: component.id,
       ...component.props,
       className: getComponentClasses(component),
@@ -136,32 +154,37 @@ export const PageRenderer: React.FC = () => {
     }
   };
 
-  const getComponentClasses = (component: ComponentData) => {
+  const getComponentClasses = (component: ComponentData): string => {
     const baseClasses = `col-span-${component.position.span}`;
-    const customClasses = component.props.customClasses || '';
+    const customClasses = (component.props.customClasses as string) || '';
     return `${baseClasses} ${customClasses}`.trim();
   };
 
-  const getComponentStyles = (component: ComponentData) => {
+  const getComponentStyles = (
+    component: ComponentData
+  ): React.CSSProperties => {
     const styles: React.CSSProperties = {};
+    const props = component.props;
 
-    // Apply spacing styles
-    if (component.props.marginTop) styles.marginTop = component.props.marginTop;
-    if (component.props.marginBottom)
-      styles.marginBottom = component.props.marginBottom;
-    if (component.props.marginLeft)
-      styles.marginLeft = component.props.marginLeft;
-    if (component.props.marginRight)
-      styles.marginRight = component.props.marginRight;
-    if (component.props.paddingTop)
-      styles.paddingTop = component.props.paddingTop;
-    if (component.props.paddingBottom)
-      styles.paddingBottom = component.props.paddingBottom;
-    if (component.props.paddingLeft)
-      styles.paddingLeft = component.props.paddingLeft;
-    if (component.props.paddingRight)
-      styles.paddingRight = component.props.paddingRight;
-    if (component.props.textAlign) styles.textAlign = component.props.textAlign;
+    // Apply spacing styles with proper type checking
+    if (typeof props.marginTop === 'string') styles.marginTop = props.marginTop;
+    if (typeof props.marginBottom === 'string')
+      styles.marginBottom = props.marginBottom;
+    if (typeof props.marginLeft === 'string')
+      styles.marginLeft = props.marginLeft;
+    if (typeof props.marginRight === 'string')
+      styles.marginRight = props.marginRight;
+    if (typeof props.paddingTop === 'string')
+      styles.paddingTop = props.paddingTop;
+    if (typeof props.paddingBottom === 'string')
+      styles.paddingBottom = props.paddingBottom;
+    if (typeof props.paddingLeft === 'string')
+      styles.paddingLeft = props.paddingLeft;
+    if (typeof props.paddingRight === 'string')
+      styles.paddingRight = props.paddingRight;
+    if (typeof props.textAlign === 'string') {
+      styles.textAlign = props.textAlign as React.CSSProperties['textAlign'];
+    }
 
     return styles;
   };
@@ -179,6 +202,16 @@ export const PageRenderer: React.FC = () => {
 
     const components = page.content.components as ComponentData[];
 
+    if (!Array.isArray(components)) {
+      return (
+        <div className="text-center py-12">
+          <p className="text-gray-500 dark:text-gray-400">
+            Invalid page content format.
+          </p>
+        </div>
+      );
+    }
+
     // Group components by rows
     const componentsByRow = new Map<number, ComponentData[]>();
     components.forEach((component) => {
@@ -186,7 +219,10 @@ export const PageRenderer: React.FC = () => {
       if (!componentsByRow.has(row)) {
         componentsByRow.set(row, []);
       }
-      componentsByRow.get(row)!.push(component);
+      const rowComponents = componentsByRow.get(row);
+      if (rowComponents) {
+        rowComponents.push(component);
+      }
     });
 
     // Sort components within each row by column
