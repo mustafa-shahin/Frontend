@@ -1,6 +1,6 @@
 import React, { ReactNode } from 'react';
 import { cn } from '../../utils/cn';
-import { LoadingSpinner, Skeleton } from './Loading';
+import { Skeleton } from './Loading';
 
 export interface TableColumn<T = any> {
   key: string;

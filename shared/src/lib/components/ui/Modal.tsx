@@ -146,11 +146,11 @@ export const ConfirmModal: React.FC<ConfirmModalProps> = ({
     onClose();
   };
 
-  const variantStyles = {
-    danger: 'text-red-600 dark:text-red-400',
-    warning: 'text-yellow-600 dark:text-yellow-400',
-    info: 'text-blue-600 dark:text-blue-400',
-  };
+  // const variantStyles = {
+  //   danger: 'text-red-600 dark:text-red-400',
+  //   warning: 'text-yellow-600 dark:text-yellow-400',
+  //   info: 'text-blue-600 dark:text-blue-400',
+  // };
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} title={title} size="sm">

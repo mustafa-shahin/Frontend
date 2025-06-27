@@ -24,5 +24,3 @@ export * from './lib/utils/constants';
 // Export API client and config
 export * from './lib/api/client';
 export * from './lib/config/api';
-
-export * from './lib/shared';
