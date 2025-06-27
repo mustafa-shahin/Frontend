@@ -30,7 +30,6 @@ const navigation: NavItem[] = [
     icon: 'fas fa-file-alt',
     roles: ['Admin', 'Developer'],
     description: 'Create and manage pages',
-    badge: 'Hot',
   },
   {
     name: 'Media Library',
