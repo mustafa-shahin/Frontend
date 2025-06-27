@@ -1,0 +1,200 @@
+@font-face {
+  font-family: 'Font Awesome 6 Free';
+  font-style: normal;
+  font-weight: 900;
+  font-display: block;
+  src: url('data:font/woff2;base64,') format('woff2');
+}
+
+.fa,
+.fas {
+  font-family: 'Font Awesome 6 Free';
+  font-weight: 900;
+  font-style: normal;
+  font-variant: normal;
+  text-rendering: auto;
+  line-height: 1;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Basic Icons */
+.fa-plus::before {
+  content: '\2b';
+}
+.fa-edit::before {
+  content: '\270e';
+}
+.fa-trash::before {
+  content: '\1f5d1';
+}
+.fa-save::before {
+  content: '\1f4be';
+}
+.fa-eye::before {
+  content: '\1f441';
+}
+.fa-eye-slash::before {
+  content: '\1f576';
+}
+.fa-globe::before {
+  content: '\1f310';
+}
+.fa-cog::before {
+  content: '\2699';
+}
+.fa-user::before {
+  content: '\1f464';
+}
+.fa-users::before {
+  content: '\1f465';
+}
+.fa-home::before {
+  content: '\1f3e0';
+}
+.fa-file-alt::before {
+  content: '\1f4c4';
+}
+.fa-image::before {
+  content: '\1f5bc';
+}
+.fa-images::before {
+  content: '\1f5bc';
+}
+.fa-search::before {
+  content: '\1f50d';
+}
+.fa-times::before {
+  content: '\2716';
+}
+.fa-check::before {
+  content: '\2713';
+}
+.fa-arrow-left::before {
+  content: '\2190';
+}
+.fa-arrow-right::before {
+  content: '\2192';
+}
+.fa-chevron-down::before {
+  content: '\2304';
+}
+.fa-chevron-up::before {
+  content: '\2303';
+}
+.fa-bars::before {
+  content: '\2630';
+}
+.fa-sun::before {
+  content: '\2600';
+}
+.fa-moon::before {
+  content: '\1f319';
+}
+.fa-paint-brush::before {
+  content: '\1f58c';
+}
+.fa-palette::before {
+  content: '\1f3a8';
+}
+.fa-tachometer-alt::before {
+  content: '\1f3ce';
+}
+.fa-sign-out-alt::before {
+  content: '\1f6aa';
+}
+.fa-sign-in-alt::before {
+  content: '\1f6aa';
+}
+.fa-envelope::before {
+  content: '\2709';
+}
+.fa-lock::before {
+  content: '\1f512';
+}
+.fa-info-circle::before {
+  content: '\2139';
+}
+.fa-exclamation-triangle::before {
+  content: '\26a0';
+}
+.fa-spinner::before {
+  content: '\1f504';
+}
+.fa-hand-pointer::before {
+  content: '\1f447';
+}
+.fa-font::before {
+  content: '\1f520';
+}
+.fa-square::before {
+  content: '\25a0';
+}
+.fa-grip-vertical::before {
+  content: '\2630';
+}
+.fa-heading::before {
+  content: '\1f520';
+}
+.fa-link::before {
+  content: '\1f517';
+}
+.fa-list::before {
+  content: '\1f4cb';
+}
+
+/* Animations */
+.fa-spin {
+  -webkit-animation: fa-spin 2s infinite linear;
+  animation: fa-spin 2s infinite linear;
+}
+
+@-webkit-keyframes fa-spin {
+  0% {
+    -webkit-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(359deg);
+    transform: rotate(359deg);
+  }
+}
+
+@keyframes fa-spin {
+  0% {
+    -webkit-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(359deg);
+    transform: rotate(359deg);
+  }
+}
+
+/* Additional utility classes */
+.fa-fw {
+  text-align: center;
+  width: 1.25em;
+}
+
+.fa-sm {
+  font-size: 0.875em;
+}
+
+.fa-lg {
+  font-size: 1.33333em;
+  line-height: 0.75em;
+  vertical-align: -0.0667em;
+}
+
+.fa-xl {
+  font-size: 1.5em;
+}
+
+.fa-2x {
+  font-size: 2em;
+}
+
+.fa-3x {
+  font-size: 3em;
+}

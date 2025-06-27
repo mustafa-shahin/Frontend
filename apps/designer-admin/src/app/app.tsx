@@ -1,49 +1,46 @@
-import NxWelcome from './nx-welcome';
-
-import { Route, Routes, Link } from 'react-router-dom';
+import React from 'react';
+import { Routes, Route, Navigate } from 'react-router-dom';
+import { AuthProvider, ThemeProvider } from '@frontend/shared';
+import { Login } from './pages/auth/Login';
+import { Dashboard } from './pages/dashboard/Dashboard';
+import { ProtectedRoute } from './components/auth/ProtectedRoute';
+import { Designer } from './pages/designer/Designer';
+import './styles/fontawesome.css';
 
 export function App() {
   return (
-    <div>
-      <NxWelcome title="@frontend/designer-admin" />
+    <ThemeProvider>
+      <AuthProvider>
+        <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+          <Routes>
+            {/* Auth Routes */}
+            <Route path="/login" element={<Login />} />
 
-      {/* START: routes */}
-      {/* These routes and navigation have been generated for you */}
-      {/* Feel free to move and update them to fit your needs */}
-      <br />
-      <hr />
-      <br />
-      <div role="navigation">
-        <ul>
-          <li>
-            <Link to="/">Home</Link>
-          </li>
-          <li>
-            <Link to="/page-2">Page 2</Link>
-          </li>
-        </ul>
-      </div>
-      <Routes>
-        <Route
-          path="/"
-          element={
-            <div>
-              This is the generated root route.{' '}
-              <Link to="/page-2">Click here for page 2.</Link>
-            </div>
-          }
-        />
-        <Route
-          path="/page-2"
-          element={
-            <div>
-              <Link to="/">Click here to go back to root page.</Link>
-            </div>
-          }
-        />
-      </Routes>
-      {/* END: routes */}
-    </div>
+            {/* Protected Routes */}
+            <Route
+              path="/dashboard/*"
+              element={
+                <ProtectedRoute>
+                  <Dashboard />
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path="/designer/:pageId"
+              element={
+                <ProtectedRoute requireDesignerAccess>
+                  <Designer />
+                </ProtectedRoute>
+              }
+            />
+
+            {/* Default redirect */}
+            <Route path="/" element={<Navigate to="/dashboard" replace />} />
+          </Routes>
+        </div>
+      </AuthProvider>
+    </ThemeProvider>
   );
 }
 

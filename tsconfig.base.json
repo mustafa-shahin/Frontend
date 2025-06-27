@@ -19,8 +19,8 @@
     "customConditions": ["development"],
     "baseUrl": ".",
     "paths": {
-      "@frontend/shared": ["libs/shared/src/index.ts"],
-      "@frontend/shared/*": ["libs/shared/src/*"]
+      "@frontend/shared": ["shared/src/index.ts"],
+      "@frontend/shared/*": ["shared/src/*"]
     }
   }
 }
