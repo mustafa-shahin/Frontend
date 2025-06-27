@@ -11,6 +11,7 @@ import {
   CreatePageFormData,
   UpdatePageFormData,
   formatDateTime,
+  LoadingSpinner,
 } from '@frontend/shared';
 import { CrudModal } from '../../components/auth/crud/CrudModal';
 import { PageForm } from './components/PageForm';
@@ -19,6 +20,7 @@ import { usePagesApi } from './hooks/usePagesApi';
 export const Pages: React.FC = () => {
   const [pages, setPages] = useState<PageListDto[]>([]);
   const [loading, setLoading] = useState(true);
+  const [searchTerm, setSearchTerm] = useState('');
   const [pagination, setPagination] = useState({
     current: 1,
     pageSize: 10,
@@ -31,6 +33,7 @@ export const Pages: React.FC = () => {
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [selectedPage, setSelectedPage] = useState<PageListDto | null>(null);
   const [editPageData, setEditPageData] = useState<any>(null);
+  const [loadingEditData, setLoadingEditData] = useState(false);
 
   // Notification states
   const [successMessage, setSuccessMessage] = useState<string>('');
@@ -50,17 +53,21 @@ export const Pages: React.FC = () => {
   const loadPages = async (page = 1, pageSize = 10, search?: string) => {
     try {
       setLoading(true);
+      console.log('Loading pages...', { page, pageSize, search });
       const result = await getPages(page, pageSize, search);
-      setPages(result.items);
+      console.log('Pages loaded:', result);
+
+      setPages(result.items || []);
       setPagination({
         current: page,
         pageSize,
-        total: result.totalCount,
+        total: result.totalCount || 0,
       });
       setErrorMessage('');
     } catch (error) {
       console.error('Failed to load pages:', error);
       setErrorMessage('Failed to load pages. Please try again.');
+      setPages([]);
     } finally {
       setLoading(false);
     }
@@ -85,6 +92,19 @@ export const Pages: React.FC = () => {
     }
   }, [errorMessage]);
 
+  // Handle search with debounce
+  useEffect(() => {
+    const delayedSearch = setTimeout(() => {
+      if (searchTerm !== '') {
+        loadPages(1, pagination.pageSize, searchTerm);
+      } else {
+        loadPages(1, pagination.pageSize);
+      }
+    }, 500);
+
+    return () => clearTimeout(delayedSearch);
+  }, [searchTerm]);
+
   const handleCreatePage = async (data: CreatePageFormData) => {
     try {
       console.log('Creating page with data:', data);
@@ -93,7 +113,7 @@ export const Pages: React.FC = () => {
 
       setCreateModalOpen(false);
       setSuccessMessage(`Page "${newPage.name}" created successfully!`);
-      loadPages(pagination.current, pagination.pageSize);
+      loadPages(pagination.current, pagination.pageSize, searchTerm);
     } catch (error: any) {
       console.error('Failed to create page:', error);
 
@@ -112,18 +132,24 @@ export const Pages: React.FC = () => {
 
   const handleEditClick = async (page: PageListDto) => {
     try {
-      setLoading(true);
-      // Load full page data for editing
-      const fullPageData = await getPageById(page.id);
-      setEditPageData(fullPageData);
+      setLoadingEditData(true);
       setSelectedPage(page);
       setEditModalOpen(true);
+
+      console.log('Loading page data for editing:', page.id);
+      // Load full page data for editing
+      const fullPageData = await getPageById(page.id);
+      console.log('Full page data loaded:', fullPageData);
+
+      setEditPageData(fullPageData);
       setErrorMessage('');
     } catch (error) {
       console.error('Failed to load page for editing:', error);
       setErrorMessage('Failed to load page data for editing.');
+      setEditModalOpen(false);
+      setSelectedPage(null);
     } finally {
-      setLoading(false);
+      setLoadingEditData(false);
     }
   };
 
@@ -139,7 +165,7 @@ export const Pages: React.FC = () => {
       setSelectedPage(null);
       setEditPageData(null);
       setSuccessMessage(`Page "${updatedPage.name}" updated successfully!`);
-      loadPages(pagination.current, pagination.pageSize);
+      loadPages(pagination.current, pagination.pageSize, searchTerm);
     } catch (error: any) {
       console.error('Failed to update page:', error);
 
@@ -164,11 +190,12 @@ export const Pages: React.FC = () => {
     if (!selectedPage) return;
 
     try {
+      console.log('Deleting page:', selectedPage.id);
       await deletePage(selectedPage.id);
       setDeleteModalOpen(false);
       setSuccessMessage(`Page "${selectedPage.name}" deleted successfully!`);
       setSelectedPage(null);
-      loadPages(pagination.current, pagination.pageSize);
+      loadPages(pagination.current, pagination.pageSize, searchTerm);
     } catch (error) {
       console.error('Failed to delete page:', error);
       setErrorMessage('Failed to delete page. Please try again.');
@@ -186,7 +213,7 @@ export const Pages: React.FC = () => {
         setSuccessMessage(`Page "${page.name}" published successfully!`);
       }
       console.log('Page status updated:', updatedPage);
-      loadPages(pagination.current, pagination.pageSize);
+      loadPages(pagination.current, pagination.pageSize, searchTerm);
     } catch (error) {
       console.error('Failed to toggle publish status:', error);
       setErrorMessage('Failed to update page status. Please try again.');
@@ -309,7 +336,7 @@ export const Pages: React.FC = () => {
     <div className="space-y-6">
       {/* Success/Error Messages */}
       {successMessage && (
-        <div className="rounded-md bg-green-50 dark:bg-green-900/20 p-4 border border-green-200 dark:border-green-800">
+        <div className="rounded-md bg-green-50 dark:bg-green-900/20 p-4 border border-green-200 dark:border-green-800 animate-fade-in">
           <div className="flex">
             <div className="flex-shrink-0">
               <i className="fas fa-check-circle text-green-400"></i>
@@ -332,7 +359,7 @@ export const Pages: React.FC = () => {
       )}
 
       {errorMessage && (
-        <div className="rounded-md bg-red-50 dark:bg-red-900/20 p-4 border border-red-200 dark:border-red-800">
+        <div className="rounded-md bg-red-50 dark:bg-red-900/20 p-4 border border-red-200 dark:border-red-800 animate-fade-in">
           <div className="flex">
             <div className="flex-shrink-0">
               <i className="fas fa-exclamation-circle text-red-400"></i>
@@ -355,7 +382,7 @@ export const Pages: React.FC = () => {
       )}
 
       {/* Header */}
-      <div className="flex justify-between items-center">
+      <div className="flex flex-col space-y-4 sm:flex-row sm:items-center sm:justify-between sm:space-y-0">
         <div>
           <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
             Pages
@@ -364,12 +391,27 @@ export const Pages: React.FC = () => {
             Manage your website pages and content
           </p>
         </div>
-        <Button
-          onClick={() => setCreateModalOpen(true)}
-          icon={<i className="fas fa-plus"></i>}
-        >
-          Create Page
-        </Button>
+        <div className="flex items-center space-x-3">
+          {/* Search */}
+          <div className="relative">
+            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+              <i className="fas fa-search text-gray-400"></i>
+            </div>
+            <input
+              type="text"
+              placeholder="Search pages..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-white dark:bg-gray-700 dark:border-gray-600 placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:placeholder-gray-400 dark:focus:placeholder-gray-300 focus:ring-1 focus:ring-blue-500 focus:border-blue-500 text-sm"
+            />
+          </div>
+          <Button
+            onClick={() => setCreateModalOpen(true)}
+            icon={<i className="fas fa-plus"></i>}
+          >
+            Create Page
+          </Button>
+        </div>
       </div>
 
       {/* Pages Table */}
@@ -382,7 +424,7 @@ export const Pages: React.FC = () => {
             current: pagination.current,
             pageSize: pagination.pageSize,
             total: pagination.total,
-            onChange: (page, pageSize) => loadPages(page, pageSize),
+            onChange: (page, pageSize) => loadPages(page, pageSize, searchTerm),
           }}
           emptyText="No pages found. Create your first page to get started."
         />
@@ -421,7 +463,14 @@ export const Pages: React.FC = () => {
             : 'Edit page settings'
         }
       >
-        {editPageData && (
+        {loadingEditData ? (
+          <div className="flex items-center justify-center py-12">
+            <LoadingSpinner size="lg" />
+            <span className="ml-3 text-gray-600 dark:text-gray-400">
+              Loading page data...
+            </span>
+          </div>
+        ) : editPageData ? (
           <PageForm
             initialData={editPageData}
             onSubmit={handleEditPage}
@@ -432,7 +481,7 @@ export const Pages: React.FC = () => {
             }}
             isLoading={apiLoading}
           />
-        )}
+        ) : null}
       </CrudModal>
 
       {/* Delete Confirmation Modal */}

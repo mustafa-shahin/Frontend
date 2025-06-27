@@ -1,4 +1,5 @@
-import React, { useEffect } from 'react';
+// apps/designer-admin/src/app/pages/pages/components/PageForm.tsx
+import React, { useEffect, useState } from 'react';
 import {
   createPageSchema,
   PageStatus,
@@ -25,7 +26,12 @@ export const PageForm: React.FC<PageFormProps> = ({
   onCancel,
   isLoading = false,
 }) => {
-  const [autoSlug, setAutoSlug] = React.useState(!initialData?.slug);
+  const [autoSlug, setAutoSlug] = useState(!initialData?.slug);
+
+  const isEditing = !!initialData;
+
+  console.log('PageForm initialData:', initialData);
+  console.log('PageForm isEditing:', isEditing);
 
   const fields: FormField[] = [
     {
@@ -176,11 +182,11 @@ export const PageForm: React.FC<PageFormProps> = ({
           </div>
           <div className="ml-3">
             <h3 className="text-sm font-medium text-blue-800 dark:text-blue-200">
-              Page {initialData ? 'Update' : 'Creation'}
+              Page {isEditing ? 'Update' : 'Creation'}
             </h3>
             <div className="mt-2 text-sm text-blue-700 dark:text-blue-300">
               <p>
-                {initialData
+                {isEditing
                   ? 'Update the page information below. Changes will be saved immediately.'
                   : 'After creating the page, you can use the visual designer to add content and components. The page will be accessible to visitors only when published.'}
               </p>
@@ -189,13 +195,25 @@ export const PageForm: React.FC<PageFormProps> = ({
         </div>
       </div>
 
+      {/* Show current page data for debugging in development */}
+      {isEditing && process.env.NODE_ENV === 'development' && (
+        <div className="bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-4">
+          <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            Debug Info (Development Only)
+          </h4>
+          <pre className="text-xs text-gray-600 dark:text-gray-400 overflow-auto">
+            {JSON.stringify(initialData, null, 2)}
+          </pre>
+        </div>
+      )}
+
       <GenericForm
         fields={fields}
         schema={createPageSchema}
         defaultValues={defaultValues}
         onSubmit={handleSubmit}
         onCancel={onCancel}
-        submitText={initialData ? 'Update Page' : 'Create Page'}
+        submitText={isEditing ? 'Update Page' : 'Create Page'}
         isLoading={isLoading}
       />
     </div>

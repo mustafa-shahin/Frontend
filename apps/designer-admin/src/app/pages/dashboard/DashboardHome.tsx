@@ -29,16 +29,19 @@ export const DashboardHome: React.FC = () => {
   const loadDashboardData = async () => {
     try {
       setLoading(true);
+      console.log('Loading dashboard data...');
       // Load recent pages
       const pagesResult = await getPages(1, 5);
-      setRecentPages(pagesResult.items);
+      console.log('Dashboard pages loaded:', pagesResult);
+
+      setRecentPages(pagesResult.items || []);
 
       // Calculate stats from the pages
-      const totalPages = pagesResult.totalCount;
-      const publishedPages = pagesResult.items.filter(
+      const totalPages = pagesResult.totalCount || 0;
+      const publishedPages = (pagesResult.items || []).filter(
         (p) => p.status === PageStatus.Published
       ).length;
-      const draftPages = pagesResult.items.filter(
+      const draftPages = (pagesResult.items || []).filter(
         (p) => p.status === PageStatus.Draft
       ).length;
 
@@ -312,13 +315,15 @@ export const DashboardHome: React.FC = () => {
                     </p>
                   </div>
                   <div className="flex items-center space-x-2">
-                    <Link
-                      to={`/designer/${page.id}`}
-                      className="inline-flex items-center px-3 py-1.5 text-sm font-medium text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 bg-blue-50 dark:bg-blue-900/30 rounded-md hover:bg-blue-100 dark:hover:bg-blue-900/50 transition-colors"
-                    >
-                      <i className="fas fa-paint-brush mr-1.5"></i>
-                      Design
-                    </Link>
+                    {canAccessDesigner() && (
+                      <Link
+                        to={`/designer/${page.id}`}
+                        className="inline-flex items-center px-3 py-1.5 text-sm font-medium text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 bg-blue-50 dark:bg-blue-900/30 rounded-md hover:bg-blue-100 dark:hover:bg-blue-900/50 transition-colors"
+                      >
+                        <i className="fas fa-paint-brush mr-1.5"></i>
+                        Design
+                      </Link>
+                    )}
                   </div>
                 </div>
               </div>
@@ -334,13 +339,15 @@ export const DashboardHome: React.FC = () => {
               <p className="text-gray-600 dark:text-gray-400 mb-6">
                 Create your first page to get started with your website.
               </p>
-              <Link
-                to="/dashboard/pages"
-                className="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 transition-colors"
-              >
-                <i className="fas fa-plus mr-2"></i>
-                Create First Page
-              </Link>
+              {canAccessDesigner() && (
+                <Link
+                  to="/dashboard/pages"
+                  className="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 transition-colors"
+                >
+                  <i className="fas fa-plus mr-2"></i>
+                  Create First Page
+                </Link>
+              )}
             </div>
           )}
         </div>

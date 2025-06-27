@@ -26,15 +26,35 @@ export const usePagesApi = () => {
         pageSize: pageSize.toString(),
       });
 
-      if (search) {
-        params.append('search', search);
+      if (search && search.trim()) {
+        params.append('search', search.trim());
       }
 
-      const response = await apiClient.get<PagedResult<PageListDto>>(
-        `${ENDPOINTS.pages.list}?${params.toString()}`
-      );
+      const url = `${ENDPOINTS.pages.list}?${params.toString()}`;
+      console.log('Getting pages from:', url);
 
-      return response;
+      const response = await apiClient.get<PagedResult<PageListDto>>(url);
+      console.log('Pages API response:', response);
+
+      // Ensure response has the expected structure
+      if (!response) {
+        throw new Error('No response received from pages API');
+      }
+
+      return {
+        items: response.items || [],
+        totalCount: response.totalCount || 0,
+        pageSize: response.pageSize || pageSize,
+        page: response.page ?? page,
+        totalPages:
+          response.totalPages ??
+          Math.ceil(
+            (response.totalCount || 0) / (response.pageSize || pageSize)
+          ),
+      };
+    } catch (error) {
+      console.error('Error in getPages:', error);
+      throw error;
     } finally {
       setLoading(false);
     }
@@ -43,7 +63,20 @@ export const usePagesApi = () => {
   const getPageById = async (id: number): Promise<PageDto> => {
     setLoading(true);
     try {
-      return await apiClient.get<PageDto>(ENDPOINTS.pages.getById(id));
+      console.log('Getting page by ID:', id);
+      const response = await apiClient.get<PageDto>(
+        ENDPOINTS.pages.getById(id)
+      );
+      console.log('Page by ID response:', response);
+
+      if (!response) {
+        throw new Error(`Page with ID ${id} not found`);
+      }
+
+      return response;
+    } catch (error) {
+      console.error('Error in getPageById:', error);
+      throw error;
     } finally {
       setLoading(false);
     }
@@ -54,19 +87,19 @@ export const usePagesApi = () => {
     try {
       // Transform form data to match backend DTO exactly
       const createPageDto: CreatePageDto = {
-        name: formData.name,
-        title: formData.title,
-        slug: formData.slug,
-        description: formData.description,
-        metaTitle: formData.metaTitle,
-        metaDescription: formData.metaDescription,
-        metaKeywords: formData.metaKeywords,
+        name: formData.name.trim(),
+        title: formData.title.trim(),
+        slug: formData.slug.trim(),
+        description: formData.description?.trim() || '',
+        metaTitle: formData.metaTitle?.trim() || '',
+        metaDescription: formData.metaDescription?.trim() || '',
+        metaKeywords: formData.metaKeywords?.trim() || '',
         status: formData.status,
-        template: formData.template,
+        template: formData.template?.trim() || '',
         priority: formData.priority || 0,
         parentPageId: formData.parentPageId,
-        requiresLogin: formData.requiresLogin,
-        adminOnly: formData.adminOnly,
+        requiresLogin: formData.requiresLogin || false,
+        adminOnly: formData.adminOnly || false,
         content: formData.content || {},
         layout: formData.layout || {},
         settings: formData.settings || {},
@@ -75,10 +108,16 @@ export const usePagesApi = () => {
 
       console.log('Creating page with data:', createPageDto);
 
-      return await apiClient.post<PageDto>(
+      const response = await apiClient.post<PageDto>(
         ENDPOINTS.pages.create,
         createPageDto
       );
+
+      console.log('Create page response:', response);
+      return response;
+    } catch (error) {
+      console.error('Error in createPage:', error);
+      throw error;
     } finally {
       setLoading(false);
     }
@@ -92,19 +131,19 @@ export const usePagesApi = () => {
     try {
       // Transform form data to match backend DTO exactly
       const updatePageDto: UpdatePageDto = {
-        name: formData.name,
-        title: formData.title,
-        slug: formData.slug,
-        description: formData.description,
-        metaTitle: formData.metaTitle,
-        metaDescription: formData.metaDescription,
-        metaKeywords: formData.metaKeywords,
+        name: formData.name.trim(),
+        title: formData.title.trim(),
+        slug: formData.slug.trim(),
+        description: formData.description?.trim() || '',
+        metaTitle: formData.metaTitle?.trim() || '',
+        metaDescription: formData.metaDescription?.trim() || '',
+        metaKeywords: formData.metaKeywords?.trim() || '',
         status: formData.status,
-        template: formData.template,
+        template: formData.template?.trim() || '',
         priority: formData.priority || 0,
         parentPageId: formData.parentPageId,
-        requiresLogin: formData.requiresLogin,
-        adminOnly: formData.adminOnly,
+        requiresLogin: formData.requiresLogin || false,
+        adminOnly: formData.adminOnly || false,
         content: formData.content || {},
         layout: formData.layout || {},
         settings: formData.settings || {},
@@ -113,10 +152,16 @@ export const usePagesApi = () => {
 
       console.log('Updating page with data:', updatePageDto);
 
-      return await apiClient.put<PageDto>(
+      const response = await apiClient.put<PageDto>(
         ENDPOINTS.pages.update(id),
         updatePageDto
       );
+
+      console.log('Update page response:', response);
+      return response;
+    } catch (error) {
+      console.error('Error in updatePage:', error);
+      throw error;
     } finally {
       setLoading(false);
     }
@@ -125,7 +170,12 @@ export const usePagesApi = () => {
   const deletePage = async (id: number): Promise<void> => {
     setLoading(true);
     try {
+      console.log('Deleting page with ID:', id);
       await apiClient.delete(ENDPOINTS.pages.delete(id));
+      console.log('Page deleted successfully');
+    } catch (error) {
+      console.error('Error in deletePage:', error);
+      throw error;
     } finally {
       setLoading(false);
     }
@@ -134,7 +184,15 @@ export const usePagesApi = () => {
   const publishPage = async (id: number): Promise<PageDto> => {
     setLoading(true);
     try {
-      return await apiClient.post<PageDto>(ENDPOINTS.pages.publish(id));
+      console.log('Publishing page with ID:', id);
+      const response = await apiClient.post<PageDto>(
+        ENDPOINTS.pages.publish(id)
+      );
+      console.log('Publish page response:', response);
+      return response;
+    } catch (error) {
+      console.error('Error in publishPage:', error);
+      throw error;
     } finally {
       setLoading(false);
     }
@@ -143,7 +201,15 @@ export const usePagesApi = () => {
   const unpublishPage = async (id: number): Promise<PageDto> => {
     setLoading(true);
     try {
-      return await apiClient.post<PageDto>(ENDPOINTS.pages.unpublish(id));
+      console.log('Unpublishing page with ID:', id);
+      const response = await apiClient.post<PageDto>(
+        ENDPOINTS.pages.unpublish(id)
+      );
+      console.log('Unpublish page response:', response);
+      return response;
+    } catch (error) {
+      console.error('Error in unpublishPage:', error);
+      throw error;
     } finally {
       setLoading(false);
     }
@@ -155,10 +221,19 @@ export const usePagesApi = () => {
   ): Promise<PageDto> => {
     setLoading(true);
     try {
-      return await apiClient.post<PageDto>(ENDPOINTS.pages.duplicate(id), {
-        newName,
-        duplicateContent: true,
-      });
+      console.log('Duplicating page:', { id, newName });
+      const response = await apiClient.post<PageDto>(
+        ENDPOINTS.pages.duplicate(id),
+        {
+          newName: newName.trim(),
+          duplicateContent: true,
+        }
+      );
+      console.log('Duplicate page response:', response);
+      return response;
+    } catch (error) {
+      console.error('Error in duplicatePage:', error);
+      throw error;
     } finally {
       setLoading(false);
     }
@@ -169,15 +244,18 @@ export const usePagesApi = () => {
     excludePageId?: number
   ): Promise<boolean> => {
     try {
-      const params = new URLSearchParams({ slug });
+      const params = new URLSearchParams({ slug: slug.trim() });
       if (excludePageId) {
         params.append('excludePageId', excludePageId.toString());
       }
 
-      const response = await apiClient.get<{ isValid: boolean }>(
-        `${ENDPOINTS.pages.validateSlug}?${params.toString()}`
-      );
-      return response.isValid;
+      const url = `${ENDPOINTS.pages.validateSlug}?${params.toString()}`;
+      console.log('Validating slug:', url);
+
+      const response = await apiClient.get<{ isValid: boolean }>(url);
+      console.log('Slug validation response:', response);
+
+      return response?.isValid ?? false;
     } catch (error) {
       console.error('Error validating slug:', error);
       return false;

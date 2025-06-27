@@ -1,4 +1,3 @@
-import React from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, ThemeProvider } from '@frontend/shared';
 import { Login } from './pages/auth/Login';
@@ -37,6 +36,9 @@ export function App() {
 
             {/* Default redirect */}
             <Route path="/" element={<Navigate to="/dashboard" replace />} />
+
+            {/* Catch all route */}
+            <Route path="*" element={<Navigate to="/dashboard" replace />} />
           </Routes>
         </div>
       </AuthProvider>

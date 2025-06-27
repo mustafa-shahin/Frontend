@@ -11,17 +11,29 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
   children,
   requireDesignerAccess = false,
 }) => {
-  const { isAuthenticated, isLoading, canAccessDesigner } = useAuth();
+  const { isAuthenticated, isLoading, canAccessDesigner, user } = useAuth();
+
+  console.log('ProtectedRoute state:', {
+    isAuthenticated,
+    isLoading,
+    requireDesignerAccess,
+    canAccessDesigner: canAccessDesigner(),
+    user: user
+      ? { id: user.id, email: user.email, roleName: user.roleName }
+      : null,
+  });
 
   if (isLoading) {
     return <LoadingPage message="Authenticating..." />;
   }
 
   if (!isAuthenticated) {
+    console.log('User not authenticated, redirecting to login');
     return <Navigate to="/login" replace />;
   }
 
   if (requireDesignerAccess && !canAccessDesigner()) {
+    console.log('User lacks designer access, showing access denied');
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900">
         <div className="max-w-md w-full bg-white dark:bg-gray-800 rounded-lg shadow-lg p-8 text-center">
@@ -45,5 +57,6 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
     );
   }
 
+  console.log('User authorized, rendering children');
   return <>{children}</>;
 };

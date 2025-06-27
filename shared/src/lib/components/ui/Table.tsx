@@ -78,7 +78,7 @@ export function Table<T = any>({
   };
 
   const tableClasses = cn(
-    'min-w-full divide-y divide-gray-200 dark:divide-gray-700',
+    'w-full divide-y divide-gray-200 dark:divide-gray-700',
     responsive && 'overflow-x-auto',
     className
   );

@@ -33,9 +33,9 @@ export const Dashboard: React.FC = () => {
               <Route index element={<DashboardHome />} />
 
               {/* Pages routes - handle both the list and individual page actions */}
-              <Route path="pages/*" element={<Pages />} />
+              <Route path="pages" element={<Pages />} />
 
-              {/* Catch-all route for other dashboard sections */}
+              {/* Placeholder routes for other sections */}
               <Route
                 path="media"
                 element={
@@ -76,6 +76,36 @@ export const Dashboard: React.FC = () => {
                     </h2>
                     <p className="text-gray-600 dark:text-gray-400">
                       Settings coming soon...
+                    </p>
+                  </div>
+                }
+              />
+
+              <Route
+                path="components"
+                element={
+                  <div className="text-center py-12">
+                    <i className="fas fa-cubes text-4xl text-gray-400 mb-4"></i>
+                    <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-2">
+                      Component Library
+                    </h2>
+                    <p className="text-gray-600 dark:text-gray-400">
+                      Component library coming soon...
+                    </p>
+                  </div>
+                }
+              />
+
+              <Route
+                path="templates"
+                element={
+                  <div className="text-center py-12">
+                    <i className="fas fa-layer-group text-4xl text-gray-400 mb-4"></i>
+                    <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-2">
+                      Templates
+                    </h2>
+                    <p className="text-gray-600 dark:text-gray-400">
+                      Templates coming soon...
                     </p>
                   </div>
                 }
