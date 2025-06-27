@@ -12,8 +12,11 @@ export * from './lib/components/layout/Footer';
 export * from './lib/contexts/AuthContext';
 export * from './lib/contexts/ThemeContext';
 
-// Export types and schemas
-export * from './lib/types';
+// Export types - now organized by domain
+export * from './lib/types/common';
+export * from './lib/types/user';
+export * from './lib/types/page';
+export * from './lib/types/designer';
 
 // Export utilities
 export * from './lib/utils/cn';

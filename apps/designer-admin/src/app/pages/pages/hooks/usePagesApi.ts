@@ -7,6 +7,8 @@ import {
   PageDto,
   CreatePageDto,
   UpdatePageDto,
+  CreatePageFormData,
+  UpdatePageFormData,
 } from '@frontend/shared';
 
 export const usePagesApi = () => {
@@ -47,10 +49,36 @@ export const usePagesApi = () => {
     }
   };
 
-  const createPage = async (data: CreatePageDto): Promise<PageDto> => {
+  const createPage = async (formData: CreatePageFormData): Promise<PageDto> => {
     setLoading(true);
     try {
-      return await apiClient.post<PageDto>(ENDPOINTS.pages.create, data);
+      // Transform form data to match backend DTO exactly
+      const createPageDto: CreatePageDto = {
+        name: formData.name,
+        title: formData.title,
+        slug: formData.slug,
+        description: formData.description,
+        metaTitle: formData.metaTitle,
+        metaDescription: formData.metaDescription,
+        metaKeywords: formData.metaKeywords,
+        status: formData.status,
+        template: formData.template,
+        priority: formData.priority || 0,
+        parentPageId: formData.parentPageId,
+        requiresLogin: formData.requiresLogin,
+        adminOnly: formData.adminOnly,
+        content: formData.content || {},
+        layout: formData.layout || {},
+        settings: formData.settings || {},
+        styles: formData.styles || {},
+      };
+
+      console.log('Creating page with data:', createPageDto);
+
+      return await apiClient.post<PageDto>(
+        ENDPOINTS.pages.create,
+        createPageDto
+      );
     } finally {
       setLoading(false);
     }
@@ -58,11 +86,37 @@ export const usePagesApi = () => {
 
   const updatePage = async (
     id: number,
-    data: UpdatePageDto
+    formData: UpdatePageFormData
   ): Promise<PageDto> => {
     setLoading(true);
     try {
-      return await apiClient.put<PageDto>(ENDPOINTS.pages.update(id), data);
+      // Transform form data to match backend DTO exactly
+      const updatePageDto: UpdatePageDto = {
+        name: formData.name,
+        title: formData.title,
+        slug: formData.slug,
+        description: formData.description,
+        metaTitle: formData.metaTitle,
+        metaDescription: formData.metaDescription,
+        metaKeywords: formData.metaKeywords,
+        status: formData.status,
+        template: formData.template,
+        priority: formData.priority || 0,
+        parentPageId: formData.parentPageId,
+        requiresLogin: formData.requiresLogin,
+        adminOnly: formData.adminOnly,
+        content: formData.content || {},
+        layout: formData.layout || {},
+        settings: formData.settings || {},
+        styles: formData.styles || {},
+      };
+
+      console.log('Updating page with data:', updatePageDto);
+
+      return await apiClient.put<PageDto>(
+        ENDPOINTS.pages.update(id),
+        updatePageDto
+      );
     } finally {
       setLoading(false);
     }
@@ -125,6 +179,7 @@ export const usePagesApi = () => {
       );
       return response.isValid;
     } catch (error) {
+      console.error('Error validating slug:', error);
       return false;
     }
   };

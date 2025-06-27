@@ -105,6 +105,13 @@ export const PageForm: React.FC<PageFormProps> = ({
       helper: 'Template to use for rendering this page',
     },
     {
+      name: 'priority',
+      label: 'Priority',
+      type: 'number',
+      placeholder: '0',
+      helper: 'Higher numbers have higher priority in navigation',
+    },
+    {
       name: 'requiresLogin',
       label: 'Requires Login',
       type: 'checkbox',
@@ -139,12 +146,25 @@ export const PageForm: React.FC<PageFormProps> = ({
   };
 
   const handleSubmit = (data: CreatePageFormData) => {
-    // Auto-generate slug if not provided
-    if (!data.slug && data.title) {
+    console.log('Form submission data:', data);
+
+    // Auto-generate slug if not provided or if auto-slug is enabled
+    if ((!data.slug || autoSlug) && data.title) {
       data.slug = slugify(data.title);
     }
 
-    onSubmit(data);
+    // Ensure required fields have defaults
+    const processedData = {
+      ...data,
+      priority: data.priority || 0,
+      content: data.content || {},
+      layout: data.layout || {},
+      settings: data.settings || {},
+      styles: data.styles || {},
+    };
+
+    console.log('Processed form data:', processedData);
+    onSubmit(processedData);
   };
 
   return (

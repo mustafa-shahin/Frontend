@@ -87,7 +87,7 @@ export const useDesignerState = () => {
         position = { ...targetPosition, span: 6 }; // Default span
       } else {
         // Find the best position
-        const lastRow = Math.max(0, ...components.map((c) => c.position.row));
+        const lastRow = Math.max(-1, ...components.map((c) => c.position.row));
         const availablePos = findAvailablePosition(lastRow);
 
         if (
@@ -115,7 +115,8 @@ export const useDesignerState = () => {
         position,
       };
 
-      setComponents((prev) => [...prev, newComponent]);
+      const updatedComponents = [...components, newComponent];
+      setComponents(updatedComponents);
       return newComponent;
     },
     [components]

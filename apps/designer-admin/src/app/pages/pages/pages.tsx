@@ -32,6 +32,10 @@ export const Pages: React.FC = () => {
   const [selectedPage, setSelectedPage] = useState<PageListDto | null>(null);
   const [editPageData, setEditPageData] = useState<any>(null);
 
+  // Notification states
+  const [successMessage, setSuccessMessage] = useState<string>('');
+  const [errorMessage, setErrorMessage] = useState<string>('');
+
   const {
     getPages,
     getPageById,
@@ -53,8 +57,10 @@ export const Pages: React.FC = () => {
         pageSize,
         total: result.totalCount,
       });
+      setErrorMessage('');
     } catch (error) {
       console.error('Failed to load pages:', error);
+      setErrorMessage('Failed to load pages. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -64,26 +70,60 @@ export const Pages: React.FC = () => {
     loadPages();
   }, []);
 
+  // Auto-hide success/error messages
+  useEffect(() => {
+    if (successMessage) {
+      const timer = setTimeout(() => setSuccessMessage(''), 5000);
+      return () => clearTimeout(timer);
+    }
+  }, [successMessage]);
+
+  useEffect(() => {
+    if (errorMessage) {
+      const timer = setTimeout(() => setErrorMessage(''), 5000);
+      return () => clearTimeout(timer);
+    }
+  }, [errorMessage]);
+
   const handleCreatePage = async (data: CreatePageFormData) => {
     try {
-      await createPage(data);
+      console.log('Creating page with data:', data);
+      const newPage = await createPage(data);
+      console.log('Page created successfully:', newPage);
+
       setCreateModalOpen(false);
+      setSuccessMessage(`Page "${newPage.name}" created successfully!`);
       loadPages(pagination.current, pagination.pageSize);
-    } catch (error) {
+    } catch (error: any) {
       console.error('Failed to create page:', error);
-      // You might want to show a toast notification here
+
+      // Extract error message from the API response
+      let errorMsg = 'Failed to create page. Please try again.';
+      if (error?.data?.errors) {
+        const errors = Object.values(error.data.errors).flat();
+        errorMsg = `Validation errors: ${errors.join(', ')}`;
+      } else if (error?.message) {
+        errorMsg = error.message;
+      }
+
+      setErrorMessage(errorMsg);
     }
   };
 
   const handleEditClick = async (page: PageListDto) => {
     try {
+      setLoading(true);
       // Load full page data for editing
       const fullPageData = await getPageById(page.id);
       setEditPageData(fullPageData);
       setSelectedPage(page);
       setEditModalOpen(true);
+      setErrorMessage('');
     } catch (error) {
       console.error('Failed to load page for editing:', error);
+      setErrorMessage('Failed to load page data for editing.');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -91,13 +131,27 @@ export const Pages: React.FC = () => {
     if (!selectedPage) return;
 
     try {
-      await updatePage(selectedPage.id, data);
+      console.log('Updating page with data:', data);
+      const updatedPage = await updatePage(selectedPage.id, data);
+      console.log('Page updated successfully:', updatedPage);
+
       setEditModalOpen(false);
       setSelectedPage(null);
       setEditPageData(null);
+      setSuccessMessage(`Page "${updatedPage.name}" updated successfully!`);
       loadPages(pagination.current, pagination.pageSize);
-    } catch (error) {
+    } catch (error: any) {
       console.error('Failed to update page:', error);
+
+      let errorMsg = 'Failed to update page. Please try again.';
+      if (error?.data?.errors) {
+        const errors = Object.values(error.data.errors).flat();
+        errorMsg = `Validation errors: ${errors.join(', ')}`;
+      } else if (error?.message) {
+        errorMsg = error.message;
+      }
+
+      setErrorMessage(errorMsg);
     }
   };
 
@@ -112,23 +166,30 @@ export const Pages: React.FC = () => {
     try {
       await deletePage(selectedPage.id);
       setDeleteModalOpen(false);
+      setSuccessMessage(`Page "${selectedPage.name}" deleted successfully!`);
       setSelectedPage(null);
       loadPages(pagination.current, pagination.pageSize);
     } catch (error) {
       console.error('Failed to delete page:', error);
+      setErrorMessage('Failed to delete page. Please try again.');
     }
   };
 
   const handlePublishToggle = async (page: PageListDto) => {
     try {
+      let updatedPage;
       if (page.status === PageStatus.Published) {
-        await unpublishPage(page.id);
+        updatedPage = await unpublishPage(page.id);
+        setSuccessMessage(`Page "${page.name}" unpublished successfully!`);
       } else {
-        await publishPage(page.id);
+        updatedPage = await publishPage(page.id);
+        setSuccessMessage(`Page "${page.name}" published successfully!`);
       }
+      console.log('Page status updated:', updatedPage);
       loadPages(pagination.current, pagination.pageSize);
     } catch (error) {
       console.error('Failed to toggle publish status:', error);
+      setErrorMessage('Failed to update page status. Please try again.');
     }
   };
 
@@ -198,7 +259,7 @@ export const Pages: React.FC = () => {
         <div className="flex items-center space-x-2">
           <Link
             to={`/designer/${record.id}`}
-            className="text-blue-600 hover:text-blue-900 dark:text-blue-400 dark:hover:text-blue-300"
+            className="text-blue-600 hover:text-blue-900 dark:text-blue-400 dark:hover:text-blue-300 p-1 rounded"
             title="Design"
           >
             <i className="fas fa-paint-brush"></i>
@@ -206,7 +267,7 @@ export const Pages: React.FC = () => {
 
           <button
             onClick={() => handleEditClick(record)}
-            className="text-green-600 hover:text-green-900 dark:text-green-400 dark:hover:text-green-300"
+            className="text-green-600 hover:text-green-900 dark:text-green-400 dark:hover:text-green-300 p-1 rounded"
             title="Edit"
           >
             <i className="fas fa-edit"></i>
@@ -214,7 +275,7 @@ export const Pages: React.FC = () => {
 
           <button
             onClick={() => handlePublishToggle(record)}
-            className={`${
+            className={`p-1 rounded ${
               record.status === PageStatus.Published
                 ? 'text-orange-600 hover:text-orange-900 dark:text-orange-400 dark:hover:text-orange-300'
                 : 'text-blue-600 hover:text-blue-900 dark:text-blue-400 dark:hover:text-blue-300'
@@ -234,7 +295,7 @@ export const Pages: React.FC = () => {
 
           <button
             onClick={() => handleDeleteClick(record)}
-            className="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300"
+            className="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300 p-1 rounded"
             title="Delete"
           >
             <i className="fas fa-trash"></i>
@@ -246,6 +307,53 @@ export const Pages: React.FC = () => {
 
   return (
     <div className="space-y-6">
+      {/* Success/Error Messages */}
+      {successMessage && (
+        <div className="rounded-md bg-green-50 dark:bg-green-900/20 p-4 border border-green-200 dark:border-green-800">
+          <div className="flex">
+            <div className="flex-shrink-0">
+              <i className="fas fa-check-circle text-green-400"></i>
+            </div>
+            <div className="ml-3">
+              <p className="text-sm font-medium text-green-800 dark:text-green-200">
+                {successMessage}
+              </p>
+            </div>
+            <div className="ml-auto pl-3">
+              <button
+                onClick={() => setSuccessMessage('')}
+                className="text-green-400 hover:text-green-600 dark:hover:text-green-200"
+              >
+                <i className="fas fa-times"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {errorMessage && (
+        <div className="rounded-md bg-red-50 dark:bg-red-900/20 p-4 border border-red-200 dark:border-red-800">
+          <div className="flex">
+            <div className="flex-shrink-0">
+              <i className="fas fa-exclamation-circle text-red-400"></i>
+            </div>
+            <div className="ml-3">
+              <p className="text-sm font-medium text-red-800 dark:text-red-200">
+                {errorMessage}
+              </p>
+            </div>
+            <div className="ml-auto pl-3">
+              <button
+                onClick={() => setErrorMessage('')}
+                className="text-red-400 hover:text-red-600 dark:hover:text-red-200"
+              >
+                <i className="fas fa-times"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Header */}
       <div className="flex justify-between items-center">
         <div>
@@ -286,6 +394,8 @@ export const Pages: React.FC = () => {
         onClose={() => setCreateModalOpen(false)}
         title="Create New Page"
         size="xl"
+        icon="fas fa-plus"
+        description="Create a new page that can be designed with the visual editor"
       >
         <PageForm
           onSubmit={handleCreatePage}
@@ -304,16 +414,13 @@ export const Pages: React.FC = () => {
         }}
         title="Edit Page"
         size="xl"
+        icon="fas fa-edit"
+        description={
+          selectedPage
+            ? `Modify settings for "${selectedPage.name}"`
+            : 'Edit page settings'
+        }
       >
-        {selectedPage ? (
-          <div className="mb-4 text-gray-700 dark:text-gray-300">
-            Modify settings for "{selectedPage.name}"
-          </div>
-        ) : (
-          <div className="mb-4 text-gray-700 dark:text-gray-300">
-            Edit page settings
-          </div>
-        )}
         {editPageData && (
           <PageForm
             initialData={editPageData}
@@ -337,7 +444,7 @@ export const Pages: React.FC = () => {
         }}
         onConfirm={handleDeletePage}
         title="Delete Page"
-        message={`Are you sure you want to delete "${selectedPage?.name}"? This action cannot be undone.`}
+        message={`Are you sure you want to delete "${selectedPage?.name}"? This action cannot be undone and will also delete all associated content and versions.`}
         confirmText="Delete"
         variant="danger"
       />

@@ -45,6 +45,9 @@ export const DEFAULT_COMPONENT_PROPS = {
     variant: 'primary',
     size: 'md',
     disabled: false,
+    fullWidth: false,
+    icon: '',
+    href: '',
   },
   Text: {
     content: 'Your text here',
@@ -52,13 +55,16 @@ export const DEFAULT_COMPONENT_PROPS = {
     alignment: 'left',
   },
   Image: {
-    src: '',
+    src: 'https://via.placeholder.com/400x300?text=Image',
     alt: 'Image description',
     width: '100%',
     height: 'auto',
+    objectFit: true,
   },
   Container: {
     padding: 'md',
     background: 'transparent',
+    border: false,
+    shadow: false,
   },
 } as const;

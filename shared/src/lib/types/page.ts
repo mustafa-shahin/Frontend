@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-// Enums
+// Page Enums
 export enum PageStatus {
   Draft = 'Draft',
   Published = 'Published',
@@ -8,41 +8,7 @@ export enum PageStatus {
   Archived = 'Archived',
 }
 
-export enum UserRole {
-  Customer = 'Customer',
-  Admin = 'Admin',
-  Developer = 'Developer',
-}
-
-export enum ComponentType {
-  Button = 'Button',
-  Text = 'Text',
-  Image = 'Image',
-  Container = 'Container',
-  Grid = 'Grid',
-  Form = 'Form',
-}
-
-// User DTOs
-export interface UserDto {
-  id: number;
-  email: string;
-  username: string;
-  firstName: string;
-  lastName: string;
-  isActive: boolean;
-  isLocked: boolean;
-  lastLoginAt?: string;
-  pictureFileId?: number;
-  pictureUrl?: string;
-  emailVerifiedAt?: string;
-  role: UserRole;
-  roleName: string;
-  createdAt: string;
-  updatedAt: string;
-}
-
-// Page DTOs (matching backend)
+// Page DTOs
 export interface PageDto {
   id: number;
   name: string;
@@ -145,36 +111,6 @@ export interface PageVersionDto {
   metadata: Record<string, any>;
 }
 
-// Designer DTOs
-export interface DesignerPageDto {
-  id: number;
-  name: string;
-  title: string;
-  slug: string;
-  description?: string;
-  status: PageStatus;
-  createdAt: string;
-  updatedAt: string;
-  publishedAt?: string;
-  content: Record<string, any>;
-  layout: Record<string, any>;
-  settings: Record<string, any>;
-  styles: Record<string, any>;
-  hasUnsavedChanges: boolean;
-  currentVersion: number;
-}
-
-export interface SaveDesignerPageDto {
-  pageId: number;
-  content: Record<string, any>;
-  layout: Record<string, any>;
-  settings: Record<string, any>;
-  styles: Record<string, any>;
-  changeDescription?: string;
-  createVersion: boolean;
-  autoSave: boolean;
-}
-
 export interface SavePageStructureDto {
   pageId: number;
   content: Record<string, any>;
@@ -185,80 +121,7 @@ export interface SavePageStructureDto {
   createVersion: boolean;
 }
 
-export interface DesignerPreviewDto {
-  pageId: number;
-  previewUrl: string;
-  previewToken: string;
-  expiresAt: string;
-  settings: Record<string, any>;
-}
-
-export interface DesignerStateDto {
-  pageId: number;
-  selectedComponentKey?: string;
-  expandedComponents: string[];
-  activeBreakpoint: string;
-  viewMode: string;
-  zoomLevel: number;
-  showGrid: boolean;
-  showRulers: boolean;
-  snapToGrid: boolean;
-  preferences: Record<string, any>;
-  lastModified: string;
-}
-
-// Paged Result
-export interface PagedResult<T> {
-  items: T[];
-  page: number;
-  pageSize: number;
-  totalCount: number;
-  totalPages: number;
-}
-
-// Component DTOs for Designer
-export interface BaseComponent {
-  id: string;
-  type: ComponentType;
-  name: string;
-  props: Record<string, any>;
-  styles: Record<string, any>;
-  children?: BaseComponent[];
-  position: {
-    row: number;
-    column: number;
-    span: number;
-  };
-}
-
-export interface ButtonComponent extends BaseComponent {
-  type: ComponentType.Button;
-  props: {
-    text: string;
-    variant: 'primary' | 'secondary' | 'danger' | 'outline';
-    size: 'sm' | 'md' | 'lg';
-    disabled?: boolean;
-    onClick?: string;
-    icon?: string;
-    loading?: boolean;
-  };
-}
-
-// Zod Schemas for validation
-export const loginSchema = z.object({
-  email: z.string().email('Invalid email format'),
-  password: z.string().min(6, 'Password must be at least 6 characters'),
-  rememberMe: z.boolean().default(false),
-});
-
-export const registerSchema = z.object({
-  email: z.string().email('Invalid email format'),
-  username: z.string().min(3, 'Username must be at least 3 characters'),
-  password: z.string().min(6, 'Password must be at least 6 characters'),
-  firstName: z.string().min(1, 'First name is required'),
-  lastName: z.string().min(1, 'Last name is required'),
-});
-
+// Page Validation Schemas
 export const createPageSchema = z.object({
   name: z.string().min(1, 'Page name is required'),
   title: z.string().min(1, 'Page title is required'),
@@ -288,12 +151,9 @@ export const createPageSchema = z.object({
 export const updatePageSchema = createPageSchema;
 
 // Type exports for forms
-export type LoginFormData = z.infer<typeof loginSchema>;
-export type RegisterFormData = z.infer<typeof registerSchema>;
 export type CreatePageFormData = z.infer<typeof createPageSchema>;
 export type UpdatePageFormData = z.infer<typeof updatePageSchema>;
 
 // Utility types
-export type User = UserDto;
 export type Page = PageDto;
 export type PageListItem = PageListDto;

@@ -5,7 +5,7 @@ import React, {
   useState,
   ReactNode,
 } from 'react';
-import { UserDto, UserRole } from '../types';
+import { UserDto, UserRole } from '../types/user';
 import { apiClient } from '../api/client';
 import { ENDPOINTS } from '../config/api';
 

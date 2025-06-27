@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, cn } from '@frontend/shared';
+import { Button, cn, PageStatus } from '@frontend/shared';
 
 interface DesignerToolbarProps {
   hasUnsavedChanges: boolean;
@@ -10,6 +10,9 @@ interface DesignerToolbarProps {
   saving: boolean;
   publishing: boolean;
   pageName: string;
+  pageStatus: PageStatus;
+  lastSavedAt?: Date | null;
+  componentsCount: number;
 }
 
 export const DesignerToolbar: React.FC<DesignerToolbarProps> = ({

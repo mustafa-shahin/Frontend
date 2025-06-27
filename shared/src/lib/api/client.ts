@@ -5,18 +5,7 @@ import axios, {
   InternalAxiosRequestConfig,
 } from 'axios';
 import { API_CONFIG } from '../config/api';
-
-export interface ApiError {
-  message: string;
-  status?: number;
-  data?: any;
-}
-
-export interface ApiResponse<T = any> {
-  data: T;
-  message?: string;
-  success?: boolean;
-}
+import { ApiError } from '../types/common';
 
 class ApiClient {
   private instance: AxiosInstance;

@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Header, Button, LoadingPage } from '@frontend/shared';
+import { Header, Button, LoadingPage, PageStatus } from '@frontend/shared';
 import { DesignerSidebar } from './components/DesignerSidebar';
 import { DesignerCanvas } from './components/DesignerCanvas';
 import { ComponentProperties } from './components/ComponentProperties';
@@ -15,12 +15,15 @@ export const Designer: React.FC = () => {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [propertiesPanelOpen, setPropertiesPanelOpen] = useState(false);
   const [previewModalOpen, setPreviewModalOpen] = useState(false);
+  const [lastSavedAt, setLastSavedAt] = useState<Date | null>(null);
 
   const {
     page,
+    setPage,
     selectedComponent,
     setSelectedComponent,
     components,
+    setComponents,
     addComponent,
     updateComponent,
     deleteComponent,
@@ -34,6 +37,7 @@ export const Designer: React.FC = () => {
     savePage,
     publishPage,
     generatePreview,
+    autoSavePage,
     loading,
     saving,
     publishing,
@@ -45,31 +49,73 @@ export const Designer: React.FC = () => {
     }
   }, [pageId]);
 
+  // Auto-save functionality
+  useEffect(() => {
+    if (!hasUnsavedChanges || !pageId || !page) return;
+
+    const autoSaveTimer = setTimeout(() => {
+      handleAutoSave();
+    }, 30000); // Auto-save every 30 seconds
+
+    return () => clearTimeout(autoSaveTimer);
+  }, [hasUnsavedChanges, pageId, page, components]);
+
   const loadDesignerPage = async () => {
     if (!pageId) return;
 
     try {
       const pageData = await loadPage(parseInt(pageId));
-      // Initialize designer state with page data
+      setPage(pageData);
+
+      // Load components from page content
+      if (pageData.content?.components) {
+        setComponents(pageData.content.components);
+      }
+
+      setHasUnsavedChanges(false);
     } catch (error) {
       console.error('Failed to load page:', error);
       navigate('/dashboard/pages');
     }
   };
 
-  const handleSave = async () => {
-    if (!pageId) return;
+  const handleAutoSave = useCallback(async () => {
+    if (!pageId || !hasUnsavedChanges) return;
 
     try {
-      await savePage(parseInt(pageId), {
+      await autoSavePage(parseInt(pageId), {
         content: { components },
         layout: {},
         settings: {},
         styles: {},
       });
+      console.log('Auto-saved successfully');
+    } catch (error) {
+      console.warn('Auto-save failed:', error);
+    }
+  }, [pageId, hasUnsavedChanges, components, autoSavePage]);
+
+  const handleSave = async () => {
+    if (!pageId) return;
+
+    try {
+      const updatedPage = await savePage(parseInt(pageId), {
+        content: { components },
+        layout: {},
+        settings: {},
+        styles: {},
+        changeDescription: 'Manual save from designer',
+        createVersion: true,
+      });
+
+      setPage(updatedPage);
       setHasUnsavedChanges(false);
+      setLastSavedAt(new Date());
+
+      console.log('Page saved successfully');
     } catch (error) {
       console.error('Failed to save page:', error);
+      // You might want to show a toast notification here
     }
   };
 
@@ -77,12 +123,22 @@ export const Designer: React.FC = () => {
     if (!pageId) return;
 
     try {
-      // Save first
-      await handleSave();
+      // Save first if there are unsaved changes
+      if (hasUnsavedChanges) {
+        await handleSave();
+      }
+
       // Then publish
-      await publishPage(parseInt(pageId));
+      const publishedPage = await publishPage(parseInt(pageId), {
+        publishMessage: 'Published from designer',
+        createVersion: true,
+      });
+
+      setPage(publishedPage);
+      console.log('Page published successfully');
     } catch (error) {
       console.error('Failed to publish page:', error);
+      // You might want to show a toast notification here
     }
   };
 
@@ -103,7 +159,7 @@ export const Designer: React.FC = () => {
   };
 
   const handleComponentUpdate = (componentId: string, props: any) => {
-    updateComponent(componentId, props);
+    updateComponent(componentId, { props });
     setHasUnsavedChanges(true);
   };
 
@@ -126,8 +182,34 @@ export const Designer: React.FC = () => {
     setHasUnsavedChanges(true);
   };
 
+  const handleComponentMove = (
+    componentId: string,
+    newPosition: { row: number; column: number; span: number }
+  ) => {
+    moveComponent(componentId, newPosition);
+    setHasUnsavedChanges(true);
+  };
+
   if (loading) {
     return <LoadingPage message="Loading designer..." />;
+  }
+
+  if (!page) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-2">
+            Page Not Found
+          </h2>
+          <p className="text-gray-600 dark:text-gray-400 mb-4">
+            The page you're trying to edit doesn't exist.
+          </p>
+          <Button onClick={() => navigate('/dashboard/pages')}>
+            Back to Pages
+          </Button>
+        </div>
+      </div>
+    );
   }
 
   return (
@@ -146,8 +228,11 @@ export const Designer: React.FC = () => {
         onPreview={handlePreview}
         saving={saving}
         publishing={publishing}
-        pageName={page?.name || 'Untitled Page'}
+        pageName={page.name}
+        lastSavedAt={lastSavedAt}
+        componentsCount={components.length}
         onBack={() => navigate('/dashboard/pages')}
+        pageStatus={PageStatus.Draft}
       />
 
       <div className="flex flex-1 overflow-hidden">
@@ -166,7 +251,7 @@ export const Designer: React.FC = () => {
               onComponentSelect={handleComponentSelect}
               onComponentAdd={handleComponentAdd}
               onComponentDelete={handleComponentDelete}
-              onComponentMove={moveComponent}
+              onComponentMove={handleComponentMove}
             />
           </div>
 

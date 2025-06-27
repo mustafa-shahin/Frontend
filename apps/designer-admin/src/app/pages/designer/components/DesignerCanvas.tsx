@@ -2,7 +2,9 @@ import React, { useState } from 'react';
 import { cn } from '@frontend/shared';
 import { DesignerComponent } from '../hooks/useDesignerState';
 import { DesignerButton } from './designer-components/DesignerButton';
-
+import { DesignerText } from './designer-components/DesignerText';
+import { DesignerImage } from './designer-components/DesignerImage';
+import { DesignerContainer } from './designer-components/DesignerContainer';
 interface DesignerCanvasProps {
   components: DesignerComponent[];
   selectedComponent: string | null;

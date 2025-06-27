@@ -3,7 +3,7 @@ import { Button } from '@frontend/shared';
 
 interface UserButtonProps {
   text?: string;
-  variant?: 'primary' | 'secondary' | 'danger' | 'outline';
+  variant?: 'primary' | 'secondary' | 'danger' | 'outline' | 'ghost';
   size?: 'sm' | 'md' | 'lg';
   disabled?: boolean;
   icon?: string;
@@ -14,6 +14,9 @@ interface UserButtonProps {
   onClick?: () => void;
   className?: string;
   style?: React.CSSProperties;
+
+  // Additional props that might come from the designer
+  [key: string]: any;
 }
 
 export const UserButton: React.FC<UserButtonProps> = ({
@@ -29,6 +32,7 @@ export const UserButton: React.FC<UserButtonProps> = ({
   onClick,
   className,
   style,
+  ...otherProps
 }) => {
   const handleClick = () => {
     if (href) {
@@ -58,6 +62,7 @@ export const UserButton: React.FC<UserButtonProps> = ({
         loading={loading}
         fullWidth={fullWidth}
         onClick={handleClick}
+        {...otherProps}
       >
         {buttonContent}
       </Button>
