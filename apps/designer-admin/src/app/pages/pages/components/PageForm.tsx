@@ -1,4 +1,3 @@
-// apps/designer-admin/src/app/pages/pages/components/PageForm.tsx
 import React, { useEffect, useState } from 'react';
 import {
   createPageSchema,
@@ -7,6 +6,7 @@ import {
   UpdatePageFormData,
   PageDto,
   slugify,
+  getPageStatusOptions,
 } from '@frontend/shared';
 import {
   GenericForm,
@@ -95,12 +95,7 @@ export const PageForm: React.FC<PageFormProps> = ({
       name: 'status',
       label: 'Status',
       type: 'select',
-      options: [
-        { label: 'Draft', value: PageStatus.Draft },
-        { label: 'Published', value: PageStatus.Published },
-        { label: 'Scheduled', value: PageStatus.Scheduled },
-        { label: 'Archived', value: PageStatus.Archived },
-      ],
+      options: getPageStatusOptions(),
       helper: 'Current status of the page',
     },
     {
@@ -139,7 +134,7 @@ export const PageForm: React.FC<PageFormProps> = ({
     metaTitle: initialData?.metaTitle || '',
     metaDescription: initialData?.metaDescription || '',
     metaKeywords: initialData?.metaKeywords || '',
-    status: initialData?.status || PageStatus.Draft,
+    status: initialData?.status ?? PageStatus.Draft,
     template: initialData?.template || '',
     priority: initialData?.priority || 0,
     parentPageId: initialData?.parentPageId || undefined,
@@ -159,10 +154,11 @@ export const PageForm: React.FC<PageFormProps> = ({
       data.slug = slugify(data.title);
     }
 
-    // Ensure required fields have defaults
+    // Ensure required fields have defaults and proper types
     const processedData = {
       ...data,
       priority: data.priority || 0,
+      status: Number(data.status), // Ensure status is a number
       content: data.content || {},
       layout: data.layout || {},
       settings: data.settings || {},

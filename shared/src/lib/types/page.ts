@@ -1,14 +1,36 @@
 import { z } from 'zod';
 
-// Page Enums
 export enum PageStatus {
-  Draft = 'Draft',
-  Published = 'Published',
-  Scheduled = 'Scheduled',
-  Archived = 'Archived',
+  Draft = 0,
+  Published = 1,
+  Archived = 2,
+  Scheduled = 3,
 }
 
-// Page DTOs
+// Helper function to get display name for PageStatus
+export const getPageStatusLabel = (status: PageStatus): string => {
+  switch (status) {
+    case PageStatus.Draft:
+      return 'Draft';
+    case PageStatus.Published:
+      return 'Published';
+    case PageStatus.Archived:
+      return 'Archived';
+    case PageStatus.Scheduled:
+      return 'Scheduled';
+    default:
+      return 'Unknown';
+  }
+};
+
+// Helper function to get all status options for forms
+export const getPageStatusOptions = () => [
+  { label: 'Draft', value: PageStatus.Draft },
+  { label: 'Published', value: PageStatus.Published },
+  { label: 'Scheduled', value: PageStatus.Scheduled },
+  { label: 'Archived', value: PageStatus.Archived },
+];
+
 export interface PageDto {
   id: number;
   name: string;

@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { useAuth, cn } from '@frontend/shared';
+import { useAuth, cn, UserRole } from '@frontend/shared';
 
 interface SidebarProps {
   isOpen: boolean;
@@ -11,7 +11,7 @@ interface NavItem {
   name: string;
   href: string;
   icon: string;
-  roles?: string[];
+  roles?: UserRole[];
   description?: string;
   badge?: string;
   isNew?: boolean;
@@ -28,28 +28,28 @@ const navigation: NavItem[] = [
     name: 'Pages',
     href: '/dashboard/pages',
     icon: 'fas fa-file-alt',
-    roles: ['Admin', 'Developer'],
+    roles: [UserRole.Admin, UserRole.Developer],
     description: 'Create and manage pages',
   },
   {
     name: 'Media Library',
     href: '/dashboard/media',
     icon: 'fas fa-images',
-    roles: ['Admin', 'Developer'],
+    roles: [UserRole.Admin, UserRole.Developer],
     description: 'Upload and organize media',
   },
   {
     name: 'User Management',
     href: '/dashboard/users',
     icon: 'fas fa-users',
-    roles: ['Admin'],
+    roles: [UserRole.Admin, UserRole.Developer],
     description: 'Manage user accounts',
   },
   {
     name: 'Settings',
     href: '/dashboard/settings',
     icon: 'fas fa-cog',
-    roles: ['Admin'],
+    roles: [UserRole.Admin, UserRole.Developer],
     description: 'System configuration',
   },
 ];
@@ -97,7 +97,8 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
   return (
     <div
       className={cn(
-        'fixed inset-y-0 left-0 z-30 w-80 bg-white dark:bg-gray-900 shadow-xl transform transition-transform duration-300 ease-in-out lg:translate-x-0 lg:static lg:inset-0 border-r border-gray-200 dark:border-gray-800',
+        'fixed inset-y-0 left-0 top-16 z-30 w-80 bg-white dark:bg-gray-900 shadow-xl transform transition-transform duration-300 ease-in-out lg:translate-x-0 lg:static lg:inset-0 border-r border-gray-200 dark:border-gray-800',
+        'h-[calc(100vh-4rem)]', // Full height minus header
         isOpen ? 'translate-x-0' : '-translate-x-full'
       )}
     >
@@ -125,7 +126,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
         </button>
       </div>
 
-      <div className="flex flex-col h-full">
+      <div className="flex flex-col h-[calc(100%-4rem)]">
         {/* Main Navigation */}
         <nav className="flex-1 px-4 py-6 space-y-2 overflow-y-auto">
           <div className="mb-6">

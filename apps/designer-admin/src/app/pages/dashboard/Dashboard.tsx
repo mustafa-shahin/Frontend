@@ -13,21 +13,21 @@ export const Dashboard: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex flex-col">
       {/* Header */}
       <Header isDesignerMode={false} onToggleSidebar={toggleSidebar} />
 
-      <div className="flex">
+      <div className="flex flex-1 overflow-hidden">
         {/* Sidebar */}
         <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
 
         {/* Main Content */}
         <main
-          className={`flex-1 transition-all duration-300 ${
-            sidebarOpen ? 'lg:ml-64' : ''
+          className={`flex-1 transition-all duration-300 overflow-auto ${
+            sidebarOpen ? 'lg:ml-80' : ''
           }`}
         >
-          <div className="p-6">
+          <div className="p-6 min-h-full bg-gray-50 dark:bg-gray-900">
             <Routes>
               {/* Dashboard home route */}
               <Route index element={<DashboardHome />} />

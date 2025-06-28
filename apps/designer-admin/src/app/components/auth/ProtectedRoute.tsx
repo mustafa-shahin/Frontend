@@ -58,5 +58,5 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
   }
 
   console.log('User authorized, rendering children');
-  return <>{children}</>;
+  return <div>{children}</div>;
 };

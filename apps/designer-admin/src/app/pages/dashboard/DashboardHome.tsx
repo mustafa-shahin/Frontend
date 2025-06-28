@@ -1,6 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { useAuth, PageStatus, PageListDto } from '@frontend/shared';
+import {
+  useAuth,
+  PageStatus,
+  PageListDto,
+  getPageStatusLabel,
+} from '@frontend/shared';
 import { usePagesApi } from '../pages/hooks/usePagesApi';
 
 interface DashboardStats {
@@ -304,7 +309,7 @@ export const DashboardHome: React.FC = () => {
                           page.status
                         )}`}
                       >
-                        {page.status}
+                        {getPageStatusLabel(page.status)}
                       </span>
                     </div>
                     <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">

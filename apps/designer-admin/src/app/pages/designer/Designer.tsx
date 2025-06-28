@@ -65,7 +65,7 @@ export const Designer: React.FC = () => {
 
     try {
       const pageData = await loadPage(parseInt(pageId));
-      setPage(pageData);
+      setPage({ ...pageData, status: pageData.status.toString() });
 
       // Load components from page content
       if (pageData.content?.components) {
@@ -108,7 +108,7 @@ export const Designer: React.FC = () => {
         createVersion: true,
       });
 
-      setPage(updatedPage);
+      setPage({ ...updatedPage, status: updatedPage.status.toString() });
       setHasUnsavedChanges(false);
       setLastSavedAt(new Date());
 
@@ -134,7 +134,7 @@ export const Designer: React.FC = () => {
         createVersion: true,
       });
 
-      setPage(publishedPage);
+      setPage({ ...publishedPage, status: publishedPage.status.toString() });
       console.log('Page published successfully');
     } catch (error) {
       console.error('Failed to publish page:', error);

@@ -12,6 +12,7 @@ import {
   UpdatePageFormData,
   formatDateTime,
   LoadingSpinner,
+  getPageStatusLabel,
 } from '@frontend/shared';
 import { CrudModal } from '../../components/auth/crud/CrudModal';
 import { PageForm } from './components/PageForm';
@@ -268,7 +269,7 @@ export const Pages: React.FC = () => {
               statusColors[value as PageStatus]
             }`}
           >
-            {value}
+            {getPageStatusLabel(value)}
           </span>
         );
       },

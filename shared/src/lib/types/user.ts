@@ -2,9 +2,9 @@ import { z } from 'zod';
 
 // User Enums
 export enum UserRole {
-  Customer = 'Customer',
-  Admin = 'Admin',
-  Developer = 'Developer',
+  Customer = 0,
+  Admin = 1,
+  Developer = 2,
 }
 
 // User DTOs

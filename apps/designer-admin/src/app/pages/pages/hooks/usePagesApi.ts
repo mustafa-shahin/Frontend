@@ -9,6 +9,7 @@ import {
   UpdatePageDto,
   CreatePageFormData,
   UpdatePageFormData,
+  PageStatus,
 } from '@frontend/shared';
 
 export const usePagesApi = () => {
@@ -94,7 +95,7 @@ export const usePagesApi = () => {
         metaTitle: formData.metaTitle?.trim() || '',
         metaDescription: formData.metaDescription?.trim() || '',
         metaKeywords: formData.metaKeywords?.trim() || '',
-        status: formData.status,
+        status: Number(formData.status), // Ensure status is sent as number
         template: formData.template?.trim() || '',
         priority: formData.priority || 0,
         parentPageId: formData.parentPageId,
@@ -138,7 +139,7 @@ export const usePagesApi = () => {
         metaTitle: formData.metaTitle?.trim() || '',
         metaDescription: formData.metaDescription?.trim() || '',
         metaKeywords: formData.metaKeywords?.trim() || '',
-        status: formData.status,
+        status: Number(formData.status), // Ensure status is sent as number
         template: formData.template?.trim() || '',
         priority: formData.priority || 0,
         parentPageId: formData.parentPageId,
