@@ -17,11 +17,18 @@ export { Input } from './components/ui/Input';
 export { Alert } from './components/ui/Alert';
 export { Card } from './components/ui/Card';
 export { LoadingSpinner } from './components/ui/LoadingSpinner';
+export { Icon } from './components/ui/Icon';
 
 // Export hooks
 export { useForm } from './hooks/useForm';
 export { useLocalStorage } from './hooks/useLocalStorage';
+export { usePages } from './hooks/usePages';
 
 // Export utilities
 export { cn } from './utils/cn';
 export { validateEmail, validatePassword } from './utils/validation';
+export { getCurrentTheme } from './utils/theme';
+export { initializeTheme, setTheme } from './utils/theme';
+
+export { PagesList } from './components/pages/PagesList';
+export type { PageItem } from './components/pages/PagesList';

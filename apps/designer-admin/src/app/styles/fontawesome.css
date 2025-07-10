@@ -82,6 +82,12 @@
 .fa-chevron-up::before {
   content: '\2303';
 }
+.fa-chevron-left::before {
+  content: '\2039';
+}
+.fa-chevron-right::before {
+  content: '\203a';
+}
 .fa-bars::before {
   content: '\2630';
 }
@@ -141,6 +147,18 @@
 }
 .fa-list::before {
   content: '\1f4cb';
+}
+.fa-external-link-alt::before {
+  content: '\1f310';
+}
+.fa-copy::before {
+  content: '\1f4cb';
+}
+.fa-folder::before {
+  content: '\1f4c1';
+}
+.fa-check-circle::before {
+  content: '\2713';
 }
 
 /* Animations */

@@ -1,4 +1,3 @@
-import React from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { LoginForm, useAuth } from '@frontend/shared';
 import type { LoginFormData } from '@frontend/shared';
@@ -8,8 +7,8 @@ export function LoginPage() {
   const location = useLocation();
   const { login, isLoading, error } = useAuth();
 
-  // Get the intended destination or default to dashboard
-  const from = (location.state as any)?.from?.pathname || '/dashboard';
+  // Get the intended destination or default to pages
+  const from = (location.state as any)?.from?.pathname || '/pages';
 
   const handleLogin = async (data: LoginFormData) => {
     await login({
@@ -34,10 +33,10 @@ export function LoginPage() {
     <div className="space-y-6">
       <div className="text-center">
         <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
-          Sign in to your account
+          Sign in to Designer Admin
         </h2>
         <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
-          Access the CMS Designer platform
+          Access the CMS Designer admin panel
         </p>
       </div>
 

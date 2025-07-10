@@ -15,7 +15,7 @@ export function AuthLayout({ children }: AuthLayoutProps) {
             <i className="fa fa-paint-brush text-2xl text-white" />
           </div>
           <h1 className="mt-4 text-3xl font-bold text-gray-900 dark:text-gray-100">
-            CMS Designer
+            CMS Designer Admin
           </h1>
           <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
             Professional content management and design platform
