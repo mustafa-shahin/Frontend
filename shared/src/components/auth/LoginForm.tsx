@@ -1,12 +1,13 @@
+import React, { useState } from 'react';
 import { useForm } from '../../hooks/useForm';
 import { loginSchema, type LoginFormData } from '../../types/auth';
 import { Button } from '../ui/Button';
 import { Input } from '../ui/Input';
 import { Alert } from '../ui/Alert';
 import { cn } from '../../utils/cn';
-import { useState } from 'react';
 
-export interface LoginFormProps {
+export interface LoginFormProps
+  extends Omit<React.FormHTMLAttributes<HTMLFormElement>, 'onSubmit'> {
   onSubmit: (data: LoginFormData) => Promise<void>;
   onForgotPassword?: () => void;
   onSwitchToRegister?: () => void;
@@ -28,6 +29,7 @@ export function LoginForm({
   showRememberMe = true,
   showForgotPassword = true,
   showRegisterLink = true,
+  ...props
 }: LoginFormProps) {
   const [submitError, setSubmitError] = useState<string | null>(null);
 
@@ -60,6 +62,7 @@ export function LoginForm({
       onSubmit={form.handleSubmit}
       className={cn('space-y-6', className)}
       noValidate
+      {...props}
     >
       {displayError && (
         <Alert
@@ -82,6 +85,7 @@ export function LoginForm({
           required
           autoComplete="email"
           disabled={isLoading}
+          data-testid="email-input"
         />
 
         <Input
@@ -96,6 +100,7 @@ export function LoginForm({
           required
           autoComplete="current-password"
           disabled={isLoading}
+          data-testid="password-input"
         />
 
         {showRememberMe && (
@@ -126,8 +131,9 @@ export function LoginForm({
           variant="primary"
           size="lg"
           loading={isLoading || form.isSubmitting}
-          disabled={!form.isValid && Object.keys(form.touched).length > 0}
+          disabled={isLoading || form.isSubmitting}
           className="w-full"
+          data-testid="sign-in-button"
         >
           Sign in
         </Button>

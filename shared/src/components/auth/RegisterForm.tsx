@@ -6,7 +6,8 @@ import { Input } from '../ui/Input';
 import { Alert } from '../ui/Alert';
 import { cn } from '../../utils/cn';
 
-export interface RegisterFormProps {
+export interface RegisterFormProps
+  extends Omit<React.FormHTMLAttributes<HTMLFormElement>, 'onSubmit'> {
   onSubmit: (data: RegisterFormData) => Promise<void>;
   onSwitchToLogin?: () => void;
   className?: string;
@@ -22,6 +23,7 @@ export function RegisterForm({
   isLoading = false,
   error,
   showLoginLink = true,
+  ...props
 }: RegisterFormProps) {
   const [submitError, setSubmitError] = useState<string | null>(null);
 
@@ -39,7 +41,10 @@ export function RegisterForm({
         setSubmitError(null);
         await onSubmit(values);
       } catch (error: unknown) {
-        const message = error instanceof Error ? error.message : 'Registration failed. Please try again.';
+        const message =
+          error instanceof Error
+            ? error.message
+            : 'Registration failed. Please try again.';
         setSubmitError(message);
       }
     },
@@ -53,6 +58,7 @@ export function RegisterForm({
       onSubmit={form.handleSubmit}
       className={cn('space-y-6', className)}
       noValidate
+      {...props}
     >
       {displayError && (
         <Alert
@@ -76,6 +82,7 @@ export function RegisterForm({
             required
             autoComplete="given-name"
             disabled={isLoading}
+            data-testid="first-name-input"
           />
 
           <Input
@@ -90,6 +97,7 @@ export function RegisterForm({
             required
             autoComplete="family-name"
             disabled={isLoading}
+            data-testid="last-name-input"
           />
         </div>
 
@@ -105,6 +113,7 @@ export function RegisterForm({
           required
           autoComplete="username"
           disabled={isLoading}
+          data-testid="username-input"
         />
 
         <Input
@@ -119,6 +128,7 @@ export function RegisterForm({
           required
           autoComplete="email"
           disabled={isLoading}
+          data-testid="email-input"
         />
 
         <Input
@@ -134,6 +144,7 @@ export function RegisterForm({
           autoComplete="new-password"
           disabled={isLoading}
           helperText="Password must be at least 8 characters with uppercase, lowercase, and number"
+          data-testid="password-input"
         />
       </div>
 
@@ -143,8 +154,9 @@ export function RegisterForm({
           variant="primary"
           size="lg"
           loading={isLoading || form.isSubmitting}
-          disabled={!form.isValid && Object.keys(form.touched).length > 0}
+          disabled={isLoading || form.isSubmitting}
           className="w-full"
+          data-testid="create-account-button"
         >
           Create account
         </Button>

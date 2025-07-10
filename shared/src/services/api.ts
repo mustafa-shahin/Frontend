@@ -1,4 +1,3 @@
-// shared/src/services/api.ts
 import axios, {
   AxiosInstance,
   AxiosError,
@@ -36,18 +35,28 @@ class ApiService {
   private refreshTokenPromise: Promise<string> | null = null;
 
   constructor() {
+    const baseURL = `${API_BASE_URL}/api/${API_VERSION}`;
+    console.log('API Service: Full API URL:', baseURL);
+
     this.axiosInstance = axios.create({
-      baseURL: `${API_BASE_URL}/api/${API_VERSION}`,
+      baseURL,
       timeout: 30000,
       headers: {
         'Content-Type': 'application/json',
         Accept: 'application/json',
       },
+      withCredentials: false, // Set to true if using cookies for authentication
     });
 
     this.setupInterceptors();
-  }
 
+    // Log the configuration
+    console.log('API Service: Axios instance created with config:', {
+      baseURL: this.axiosInstance.defaults.baseURL,
+      timeout: this.axiosInstance.defaults.timeout,
+      headers: this.axiosInstance.defaults.headers,
+    });
+  }
   private setupInterceptors() {
     // Request interceptor to add auth token
     this.axiosInstance.interceptors.request.use(

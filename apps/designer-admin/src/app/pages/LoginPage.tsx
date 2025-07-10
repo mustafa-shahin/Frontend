@@ -1,3 +1,4 @@
+import React from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { LoginForm, useAuth } from '@frontend/shared';
 import type { LoginFormData } from '@frontend/shared';
@@ -5,20 +6,33 @@ import type { LoginFormData } from '@frontend/shared';
 export function LoginPage() {
   const navigate = useNavigate();
   const location = useLocation();
-  const { login, isLoading, error } = useAuth();
+  const { login, isLoading, error, clearError } = useAuth();
 
   // Get the intended destination or default to pages
   const from = (location.state as any)?.from?.pathname || '/pages';
 
   const handleLogin = async (data: LoginFormData) => {
-    await login({
-      email: data.email,
-      password: data.password,
-      rememberMe: data.rememberMe,
-    });
+    try {
+      console.log('Attempting login with:', {
+        email: data.email,
+        rememberMe: data.rememberMe,
+      });
 
-    // Navigate to intended destination after successful login
-    navigate(from, { replace: true });
+      await login({
+        email: data.email,
+        password: data.password,
+        rememberMe: data.rememberMe,
+      });
+
+      console.log('Login successful, navigating to:', from);
+
+      // Navigate to intended destination after successful login
+      navigate(from, { replace: true });
+    } catch (error) {
+      console.error('Login failed:', error);
+      // Error will be handled by the LoginForm component
+      throw error;
+    }
   };
 
   const handleForgotPassword = () => {
@@ -28,6 +42,13 @@ export function LoginPage() {
   const handleSwitchToRegister = () => {
     navigate('/register', { state: { from: location.state?.from } });
   };
+
+  // Clear any existing errors when component mounts
+  React.useEffect(() => {
+    if (error) {
+      clearError();
+    }
+  }, []);
 
   return (
     <div className="space-y-6">

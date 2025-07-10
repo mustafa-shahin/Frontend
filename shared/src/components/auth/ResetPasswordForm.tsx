@@ -9,9 +9,10 @@ import { Input } from '../ui/Input';
 import { Alert } from '../ui/Alert';
 import { cn } from '../../utils/cn';
 
-export interface ResetPasswordFormProps {
+export interface ResetPasswordFormProps
+  extends Omit<React.FormHTMLAttributes<HTMLFormElement>, 'onSubmit'> {
   token: string;
-  onSubmit: (data: ResetPasswordFormData) => Promise<void>;
+  onSubmit: (data: ResetPasswordFormData) => Promise<void>; // This is your custom onSubmit
   onBackToLogin?: () => void;
   className?: string;
   isLoading?: boolean;
@@ -27,6 +28,7 @@ export function ResetPasswordForm({
   isLoading = false,
   error,
   showBackToLogin = true,
+  ...props
 }: ResetPasswordFormProps) {
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [isSuccess, setIsSuccess] = useState(false);
@@ -43,7 +45,10 @@ export function ResetPasswordForm({
         await onSubmit(values);
         setIsSuccess(true);
       } catch (error: unknown) {
-        const message = error instanceof Error ? error.message : 'Failed to reset password. Please try again.';
+        const message =
+          error instanceof Error
+            ? error.message
+            : 'Failed to reset password. Please try again.';
         setSubmitError(message);
       }
     },
@@ -75,6 +80,7 @@ export function ResetPasswordForm({
             variant="primary"
             onClick={onBackToLogin}
             className="w-full"
+            data-testid="sign-in-button"
           >
             Sign in to your account
           </Button>
@@ -88,6 +94,7 @@ export function ResetPasswordForm({
       onSubmit={form.handleSubmit}
       className={cn('space-y-6', className)}
       noValidate
+      {...props}
     >
       <div className="text-center space-y-2">
         <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
@@ -121,6 +128,7 @@ export function ResetPasswordForm({
           disabled={isLoading}
           autoFocus
           helperText="Password must be at least 8 characters with uppercase, lowercase, and number"
+          data-testid="new-password-input"
         />
       </div>
 
@@ -130,8 +138,9 @@ export function ResetPasswordForm({
           variant="primary"
           size="lg"
           loading={isLoading || form.isSubmitting}
-          disabled={!form.isValid && Object.keys(form.touched).length > 0}
+          disabled={isLoading || form.isSubmitting}
           className="w-full"
+          data-testid="reset-password-button"
         >
           Reset password
         </Button>
@@ -143,6 +152,7 @@ export function ResetPasswordForm({
             onClick={onBackToLogin}
             disabled={isLoading}
             className="w-full"
+            data-testid="back-to-login-link"
           >
             <i className="fa fa-arrow-left mr-2" />
             Back to sign in

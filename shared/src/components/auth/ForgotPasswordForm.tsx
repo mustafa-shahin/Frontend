@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { useForm } from '../../hooks/useForm';
 import {
   forgotPasswordSchema,
@@ -9,8 +9,10 @@ import { Input } from '../ui/Input';
 import { Alert } from '../ui/Alert';
 import { cn } from '../../utils/cn';
 
-export interface ForgotPasswordFormProps {
-  onSubmit: (data: ForgotPasswordFormData) => Promise<void>;
+export interface ForgotPasswordFormProps
+  extends Omit<React.FormHTMLAttributes<HTMLFormElement>, 'onSubmit'> {
+  // Exclude the native onSubmit
+  onSubmit: (data: ForgotPasswordFormData) => Promise<void>; // This is your custom onSubmit
   onBackToLogin?: () => void;
   className?: string;
   isLoading?: boolean;
@@ -25,6 +27,7 @@ export function ForgotPasswordForm({
   isLoading = false,
   error,
   showBackToLogin = true,
+  ...props
 }: ForgotPasswordFormProps) {
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [isSuccess, setIsSuccess] = useState(false);
@@ -80,6 +83,7 @@ export function ForgotPasswordForm({
             variant="outline"
             onClick={onBackToLogin}
             className="w-full"
+            data-testid="back-to-login-button"
           >
             <i className="fa fa-arrow-left mr-2" />
             Back to sign in
@@ -94,6 +98,7 @@ export function ForgotPasswordForm({
       onSubmit={form.handleSubmit}
       className={cn('space-y-6', className)}
       noValidate
+      {...props}
     >
       <div className="text-center space-y-2">
         <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
@@ -127,6 +132,7 @@ export function ForgotPasswordForm({
           autoComplete="email"
           disabled={isLoading}
           autoFocus
+          data-testid="email-input"
         />
       </div>
 
@@ -136,8 +142,9 @@ export function ForgotPasswordForm({
           variant="primary"
           size="lg"
           loading={isLoading || form.isSubmitting}
-          disabled={!form.isValid && Object.keys(form.touched).length > 0}
+          disabled={isLoading || form.isSubmitting}
           className="w-full"
+          data-testid="send-reset-email-button"
         >
           Send reset email
         </Button>
@@ -149,6 +156,7 @@ export function ForgotPasswordForm({
             onClick={onBackToLogin}
             disabled={isLoading}
             className="w-full"
+            data-testid="back-to-login-link"
           >
             <i className="fa fa-arrow-left mr-2" />
             Back to sign in
