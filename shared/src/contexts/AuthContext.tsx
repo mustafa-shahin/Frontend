@@ -35,7 +35,6 @@ const initialState: AuthState = {
   refreshToken: null,
   isAuthenticated: false,
   isLoading: true, // Start with loading true to check existing auth
-  error: null,
 };
 
 // Auth reducer
@@ -109,7 +108,10 @@ interface AuthProviderProps {
 
 // Auth provider component
 export function AuthProvider({ children, requiredRoles }: AuthProviderProps) {
-  const [state, dispatch] = useReducer(authReducer, initialState);
+  const [{ error, ...restState }, dispatch] = useReducer(
+    authReducer,
+    initialState
+  );
 
   // Check if user has required roles
   const hasRequiredRole = useCallback(
@@ -165,8 +167,8 @@ export function AuthProvider({ children, requiredRoles }: AuthProviderProps) {
         } else {
           dispatch({ type: 'AUTH_FAILURE', payload: 'Not authenticated' });
         }
-      } catch (error) {
-        console.error('Auth initialization error:', error);
+      } catch {
+        console.error('Auth initialization error:');
         dispatch({
           type: 'AUTH_FAILURE',
           payload: 'Authentication initialization failed',
@@ -202,8 +204,9 @@ export function AuthProvider({ children, requiredRoles }: AuthProviderProps) {
             refreshToken: response.refreshToken,
           },
         });
-      } catch (error: any) {
-        const errorMessage = error?.message || 'Login failed';
+      } catch (error: unknown) {
+        const errorMessage =
+          error instanceof Error ? error.message : 'Login failed';
         dispatch({ type: 'AUTH_FAILURE', payload: errorMessage });
         throw error;
       }
@@ -225,8 +228,9 @@ export function AuthProvider({ children, requiredRoles }: AuthProviderProps) {
           password: userData.password,
           rememberMe: false,
         });
-      } catch (error: any) {
-        const errorMessage = error?.message || 'Registration failed';
+      } catch (error: unknown) {
+        const errorMessage =
+          error instanceof Error ? error.message : 'Registration failed';
         dispatch({ type: 'AUTH_FAILURE', payload: errorMessage });
         throw error;
       }
@@ -258,8 +262,9 @@ export function AuthProvider({ children, requiredRoles }: AuthProviderProps) {
           refreshToken: response.refreshToken,
         },
       });
-    } catch (error: any) {
-      const errorMessage = error?.message || 'Session refresh failed';
+    } catch (error: unknown) {
+      const errorMessage =
+        error instanceof Error ? error.message : 'Session refresh failed';
       dispatch({ type: 'AUTH_FAILURE', payload: errorMessage });
       throw error;
     }
@@ -274,8 +279,9 @@ export function AuthProvider({ children, requiredRoles }: AuthProviderProps) {
   const forgotPassword = useCallback(async (email: string): Promise<void> => {
     try {
       await apiService.forgotPassword({ email });
-    } catch (error: any) {
-      const errorMessage = error?.message || 'Failed to send reset email';
+    } catch (error: unknown) {
+      const errorMessage =
+        error instanceof Error ? error.message : 'Failed to send reset email';
       throw new Error(errorMessage);
     }
   }, []);
@@ -285,8 +291,9 @@ export function AuthProvider({ children, requiredRoles }: AuthProviderProps) {
     async (data: ResetPasswordDto): Promise<void> => {
       try {
         await apiService.resetPassword(data);
-      } catch (error: any) {
-        const errorMessage = error?.message || 'Password reset failed';
+      } catch (error: unknown) {
+        const errorMessage =
+          error instanceof Error ? error.message : 'Password reset failed';
         throw new Error(errorMessage);
       }
     },
@@ -295,7 +302,8 @@ export function AuthProvider({ children, requiredRoles }: AuthProviderProps) {
 
   // Context value
   const value: AuthContextType = {
-    ...state,
+    ...restState,
+    error,
     login,
     register,
     logout,

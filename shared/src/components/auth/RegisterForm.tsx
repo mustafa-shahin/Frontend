@@ -38,10 +38,9 @@ export function RegisterForm({
       try {
         setSubmitError(null);
         await onSubmit(values);
-      } catch (error: any) {
-        setSubmitError(
-          error?.message || 'Registration failed. Please try again.'
-        );
+      } catch (error: unknown) {
+        const message = error instanceof Error ? error.message : 'Registration failed. Please try again.';
+        setSubmitError(message);
       }
     },
     validateOnBlur: true,

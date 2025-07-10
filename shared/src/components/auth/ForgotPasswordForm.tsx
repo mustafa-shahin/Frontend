@@ -39,10 +39,9 @@ export function ForgotPasswordForm({
         setSubmitError(null);
         await onSubmit(values);
         setIsSuccess(true);
-      } catch (error: any) {
-        setSubmitError(
-          error?.message || 'Failed to send reset email. Please try again.'
-        );
+      } catch (error: unknown) {
+        const message = error instanceof Error ? error.message : 'Failed to send reset email. Please try again.';
+        setSubmitError(message);
       }
     },
     validateOnBlur: true,

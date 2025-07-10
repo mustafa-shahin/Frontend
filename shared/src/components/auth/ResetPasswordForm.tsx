@@ -42,10 +42,9 @@ export function ResetPasswordForm({
         setSubmitError(null);
         await onSubmit(values);
         setIsSuccess(true);
-      } catch (error: any) {
-        setSubmitError(
-          error?.message || 'Failed to reset password. Please try again.'
-        );
+      } catch (error: unknown) {
+        const message = error instanceof Error ? error.message : 'Failed to reset password. Please try again.';
+        setSubmitError(message);
       }
     },
     validateOnBlur: true,

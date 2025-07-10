@@ -42,8 +42,9 @@ export function LoginForm({
       try {
         setSubmitError(null);
         await onSubmit(values);
-      } catch (error: any) {
-        setSubmitError(error?.message || 'Login failed. Please try again.');
+      } catch (error: unknown) {
+        const message = error instanceof Error ? error.message : 'Login failed. Please try again.';
+        setSubmitError(message);
       }
     },
     validateOnBlur: true,

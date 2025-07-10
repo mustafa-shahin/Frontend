@@ -1,20 +1,35 @@
 // shared/src/services/api.ts
-import axios, { AxiosInstance, AxiosError, AxiosResponse } from 'axios';
+import axios, {
+  AxiosInstance,
+  AxiosError,
+  AxiosResponse,
+  InternalAxiosRequestConfig,
+} from 'axios';
 import type {
   LoginDto,
   RegisterDto,
   LoginResponseDto,
   UserDto,
-  RefreshTokenDto,
   ForgotPasswordDto,
   ResetPasswordDto,
   ApiErrorResponse,
 } from '../types/auth';
 
+interface OriginalRequest extends InternalAxiosRequestConfig {
+  _retry?: boolean;
+}
+
 // API Configuration
 const API_BASE_URL =
   import.meta.env.VITE_API_BASE_URL || 'https://localhost:7206';
 const API_VERSION = 'v1';
+
+interface ErrorData {
+  message?: string;
+  Message?: string;
+  errors?: Record<string, string[]>;
+  Errors?: Record<string, string[]>;
+}
 
 class ApiService {
   private axiosInstance: AxiosInstance;
@@ -50,7 +65,7 @@ class ApiService {
     this.axiosInstance.interceptors.response.use(
       (response) => response,
       async (error: AxiosError) => {
-        const originalRequest = error.config as any;
+        const originalRequest = error.config as OriginalRequest;
 
         if (error.response?.status === 401 && !originalRequest._retry) {
           originalRequest._retry = true;
@@ -107,7 +122,7 @@ class ApiService {
 
   private handleApiError(error: AxiosError): ApiErrorResponse {
     if (error.response?.data) {
-      const errorData = error.response.data as any;
+      const errorData = error.response.data as ErrorData;
       return {
         message: errorData.message || errorData.Message || 'An error occurred',
         errors: errorData.errors || errorData.Errors,
@@ -263,7 +278,7 @@ class ApiService {
     return response.data;
   }
 
-  async post<T>(endpoint: string, data?: any): Promise<T> {
+  async post<T>(endpoint: string, data?: unknown): Promise<T> {
     const response: AxiosResponse<T> = await this.axiosInstance.post(
       endpoint,
       data
@@ -271,7 +286,7 @@ class ApiService {
     return response.data;
   }
 
-  async put<T>(endpoint: string, data?: any): Promise<T> {
+  async put<T>(endpoint: string, data?: unknown): Promise<T> {
     const response: AxiosResponse<T> = await this.axiosInstance.put(
       endpoint,
       data

@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useCallback } from 'react';
 import { ZodSchema, ZodError } from 'zod';
 
 export interface UseFormOptions<T> {
@@ -15,10 +15,10 @@ export interface UseFormReturn<T> {
   touched: Partial<Record<keyof T, boolean>>;
   isSubmitting: boolean;
   isValid: boolean;
-  handleChange: (name: keyof T, value: any) => void;
+  handleChange: (name: keyof T, value: T[keyof T]) => void;
   handleBlur: (name: keyof T) => void;
   handleSubmit: (e?: React.FormEvent) => Promise<void>;
-  setFieldValue: (name: keyof T, value: any) => void;
+  setFieldValue: (name: keyof T, value: T[keyof T]) => void;
   setFieldError: (name: keyof T, error: string) => void;
   setErrors: (errors: Partial<Record<keyof T, string>>) => void;
   resetForm: () => void;
@@ -26,7 +26,7 @@ export interface UseFormReturn<T> {
   validateForm: () => boolean;
 }
 
-export function useForm<T extends Record<string, any>>({
+export function useForm<T extends Record<string, unknown>>({
   initialValues,
   validationSchema,
   onSubmit,
@@ -85,7 +85,7 @@ export function useForm<T extends Record<string, any>>({
 
   // Handle field change
   const handleChange = useCallback(
-    (name: keyof T, value: any) => {
+    (name: keyof T, value: T[keyof T]) => {
       setValues((prev) => ({ ...prev, [name]: value }));
 
       if (validateOnChange) {
@@ -152,7 +152,7 @@ export function useForm<T extends Record<string, any>>({
   );
 
   // Set field value
-  const setFieldValue = useCallback((name: keyof T, value: any) => {
+  const setFieldValue = useCallback((name: keyof T, value: T[keyof T]) => {
     setValues((prev) => ({ ...prev, [name]: value }));
   }, []);
 

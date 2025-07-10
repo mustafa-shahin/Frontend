@@ -1,5 +1,10 @@
 import { useState, useEffect, useCallback } from 'react';
-import { pagesService, type PageSearchParams } from '../services/pages';
+import {
+  pagesService,
+  type PageSearchParams,
+  type CreatePageData,
+  type UpdatePageData,
+} from '../services/pages';
 import type { PageItem, PagesData } from '../components/pages/PagesList';
 
 interface UsePagesOptions {
@@ -13,8 +18,8 @@ interface UsePagesReturn {
   error: string | null;
   refetch: () => Promise<void>;
   setSearchParams: (params: PageSearchParams) => void;
-  createPage: (data: any) => Promise<PageItem>;
-  updatePage: (id: number, data: any) => Promise<PageItem>;
+  createPage: (data: CreatePageData) => Promise<PageItem>;
+  updatePage: (id: number, data: Partial<UpdatePageData>) => Promise<PageItem>;
   deletePage: (id: number) => Promise<void>;
   publishPage: (id: number) => Promise<PageItem>;
   unpublishPage: (id: number) => Promise<PageItem>;
@@ -53,8 +58,8 @@ export function usePages(options: UsePagesOptions = {}): UsePagesReturn {
         const result = await pagesService.getPages(finalParams);
 
         setPages(result);
-      } catch (err: any) {
-        const errorMessage = err?.message || 'Failed to fetch pages';
+      } catch (err: unknown) {
+        const errorMessage = err instanceof Error ? err.message : 'Failed to fetch pages';
         setError(errorMessage);
         console.error('Error fetching pages:', err);
       } finally {
@@ -69,14 +74,14 @@ export function usePages(options: UsePagesOptions = {}): UsePagesReturn {
   }, []);
 
   const createPage = useCallback(
-    async (data: any): Promise<PageItem> => {
+    async (data: CreatePageData): Promise<PageItem> => {
       try {
         setError(null);
         const newPage = await pagesService.createPage(data);
         await fetchPages(); // Refresh the list
         return newPage;
-      } catch (err: any) {
-        const errorMessage = err?.message || 'Failed to create page';
+      } catch (err: unknown) {
+        const errorMessage = err instanceof Error ? err.message : 'Failed to create page';
         setError(errorMessage);
         throw err;
       }
@@ -85,14 +90,14 @@ export function usePages(options: UsePagesOptions = {}): UsePagesReturn {
   );
 
   const updatePage = useCallback(
-    async (id: number, data: any): Promise<PageItem> => {
+    async (id: number, data: Partial<UpdatePageData>): Promise<PageItem> => {
       try {
         setError(null);
         const updatedPage = await pagesService.updatePage(id, data);
         await fetchPages(); // Refresh the list
         return updatedPage;
-      } catch (err: any) {
-        const errorMessage = err?.message || 'Failed to update page';
+      } catch (err: unknown) {
+        const errorMessage = err instanceof Error ? err.message : 'Failed to update page';
         setError(errorMessage);
         throw err;
       }
@@ -106,8 +111,8 @@ export function usePages(options: UsePagesOptions = {}): UsePagesReturn {
         setError(null);
         await pagesService.deletePage(id);
         await fetchPages(); // Refresh the list
-      } catch (err: any) {
-        const errorMessage = err?.message || 'Failed to delete page';
+      } catch (err: unknown) {
+        const errorMessage = err instanceof Error ? err.message : 'Failed to delete page';
         setError(errorMessage);
         throw err;
       }
@@ -122,8 +127,8 @@ export function usePages(options: UsePagesOptions = {}): UsePagesReturn {
         const publishedPage = await pagesService.publishPage(id);
         await fetchPages(); // Refresh the list
         return publishedPage;
-      } catch (err: any) {
-        const errorMessage = err?.message || 'Failed to publish page';
+      } catch (err: unknown) {
+        const errorMessage = err instanceof Error ? err.message : 'Failed to publish page';
         setError(errorMessage);
         throw err;
       }
@@ -138,8 +143,8 @@ export function usePages(options: UsePagesOptions = {}): UsePagesReturn {
         const unpublishedPage = await pagesService.unpublishPage(id);
         await fetchPages(); // Refresh the list
         return unpublishedPage;
-      } catch (err: any) {
-        const errorMessage = err?.message || 'Failed to unpublish page';
+      } catch (err: unknown) {
+        const errorMessage = err instanceof Error ? err.message : 'Failed to unpublish page';
         setError(errorMessage);
         throw err;
       }
@@ -154,8 +159,8 @@ export function usePages(options: UsePagesOptions = {}): UsePagesReturn {
         const duplicatedPage = await pagesService.duplicatePage(id, newName);
         await fetchPages(); // Refresh the list
         return duplicatedPage;
-      } catch (err: any) {
-        const errorMessage = err?.message || 'Failed to duplicate page';
+      } catch (err: unknown) {
+        const errorMessage = err instanceof Error ? err.message : 'Failed to duplicate page';
         setError(errorMessage);
         throw err;
       }
@@ -169,13 +174,6 @@ export function usePages(options: UsePagesOptions = {}): UsePagesReturn {
       fetchPages(searchParams);
     }
   }, [searchParams, autoFetch, fetchPages]);
-
-  // Initial fetch
-  useEffect(() => {
-    if (autoFetch) {
-      fetchPages();
-    }
-  }, [autoFetch]); // Only run on mount if autoFetch is true
 
   return {
     pages,
