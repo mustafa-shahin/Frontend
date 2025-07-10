@@ -43,7 +43,10 @@ export function LoginForm({
         setSubmitError(null);
         await onSubmit(values);
       } catch (error: unknown) {
-        const message = error instanceof Error ? error.message : 'Login failed. Please try again.';
+        const message =
+          error instanceof Error
+            ? error.message
+            : 'Login failed. Please try again.';
         setSubmitError(message);
       }
     },

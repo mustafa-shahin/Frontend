@@ -35,6 +35,7 @@ const initialState: AuthState = {
   refreshToken: null,
   isAuthenticated: false,
   isLoading: true, // Start with loading true to check existing auth
+  error: null,
 };
 
 // Auth reducer
@@ -108,10 +109,7 @@ interface AuthProviderProps {
 
 // Auth provider component
 export function AuthProvider({ children, requiredRoles }: AuthProviderProps) {
-  const [{ error, ...restState }, dispatch] = useReducer(
-    authReducer,
-    initialState
-  );
+  const [state, dispatch] = useReducer(authReducer, initialState);
 
   // Check if user has required roles
   const hasRequiredRole = useCallback(
@@ -156,7 +154,7 @@ export function AuthProvider({ children, requiredRoles }: AuthProviderProps) {
                   refreshToken: apiService.getStoredRefreshToken() || '',
                 },
               });
-            } catch (error) {
+            } catch {
               // Token is invalid, clear auth
               apiService.clearAuth();
               dispatch({ type: 'AUTH_FAILURE', payload: 'Session expired' });
@@ -168,7 +166,7 @@ export function AuthProvider({ children, requiredRoles }: AuthProviderProps) {
           dispatch({ type: 'AUTH_FAILURE', payload: 'Not authenticated' });
         }
       } catch {
-        console.error('Auth initialization error:');
+        console.error('Auth initialization error');
         dispatch({
           type: 'AUTH_FAILURE',
           payload: 'Authentication initialization failed',
@@ -242,8 +240,8 @@ export function AuthProvider({ children, requiredRoles }: AuthProviderProps) {
   const logout = useCallback(async (): Promise<void> => {
     try {
       await apiService.logout();
-    } catch (error) {
-      console.error('Logout error:', error);
+    } catch (logoutError) {
+      console.error('Logout error:', logoutError);
     } finally {
       dispatch({ type: 'AUTH_LOGOUT' });
     }
@@ -302,8 +300,7 @@ export function AuthProvider({ children, requiredRoles }: AuthProviderProps) {
 
   // Context value
   const value: AuthContextType = {
-    ...restState,
-    error,
+    ...state,
     login,
     register,
     logout,

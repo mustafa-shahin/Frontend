@@ -150,11 +150,12 @@ class ApiService {
     };
   }
 
-  private getStoredAccessToken(): string | null {
+  // Public methods for token management
+  public getStoredAccessToken(): string | null {
     return localStorage.getItem('accessToken');
   }
 
-  private getStoredRefreshToken(): string | null {
+  public getStoredRefreshToken(): string | null {
     return localStorage.getItem('refreshToken');
   }
 

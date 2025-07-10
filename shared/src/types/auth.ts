@@ -185,11 +185,10 @@ export interface AuthState {
   refreshToken: string | null;
   isAuthenticated: boolean;
   isLoading: boolean;
+  error: string | null;
 }
 
 export interface AuthContextType extends AuthState {
-  error: string | null;
-  error: string | null;
   login: (credentials: LoginDto) => Promise<void>;
   register: (userData: RegisterDto) => Promise<void>;
   logout: () => Promise<void>;

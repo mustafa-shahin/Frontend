@@ -1,9 +1,10 @@
+// shared/src/hooks/useForm.ts
 import { useState, useCallback } from 'react';
 import { ZodSchema, ZodError } from 'zod';
 
 export interface UseFormOptions<T> {
   initialValues: T;
-  validationSchema?: ZodSchema<T>;
+  validationSchema?: ZodSchema<T, any, any>;
   onSubmit: (values: T) => Promise<void> | void;
   validateOnChange?: boolean;
   validateOnBlur?: boolean;
@@ -111,7 +112,7 @@ export function useForm<T extends Record<string, unknown>>({
 
       if (validateOnBlur) {
         const error = validateField(name);
-        setErrors((prev) => ({ ...prev, [name]: error }));
+        setErrors((prev) => ({ ...prev, [name]: error || undefined }));
       }
     },
     [validateOnBlur, validateField]

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useForm } from '../../hooks/useForm';
 import {
   forgotPasswordSchema,
@@ -40,7 +40,10 @@ export function ForgotPasswordForm({
         await onSubmit(values);
         setIsSuccess(true);
       } catch (error: unknown) {
-        const message = error instanceof Error ? error.message : 'Failed to send reset email. Please try again.';
+        const message =
+          error instanceof Error
+            ? error.message
+            : 'Failed to send reset email. Please try again.';
         setSubmitError(message);
       }
     },

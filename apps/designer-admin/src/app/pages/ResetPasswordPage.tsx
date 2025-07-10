@@ -1,4 +1,3 @@
-import React from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { ResetPasswordForm, useAuth } from '@frontend/shared';
 import type { ResetPasswordFormData } from '@frontend/shared';
