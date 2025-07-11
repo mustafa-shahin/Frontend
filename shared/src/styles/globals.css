@@ -278,7 +278,7 @@
   }
 }
 
-/* Responsive design improvements */
+/* Enhanced responsive design */
 @media (max-width: 640px) {
   .table {
     @apply text-sm;
@@ -287,6 +287,52 @@
   .table th,
   .table td {
     @apply px-4 py-3;
+  }
+
+  /* Mobile-specific adjustments */
+  .enterprise-card {
+    @apply mx-4 p-6;
+  }
+
+  .gradient-text {
+    @apply text-2xl;
+  }
+
+  .glass-panel {
+    @apply p-4;
+  }
+
+  /* Ensure text remains readable on mobile */
+  h1 {
+    @apply text-2xl;
+  }
+
+  h2 {
+    @apply text-xl;
+  }
+}
+
+@media (max-width: 768px) {
+  /* Tablet adjustments */
+  .enterprise-card {
+    @apply p-8;
+  }
+
+  /* Stack elements vertically on smaller screens */
+  .responsive-stack {
+    @apply flex-col space-y-4 space-x-0;
+  }
+}
+
+@media (min-width: 1024px) {
+  /* Desktop enhancements */
+  .enterprise-card {
+    @apply hover:scale-[1.01];
+  }
+
+  /* Enable advanced animations on larger screens */
+  .advanced-hover {
+    @apply transition-all duration-500 ease-out;
   }
 }
 
