@@ -1,30 +1,38 @@
-// Export components
-export * from './lib/components/ui/Button';
-export * from './lib/components/ui/Input';
-export * from './lib/components/ui/Form';
-export * from './lib/components/ui/Modal';
-export * from './lib/components/ui/Loading';
-export * from './lib/components/ui/Table';
-export * from './lib/components/layout/Header';
-export * from './lib/components/layout/Footer';
+// Export all auth types
+export * from './types/auth';
 
-// Export contexts
-export * from './lib/contexts/AuthContext';
-export * from './lib/contexts/ThemeContext';
+// Export API service
+export { apiService, ApiService } from './services/api';
 
-// Export types - now organized by domain
-export * from './lib/types/common';
-export * from './lib/types/user';
-export * from './lib/types/page';
-export * from './lib/types/designer';
+export { AuthProvider, useAuth } from './contexts/AuthContext';
+export { LoginForm } from './components/auth/LoginForm';
+export { RegisterForm } from './components/auth/RegisterForm';
+export { ForgotPasswordForm } from './components/auth/ForgotPasswordForm';
+export { ResetPasswordForm } from './components/auth/ResetPasswordForm';
+export { ProtectedRoute } from './components/auth/ProtectedRoute';
+
+// Export UI components
+export { Button } from './components/ui/Button';
+export { Input } from './components/ui/Input';
+export { Alert } from './components/ui/Alert';
+export { Card } from './components/ui/Card';
+export { LoadingSpinner } from './components/ui/LoadingSpinner';
+export { Icon } from './components/ui/Icon';
+
+// Export Layout components
+export { Header } from './components/layout/Header';
+export { Footer } from './components/layout/Footer';
+
+// Export hooks
+export { useForm } from './hooks/useForm';
+export { useLocalStorage } from './hooks/useLocalStorage';
+export { usePages } from './hooks/usePages';
 
 // Export utilities
-export * from './lib/utils/cn';
-export * from './lib/utils/format';
-export * from './lib/utils/validation';
-export * from './lib/utils/constants';
+export { cn } from './utils/cn';
+export { validateEmail, validatePassword } from './utils/validation';
+export { getCurrentTheme } from './utils/theme';
+export { initializeTheme, setTheme } from './utils/theme';
 
-// Export API client and config
-export * from './lib/api/client';
-export * from './lib/config/api';
-export { getPageStatusLabel, getPageStatusOptions } from './lib/types/page';
+export { PagesList } from './components/pages/PagesList';
+export type { PageItem } from './components/pages/PagesList';
