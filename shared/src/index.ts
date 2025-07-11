@@ -41,6 +41,8 @@ export { default as i18n } from './utils/i18n';
 // Export Pages components
 export { PagesList } from './components/pages/PagesList';
 export { PagesCard } from './components/pages/PagesCard';
-export { PagesFilters } from './components/pages/PagesFilters';
+export { PagesHeader } from './components/pages/PagesHeader';
+export { PagesSearchFilters } from './components/pages/PagesSearchFilters';
 export { PagesPagination } from './components/pages/PagesPagination';
-export type { PageItem } from './components/pages/PagesList';
+export type { PageItem, PagesData } from './components/pages/PagesList';
+export type { FilterOptions } from './components/pages/PagesSearchFilters';

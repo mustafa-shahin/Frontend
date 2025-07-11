@@ -4,8 +4,9 @@ import { Button } from '../ui/Button';
 import { Icon } from '../ui/Icon';
 import { LoadingSpinner } from '../ui/LoadingSpinner';
 import { useTranslation } from '../../hooks/useTranslation';
+import { PagesHeader } from './PagesHeader';
+import { PagesSearchFilters, type FilterOptions } from './PagesSearchFilters';
 import { PagesCard } from './PagesCard';
-import { PagesFilters } from './PagesFilters';
 import { PagesPagination } from './PagesPagination';
 
 // Types for the page data
@@ -49,8 +50,17 @@ export interface PagesListProps {
   onPageChange: (page: number) => void;
   onPageSizeChange: (pageSize: number) => void;
   onSearch: (query: string) => void;
+  onFiltersChange: (filters: FilterOptions) => void;
+  onRefresh: () => void;
   onOpenDesigner?: (page: PageItem) => void;
+  onCreatePage?: () => void;
+  onEditPage?: (page: PageItem) => void;
+  onDuplicatePage?: (page: PageItem) => void;
+  onDeletePage?: (page: PageItem) => void;
+  onPublishPage?: (page: PageItem) => void;
+  onUnpublishPage?: (page: PageItem) => void;
   searchQuery?: string;
+  filters?: FilterOptions;
   className?: string;
 }
 
@@ -61,35 +71,71 @@ export function PagesList({
   onPageChange,
   onPageSizeChange,
   onSearch,
+  onFiltersChange,
+  onRefresh,
   onOpenDesigner,
+  onCreatePage,
+  onEditPage,
+  onDuplicatePage,
+  onDeletePage,
+  onPublishPage,
+  onUnpublishPage,
   searchQuery = '',
+  filters = {},
   className,
 }: PagesListProps) {
   const { t } = useTranslation();
   const [localSearchQuery, setLocalSearchQuery] = useState(searchQuery);
+  const [localFilters, setLocalFilters] = useState<FilterOptions>(filters);
 
   useEffect(() => {
     setLocalSearchQuery(searchQuery);
   }, [searchQuery]);
 
+  useEffect(() => {
+    setLocalFilters(filters);
+  }, [filters]);
+
+  const handleSearchChange = (query: string) => {
+    setLocalSearchQuery(query);
+  };
+
+  const handleSearch = (query: string) => {
+    onSearch(query);
+  };
+
+  const handleFiltersChange = (newFilters: FilterOptions) => {
+    setLocalFilters(newFilters);
+    onFiltersChange(newFilters);
+  };
+
   if (error) {
     return (
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-8">
-          <div className="text-center">
-            <div className="w-16 h-16 mx-auto mb-4 bg-red-50 rounded-full flex items-center justify-center">
-              <Icon
-                name="exclamation-triangle"
-                size="lg"
-                className="text-red-500"
-              />
+      <div className="min-h-screen bg-background">
+        <div className="px-6 py-12 sm:px-8">
+          <div className="mx-auto max-w-2xl">
+            <div className="bg-surface rounded-xl border border-border-light shadow-card p-8 text-center">
+              <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-error-50 mb-6">
+                <Icon
+                  name="exclamation-triangle"
+                  className="h-8 w-8 text-error-500"
+                />
+              </div>
+              <h3 className="text-lg font-semibold text-text-primary mb-3">
+                {t('pages.errors.loadingFailed')}
+              </h3>
+              <p className="text-text-secondary mb-6 leading-relaxed">
+                {t('pages.errors.loadingDescription')}
+              </p>
+              <Button
+                variant="primary"
+                onClick={onRefresh}
+                className="bg-brand-600 hover:bg-brand-700 text-white"
+              >
+                <Icon name="refresh" className="h-4 w-4 mr-2" />
+                {t('common.refresh')}
+              </Button>
             </div>
-            <h3 className="text-lg font-semibold text-slate-900 mb-2">
-              {t('pages.errors.loadingFailed')}
-            </h3>
-            <p className="text-slate-600">
-              {t('pages.errors.loadingDescription')}
-            </p>
           </div>
         </div>
       </div>
@@ -97,77 +143,98 @@ export function PagesList({
   }
 
   return (
-    <div className={cn('max-w-7xl mx-auto', className)}>
-      <div className="space-y-8">
-        {/* Header */}
-        <div className="text-center">
-          <h1 className="text-3xl font-bold text-slate-900 mb-2">
-            {t('pages.title')}
-          </h1>
-          <p className="text-lg text-slate-600 max-w-2xl mx-auto">
-            {t('pages.subtitle')}
-          </p>
-        </div>
+    <div className={cn('min-h-screen bg-background', className)}>
+      {/* Header */}
+      <PagesHeader
+        totalCount={pages.totalCount}
+        onCreatePage={onCreatePage}
+        onRefresh={onRefresh}
+        loading={loading}
+      />
 
-        {/* Filters */}
-        <PagesFilters
-          searchQuery={localSearchQuery}
-          onSearchChange={setLocalSearchQuery}
-          onSearch={onSearch}
-          loading={loading}
-        />
+      {/* Content */}
+      <div className="px-6 pb-12 sm:px-8">
+        <div className="mx-auto max-w-7xl space-y-8">
+          {/* Search and Filters */}
+          <PagesSearchFilters
+            searchQuery={localSearchQuery}
+            onSearchChange={handleSearchChange}
+            onSearch={handleSearch}
+            filters={localFilters}
+            onFiltersChange={handleFiltersChange}
+            loading={loading}
+          />
 
-        {/* Content */}
-        {loading ? (
-          <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-12">
-            <div className="flex flex-col items-center justify-center text-center">
-              <LoadingSpinner size="lg" className="mb-4" />
-              <span className="text-slate-600">{t('common.loading')}...</span>
-            </div>
-          </div>
-        ) : pages.data.length === 0 ? (
-          <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-12">
-            <div className="text-center">
-              <div className="w-20 h-20 mx-auto mb-6 bg-slate-50 rounded-full flex items-center justify-center">
-                <Icon name="file-alt" size="2xl" className="text-slate-400" />
+          {/* Loading State */}
+          {loading && (
+            <div className="bg-surface rounded-xl border border-border-light shadow-card p-12">
+              <div className="flex flex-col items-center justify-center text-center">
+                <LoadingSpinner size="lg" className="mb-4 text-brand-600" />
+                <p className="text-text-secondary">{t('common.loading')}...</p>
               </div>
-              <h3 className="text-xl font-semibold text-slate-900 mb-2">
-                {t('pages.noPages')}
-              </h3>
-              <p className="text-slate-600 mb-8 max-w-md mx-auto">
-                {searchQuery
-                  ? t('pages.noSearchResults')
-                  : t('pages.noPagesDescription')}
-              </p>
-              {!searchQuery && (
-                <Button className="bg-blue-600 hover:bg-blue-700 text-white shadow-sm">
-                  <Icon name="plus" size="sm" className="mr-2" />
-                  {t('pages.createFirstPage')}
-                </Button>
-              )}
             </div>
-          </div>
-        ) : (
-          <>
-            {/* Pages Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-              {pages.data.map((page) => (
-                <PagesCard
-                  key={page.id}
-                  page={page}
-                  onOpenDesigner={onOpenDesigner}
-                />
-              ))}
-            </div>
+          )}
 
-            {/* Pagination */}
-            <PagesPagination
-              pages={pages}
-              onPageChange={onPageChange}
-              onPageSizeChange={onPageSizeChange}
-            />
-          </>
-        )}
+          {/* Empty State */}
+          {!loading && pages.data.length === 0 && (
+            <div className="bg-surface rounded-xl border border-border-light shadow-card p-12">
+              <div className="text-center">
+                <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-slate-50 mb-6">
+                  <Icon name="file-alt" className="h-10 w-10 text-slate-400" />
+                </div>
+                <h3 className="text-xl font-semibold text-text-primary mb-3">
+                  {searchQuery || Object.keys(localFilters).length > 0
+                    ? t('pages.noSearchResults')
+                    : t('pages.noPages')}
+                </h3>
+                <p className="text-text-secondary mb-8 max-w-md mx-auto leading-relaxed">
+                  {searchQuery || Object.keys(localFilters).length > 0
+                    ? t('pages.noSearchResultsDescription')
+                    : t('pages.noPagesDescription')}
+                </p>
+                {onCreatePage &&
+                  !searchQuery &&
+                  Object.keys(localFilters).length === 0 && (
+                    <Button
+                      variant="primary"
+                      onClick={onCreatePage}
+                      className="bg-brand-600 hover:bg-brand-700 text-white shadow-sm"
+                    >
+                      <Icon name="plus" className="h-4 w-4 mr-2" />
+                      {t('pages.createFirstPage')}
+                    </Button>
+                  )}
+              </div>
+            </div>
+          )}
+
+          {/* Pages Grid */}
+          {!loading && pages.data.length > 0 && (
+            <>
+              <div className="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3">
+                {pages.data.map((page) => (
+                  <PagesCard
+                    key={page.id}
+                    page={page}
+                    onOpenDesigner={onOpenDesigner}
+                    onEdit={onEditPage}
+                    onDuplicate={onDuplicatePage}
+                    onDelete={onDeletePage}
+                    onPublish={onPublishPage}
+                    onUnpublish={onUnpublishPage}
+                  />
+                ))}
+              </div>
+
+              {/* Pagination */}
+              <PagesPagination
+                pages={pages}
+                onPageChange={onPageChange}
+                onPageSizeChange={onPageSizeChange}
+              />
+            </>
+          )}
+        </div>
       </div>
     </div>
   );

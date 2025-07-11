@@ -15,13 +15,22 @@
     "close": "Close",
     "confirm": "Confirm",
     "yes": "Yes",
-    "no": "No"
+    "no": "No",
+    "actions": "Actions",
+    "filter": "Filter",
+    "export": "Export",
+    "import": "Import",
+    "refresh": "Refresh"
   },
   "header": {
     "title": "CMS Designer",
+    "subtitle": "Professional Content Management Platform",
     "signOut": "Sign out",
     "profile": "Profile",
-    "settings": "Settings"
+    "settings": "Settings",
+    "language": "Language",
+    "switchToGerman": "Switch to German",
+    "switchToEnglish": "Switch to English"
   },
   "footer": {
     "poweredBy": "Powered by",
@@ -32,32 +41,53 @@
   },
   "pages": {
     "title": "Pages",
-    "subtitle": "Manage your website pages and content",
+    "subtitle": "Manage your website pages and content with our intuitive designer",
     "searchPlaceholder": "Search pages by name, title, or slug...",
     "noPages": "No pages found",
-    "noPagesDescription": "Get started by creating your first page.",
-    "noSearchResults": "No pages match your search criteria.",
+    "noPagesDescription": "Get started by creating your first page to begin building your website.",
+    "noSearchResults": "No pages match your search criteria. Try adjusting your search terms.",
     "createFirstPage": "Create Your First Page",
+    "createNewPage": "Create New Page",
     "openInDesigner": "Open in Designer",
     "lastUpdated": "Last updated",
     "version": "Version",
     "versions": "versions",
     "total": "total",
+    "published": "Published",
+    "draft": "Draft",
+    "archived": "Archived",
+    "allStatuses": "All Statuses",
+    "filterByStatus": "Filter by status",
+    "sortBy": "Sort by",
+    "sortAscending": "Sort ascending",
+    "sortDescending": "Sort descending",
+    "resultsFound": "results found",
     "status": {
-      "published": "Published",
-      "draft": "Draft",
-      "archived": "Archived"
+      "Published": "Published",
+      "Draft": "Draft",
+      "Archived": "Archived"
     },
     "pagination": {
       "showing": "Showing",
       "to": "to",
       "of": "of",
       "results": "results",
-      "perPage": "Per page:"
+      "perPage": "Per page",
+      "page": "Page",
+      "ofPages": "of {{total}} pages"
     },
     "errors": {
       "loadingFailed": "Failed to load pages",
-      "loadingDescription": "An error occurred while loading the pages. Please try again."
+      "loadingDescription": "An error occurred while loading the pages. Please try again or contact support if the problem persists."
+    },
+    "actions": {
+      "edit": "Edit Page",
+      "duplicate": "Duplicate",
+      "delete": "Delete",
+      "publish": "Publish",
+      "unpublish": "Unpublish",
+      "preview": "Preview",
+      "viewLive": "View Live"
     }
   },
   "auth": {
@@ -68,6 +98,19 @@
     "rememberMe": "Remember me",
     "forgotPassword": "Forgot your password?",
     "loginFailed": "Login failed. Please try again.",
-    "sessionExpired": "Your session has expired. Please sign in again."
+    "sessionExpired": "Your session has expired. Please sign in again.",
+    "welcome": "Welcome to CMS Designer",
+    "adminAccess": "Admin & Developer Access",
+    "signInToAccount": "Sign in to your account",
+    "accessDenied": "Access Denied",
+    "insufficientPermissions": "You don't have permission to access this application"
+  },
+  "navigation": {
+    "dashboard": "Dashboard",
+    "pages": "Pages",
+    "media": "Media",
+    "users": "Users",
+    "settings": "Settings",
+    "analytics": "Analytics"
   }
 }

@@ -15,13 +15,22 @@
     "close": "Schließen",
     "confirm": "Bestätigen",
     "yes": "Ja",
-    "no": "Nein"
+    "no": "Nein",
+    "actions": "Aktionen",
+    "filter": "Filter",
+    "export": "Exportieren",
+    "import": "Importieren",
+    "refresh": "Aktualisieren"
   },
   "header": {
     "title": "CMS Designer",
+    "subtitle": "Professionelle Content-Management-Plattform",
     "signOut": "Abmelden",
     "profile": "Profil",
-    "settings": "Einstellungen"
+    "settings": "Einstellungen",
+    "language": "Sprache",
+    "switchToGerman": "Auf Deutsch wechseln",
+    "switchToEnglish": "Auf Englisch wechseln"
   },
   "footer": {
     "poweredBy": "Unterstützt von",
@@ -32,32 +41,53 @@
   },
   "pages": {
     "title": "Seiten",
-    "subtitle": "Verwalten Sie Ihre Website-Seiten und Inhalte",
+    "subtitle": "Verwalten Sie Ihre Website-Seiten und Inhalte mit unserem intuitiven Designer",
     "searchPlaceholder": "Seiten nach Name, Titel oder Slug durchsuchen...",
     "noPages": "Keine Seiten gefunden",
-    "noPagesDescription": "Beginnen Sie mit der Erstellung Ihrer ersten Seite.",
-    "noSearchResults": "Keine Seiten entsprechen Ihren Suchkriterien.",
-    "createFirstPage": "Erste Seite erstellen",
+    "noPagesDescription": "Beginnen Sie mit der Erstellung Ihrer ersten Seite, um Ihre Website aufzubauen.",
+    "noSearchResults": "Keine Seiten entsprechen Ihren Suchkriterien. Versuchen Sie, Ihre Suchbegriffe anzupassen.",
+    "createFirstPage": "Ihre erste Seite erstellen",
+    "createNewPage": "Neue Seite erstellen",
     "openInDesigner": "Im Designer öffnen",
     "lastUpdated": "Zuletzt aktualisiert",
     "version": "Version",
     "versions": "Versionen",
     "total": "gesamt",
+    "published": "Veröffentlicht",
+    "draft": "Entwurf",
+    "archived": "Archiviert",
+    "allStatuses": "Alle Status",
+    "filterByStatus": "Nach Status filtern",
+    "sortBy": "Sortieren nach",
+    "sortAscending": "Aufsteigend sortieren",
+    "sortDescending": "Absteigend sortieren",
+    "resultsFound": "Ergebnisse gefunden",
     "status": {
-      "published": "Veröffentlicht",
-      "draft": "Entwurf",
-      "archived": "Archiviert"
+      "Published": "Veröffentlicht",
+      "Draft": "Entwurf",
+      "Archived": "Archiviert"
     },
     "pagination": {
       "showing": "Zeige",
       "to": "bis",
       "of": "von",
       "results": "Ergebnissen",
-      "perPage": "Pro Seite:"
+      "perPage": "Pro Seite",
+      "page": "Seite",
+      "ofPages": "von {{total}} Seiten"
     },
     "errors": {
       "loadingFailed": "Fehler beim Laden der Seiten",
-      "loadingDescription": "Beim Laden der Seiten ist ein Fehler aufgetreten. Bitte versuchen Sie es erneut."
+      "loadingDescription": "Beim Laden der Seiten ist ein Fehler aufgetreten. Bitte versuchen Sie es erneut oder kontaktieren Sie den Support, wenn das Problem weiterhin besteht."
+    },
+    "actions": {
+      "edit": "Seite bearbeiten",
+      "duplicate": "Duplizieren",
+      "delete": "Löschen",
+      "publish": "Veröffentlichen",
+      "unpublish": "Unveröffentlichen",
+      "preview": "Vorschau",
+      "viewLive": "Live anzeigen"
     }
   },
   "auth": {
@@ -68,6 +98,19 @@
     "rememberMe": "Angemeldet bleiben",
     "forgotPassword": "Passwort vergessen?",
     "loginFailed": "Anmeldung fehlgeschlagen. Bitte versuchen Sie es erneut.",
-    "sessionExpired": "Ihre Sitzung ist abgelaufen. Bitte melden Sie sich erneut an."
+    "sessionExpired": "Ihre Sitzung ist abgelaufen. Bitte melden Sie sich erneut an.",
+    "welcome": "Willkommen bei CMS Designer",
+    "adminAccess": "Admin & Entwickler Zugang",
+    "signInToAccount": "Bei Ihrem Konto anmelden",
+    "accessDenied": "Zugriff verweigert",
+    "insufficientPermissions": "Sie haben keine Berechtigung, auf diese Anwendung zuzugreifen"
+  },
+  "navigation": {
+    "dashboard": "Dashboard",
+    "pages": "Seiten",
+    "media": "Medien",
+    "users": "Benutzer",
+    "settings": "Einstellungen",
+    "analytics": "Analytics"
   }
 }
