@@ -14,7 +14,7 @@ import type {
   RegisterDto,
   ResetPasswordDto,
   UserRole,
-} from '../types/auth';
+} from '../schemas/auth';
 
 // Auth reducer actions
 type AuthAction =
@@ -323,3 +323,6 @@ export function useAuth(): AuthContextType {
 
   return context;
 }
+
+// Export the context for external use
+export { AuthContext };

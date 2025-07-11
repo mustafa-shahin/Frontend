@@ -2,16 +2,16 @@ import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
 import LanguageDetector from 'i18next-browser-languagedetector';
 
-import enCommon from '../i18n';
-import deCommon from '../i18n';
-import enAuth from '../i18n';
-import deAuth from '../i18n';
-import enPages from '../i18n';
-import dePages from '../i18n';
-import enForm from '../i18n';
-import deForm from '../i18n';
-import enNavigation from '../i18n';
-import deNavigation from '../i18n';
+import enCommon from './locales/en/common.json';
+import deCommon from './locales/de/common.json';
+import enAuth from './locales/en/auth.json';
+import deAuth from './locales/de/auth.json';
+import enPages from './locales/en/pages.json';
+import dePages from './locales/de/pages.json';
+import enForm from './locales/en/form.json';
+import deForm from './locales/de/form.json';
+import enNavigation from './locales/en/navigation.json';
+import deNavigation from './locales/de/navigation.json';
 
 const resources = {
   en: {

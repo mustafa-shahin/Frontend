@@ -4,15 +4,16 @@ import {
   FormProvider,
   FieldValues,
   SubmitHandler,
+  DefaultValues,
 } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { ZodSchema } from 'zod';
+import { ZodTypeAny } from 'zod';
 import { cn } from '../../utils/cn';
 
 export interface FormProps<T extends FieldValues> {
-  schema?: ZodSchema<T>;
-  defaultValues?: Partial<T>;
-  onSubmit: SubmitHandler<T>;
+  schema?: ZodTypeAny;
+  defaultValues?: DefaultValues<T>;
+  onSubmit: (data: T) => Promise<void> | void;
   children: React.ReactNode;
   className?: string;
   mode?: 'onChange' | 'onBlur' | 'onSubmit' | 'onTouched' | 'all';
@@ -29,12 +30,12 @@ export function Form<T extends FieldValues>({
   resetOnSubmit = false,
 }: FormProps<T>) {
   const methods = useForm<T>({
-    resolver: schema ? zodResolver(schema) : undefined,
+    resolver: schema ? zodResolver(schema as any) : undefined,
     defaultValues,
     mode,
   });
 
-  const handleSubmit = async (data: T) => {
+  const handleSubmit: SubmitHandler<T> = async (data: T) => {
     try {
       await onSubmit(data);
       if (resetOnSubmit) {

@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { DefaultValues } from 'react-hook-form';
 import { z } from 'zod';
 import {
   Form,
@@ -18,7 +19,7 @@ const loginSchema = z.object({
     .email('form:validation.email')
     .min(1, 'form:validation.required'),
   password: z.string().min(1, 'form:validation.required'),
-  rememberMe: z.boolean().optional().default(false),
+  rememberMe: z.boolean().optional(),
 });
 
 type LoginFormData = z.infer<typeof loginSchema>;
@@ -40,7 +41,7 @@ export function LoginForm({ className }: LoginFormProps) {
       await login({
         email: data.email,
         password: data.password,
-        rememberMe: data.rememberMe,
+        rememberMe: data.rememberMe || false,
       });
     } catch (err) {
       // Error is handled by AuthContext
@@ -77,11 +78,13 @@ export function LoginForm({ className }: LoginFormProps) {
         <Form
           schema={loginSchema}
           onSubmit={handleSubmit}
-          defaultValues={{
-            email: '',
-            password: '',
-            rememberMe: false,
-          }}
+          defaultValues={
+            {
+              email: '',
+              password: '',
+              rememberMe: false,
+            } as DefaultValues<LoginFormData>
+          }
         >
           <FormField name="email" label={t('auth:email')} required>
             <FormInput

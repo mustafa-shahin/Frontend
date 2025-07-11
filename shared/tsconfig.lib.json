@@ -10,7 +10,8 @@
     ],
     "rootDir": "src",
     "jsx": "react-jsx",
-    "tsBuildInfoFile": "dist/tsconfig.lib.tsbuildinfo"
+    "tsBuildInfoFile": "dist/tsconfig.lib.tsbuildinfo",
+    "resolveJsonModule": true
   },
   "exclude": [
     "out-tsc",
@@ -35,6 +36,7 @@
     "src/**/*.jsx",
     "src/**/*.ts",
     "src/**/*.tsx",
+    "src/**/*.json",
     "../apps/designer-admin/src/app/Form.tsx"
   ]
 }

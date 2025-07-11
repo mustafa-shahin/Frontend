@@ -1,6 +1,5 @@
 import React from 'react';
 import { useFormContext, Controller } from 'react-hook-form';
-import { useTranslation } from 'react-i18next';
 import { cn } from '../../utils/cn';
 
 export interface FormFieldProps {
@@ -9,7 +8,7 @@ export interface FormFieldProps {
   description?: string;
   required?: boolean;
   className?: string;
-  children: React.ReactElement;
+  children: React.ReactElement<any>;
 }
 
 export function FormField({
@@ -24,10 +23,18 @@ export function FormField({
     control,
     formState: { errors },
   } = useFormContext();
-  const { t } = useTranslation('form');
 
   const error = errors[name];
   const fieldId = `field-${name}`;
+
+  const getErrorMessage = (error: any): string | undefined => {
+    if (!error) return undefined;
+    if (typeof error === 'string') return error;
+    if (error && typeof error === 'object' && 'message' in error) {
+      return error.message;
+    }
+    return undefined;
+  };
 
   return (
     <div className={cn('space-y-2', className)}>
@@ -50,24 +57,26 @@ export function FormField({
       <Controller
         name={name}
         control={control}
-        render={({ field, fieldState }) =>
-          React.cloneElement(children, {
+        render={({ field, fieldState }) => {
+          const childProps = children.props || {};
+          return React.cloneElement(children, {
             ...field,
+            ...childProps,
             id: fieldId,
             error: fieldState.error?.message,
             className: cn(
-              children.props.className,
+              childProps.className,
               fieldState.error &&
                 'border-red-300 focus:border-red-500 focus:ring-red-500'
             ),
-          })
-        }
+          });
+        }}
       />
 
       {error && (
         <p className="text-sm text-red-600 dark:text-red-400 flex items-center">
           <i className="fas fa-exclamation-triangle mr-1" />
-          {error.message}
+          {getErrorMessage(error)}
         </p>
       )}
     </div>

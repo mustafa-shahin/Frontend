@@ -65,4 +65,4 @@ export type {
   SubmitHandler,
   UseFormReturn,
 } from 'react-hook-form';
-export type { ZodSchema } from 'zod';
+export type { ZodSchema, ZodTypeAny } from 'zod';
