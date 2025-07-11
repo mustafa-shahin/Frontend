@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { cn } from '../../utils/cn';
+import { Icon } from '../ui/Icon';
 
 const languages = [
   { code: 'en', name: 'English', flag: '🇺🇸' },
@@ -39,19 +40,18 @@ export function LanguageSelector() {
       <button
         onClick={() => setIsOpen(!isOpen)}
         className={cn(
-          'flex items-center space-x-2 px-3 py-2 text-sm rounded-md',
-          'text-gray-700 dark:text-gray-300',
-          'hover:bg-gray-100 dark:hover:bg-gray-800',
-          'focus:outline-none focus:ring-2 focus:ring-blue-500',
-          'transition-colors duration-200'
+          'flex items-center space-x-2 px-3 py-2 text-sm rounded-lg',
+          'text-gray-600 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2',
+          'transition-all duration-200 font-medium'
         )}
         aria-label={t('languageSelector')}
       >
-        <span>{currentLanguage.flag}</span>
+        <span className="text-sm">{currentLanguage.flag}</span>
         <span className="hidden sm:block">{currentLanguage.name}</span>
-        <i
+        <Icon
+          name="chevron-down"
           className={cn(
-            'fas fa-chevron-down text-xs transition-transform',
+            'text-xs text-gray-400 transition-transform duration-200',
             isOpen && 'rotate-180'
           )}
         />
@@ -60,10 +60,9 @@ export function LanguageSelector() {
       {isOpen && (
         <div
           className={cn(
-            'absolute right-0 mt-2 w-48 rounded-md shadow-lg z-50',
-            'bg-white dark:bg-gray-800',
-            'border border-gray-200 dark:border-gray-700',
-            'py-1'
+            'absolute right-0 mt-2 w-40 rounded-xl shadow-lg z-50',
+            'bg-white border border-gray-100',
+            'py-2 animate-fade-in'
           )}
         >
           {languages.map((language) => (
@@ -72,16 +71,16 @@ export function LanguageSelector() {
               onClick={() => changeLanguage(language.code)}
               className={cn(
                 'w-full flex items-center space-x-3 px-4 py-2 text-sm text-left',
-                'hover:bg-gray-100 dark:hover:bg-gray-700',
-                'transition-colors duration-200',
-                language.code === i18n.language &&
-                  'bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400'
+                'hover:bg-gray-50 transition-colors duration-150 rounded-lg mx-1',
+                language.code === i18n.language
+                  ? 'bg-blue-50 text-blue-700'
+                  : 'text-gray-700'
               )}
             >
-              <span>{language.flag}</span>
-              <span>{language.name}</span>
+              <span className="text-base">{language.flag}</span>
+              <span className="font-medium flex-1">{language.name}</span>
               {language.code === i18n.language && (
-                <i className="fas fa-check ml-auto text-blue-600 dark:text-blue-400" />
+                <Icon name="check" className="text-blue-600 text-xs" />
               )}
             </button>
           ))}

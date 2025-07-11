@@ -41,18 +41,14 @@ export function FormField({
       {label && (
         <label
           htmlFor={fieldId}
-          className="block text-sm font-medium text-gray-700 dark:text-gray-300"
+          className="block text-sm font-medium text-gray-700"
         >
           {label}
           {required && <span className="text-red-500 ml-1">*</span>}
         </label>
       )}
 
-      {description && (
-        <p className="text-sm text-gray-600 dark:text-gray-400">
-          {description}
-        </p>
-      )}
+      {description && <p className="text-sm text-gray-600">{description}</p>}
 
       <Controller
         name={name}
@@ -63,22 +59,17 @@ export function FormField({
             ...field,
             ...childProps,
             id: fieldId,
-            error: fieldState.error?.message,
+            // Only pass error from fieldState, not from form errors to avoid duplication
+            ...(fieldState.error ? { error: fieldState.error.message } : {}),
             className: cn(
               childProps.className,
-              fieldState.error &&
-                'border-red-300 focus:border-red-500 focus:ring-red-500'
+              fieldState.error && 'ring-red-300 focus:ring-red-600'
             ),
           });
         }}
       />
 
-      {error && (
-        <p className="text-sm text-red-600 dark:text-red-400 flex items-center">
-          <i className="fas fa-exclamation-triangle mr-1" />
-          {getErrorMessage(error)}
-        </p>
-      )}
+      {/* Remove this error display since it's now handled in the Input component */}
     </div>
   );
 }

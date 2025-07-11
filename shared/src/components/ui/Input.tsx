@@ -1,5 +1,6 @@
 import React, { forwardRef, useState } from 'react';
 import { cn } from '../../utils/cn';
+import { Icon } from './Icon';
 
 export interface InputProps
   extends React.InputHTMLAttributes<HTMLInputElement> {
@@ -47,9 +48,9 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
 
     // Default password toggle icon
     const passwordIcon = showPassword ? (
-      <i className="fa fa-eye-slash" />
+      <Icon name="eye-slash" className="text-gray-400" />
     ) : (
-      <i className="fa fa-eye" />
+      <Icon name="eye" className="text-gray-400" />
     );
 
     const rightIconElement = isPassword ? passwordIcon : rightIcon;
@@ -59,7 +60,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
         {label && (
           <label
             htmlFor={inputId}
-            className="block text-sm font-medium text-gray-700 dark:text-gray-300"
+            className="block text-sm font-medium text-gray-700"
           >
             {label}
           </label>
@@ -78,22 +79,19 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
             ref={ref}
             className={cn(
               // Base styles
-              'block w-full rounded-md border-0 py-2 shadow-sm ring-1 ring-inset',
+              'block w-full rounded-lg border-0 py-2.5 shadow-sm ring-1 ring-inset',
               'placeholder:text-gray-400 focus:ring-2 focus:ring-inset',
-              'transition-all duration-200',
+              'transition-all duration-200 font-medium',
               // Normal state
-              'ring-gray-300 focus:ring-blue-600 dark:ring-gray-600 dark:focus:ring-blue-500',
-              'bg-white dark:bg-gray-800',
-              'text-gray-900 dark:text-gray-100',
+              'ring-gray-300 focus:ring-blue-600 bg-white text-gray-900',
               // Error state
-              error &&
-                'ring-red-300 focus:ring-red-600 dark:ring-red-600 dark:focus:ring-red-500',
+              error && 'ring-red-300 focus:ring-red-600',
               // Disabled state
               'disabled:bg-gray-50 disabled:text-gray-500 disabled:ring-gray-200',
-              'dark:disabled:bg-gray-900 dark:disabled:text-gray-600 dark:disabled:ring-gray-700',
               // Icon padding
               leftIcon && 'pl-10',
               (rightIconElement || isPassword) && 'pr-10',
+              !leftIcon && !rightIconElement && !isPassword && 'px-3',
               // Custom className
               className
             )}
@@ -106,8 +104,9 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
               onClick={handleRightIconClick}
               className={cn(
                 'absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600',
-                'transition-colors duration-200 focus:outline-none',
-                (isPassword || onRightIconClick) && 'cursor-pointer',
+                'transition-colors duration-200 focus:outline-none p-0.5 rounded',
+                (isPassword || onRightIconClick) &&
+                  'cursor-pointer hover:bg-gray-100',
                 !isPassword &&
                   !onRightIconClick &&
                   'cursor-default pointer-events-none'
@@ -127,14 +126,14 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
         </div>
 
         {(error || helperText) && (
-          <div className="text-xs">
+          <div className="text-sm">
             {error ? (
-              <p className="text-red-600 dark:text-red-400 flex items-center">
-                <i className="fa fa-exclamation-triangle mr-1" />
+              <p className="text-red-600 flex items-center">
+                <Icon name="exclamation-triangle" className="mr-1.5 text-xs" />
                 {error}
               </p>
             ) : (
-              <p className="text-gray-500 dark:text-gray-400">{helperText}</p>
+              <p className="text-gray-500">{helperText}</p>
             )}
           </div>
         )}

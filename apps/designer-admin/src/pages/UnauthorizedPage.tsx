@@ -7,46 +7,64 @@ export function UnauthorizedPage() {
   const navigate = useNavigate();
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-red-50/20 to-orange-50/30 dark:from-gray-900 dark:via-gray-900 dark:to-red-950/10 flex flex-col">
+    <div className="min-h-screen bg-gray-50 flex flex-col">
       <Header
         title="CMS Designer Admin"
         showAuth={false}
         showLanguageSelector={true}
-        className="bg-white/90 dark:bg-gray-900/90"
+        onLogoClick={() => navigate('/login')}
       />
 
-      <main className="flex-1 flex items-center justify-center px-6 sm:px-8 lg:px-10 py-12">
-        <div className="enterprise-card p-12 text-center max-w-lg w-full">
-          <div className="mx-auto h-24 w-24 bg-gradient-to-br from-red-500 to-orange-600 rounded-2xl flex items-center justify-center mb-8 shadow-lg">
-            <i className="fas fa-shield-alt text-white text-4xl" />
-          </div>
+      <main className="flex-1 flex items-center justify-center px-4 py-16">
+        <div className="max-w-md w-full text-center">
+          <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-12">
+            <div className="mx-auto h-20 w-20 bg-red-100 rounded-2xl flex items-center justify-center mb-8">
+              <i className="fas fa-shield-alt text-red-600 text-3xl" />
+            </div>
 
-          <h1 className="text-4xl font-bold gradient-text mb-6">
-            {t('auth:accessDenied')}
-          </h1>
+            <h1 className="text-3xl font-bold text-gray-900 mb-4">
+              {t('auth:accessDenied')}
+            </h1>
 
-          <p className="text-lg text-gray-600 dark:text-gray-400 font-medium mb-10 leading-relaxed">
-            You don't have permission to access this application. Admin or Developer role is required for enterprise access.
-          </p>
+            <p className="text-gray-600 mb-8 leading-relaxed">
+              You don't have permission to access this application. Admin or
+              Developer role is required for enterprise access.
+            </p>
 
-          <div className="space-y-4">
-            <Button
-              variant="primary"
-              onClick={() => navigate('/login')}
-              className="w-full"
-            >
-              <i className="fas fa-sign-in-alt mr-3" />
-              {t('auth:login')}
-            </Button>
+            <div className="space-y-3">
+              <Button
+                variant="primary"
+                onClick={() => navigate('/login')}
+                className="w-full justify-center"
+              >
+                <i className="fas fa-sign-in-alt mr-2" />
+                {t('auth:login')}
+              </Button>
 
-            <Button
-              variant="outline"
-              onClick={() => window.history.back()}
-              className="w-full"
-            >
-              <i className="fas fa-arrow-left mr-3" />
-              {t('common:back')}
-            </Button>
+              <Button
+                variant="outline"
+                onClick={() => window.history.back()}
+                className="w-full justify-center"
+              >
+                <i className="fas fa-arrow-left mr-2" />
+                {t('common:back')}
+              </Button>
+            </div>
+
+            <div className="mt-8 p-4 bg-blue-50 rounded-xl border border-blue-200">
+              <div className="flex items-start space-x-3">
+                <i className="fas fa-info-circle text-blue-600 flex-shrink-0 mt-0.5" />
+                <div className="text-left">
+                  <h3 className="text-sm font-semibold text-blue-900 mb-1">
+                    Need Access?
+                  </h3>
+                  <p className="text-sm text-blue-800">
+                    Contact your system administrator to request Admin or
+                    Developer privileges.
+                  </p>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </main>

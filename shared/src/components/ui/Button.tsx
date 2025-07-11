@@ -12,21 +12,21 @@ export interface ButtonProps
 
 const buttonVariants = {
   primary:
-    'bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 focus:ring-blue-500/30 text-white shadow-lg hover:shadow-xl',
+    'bg-blue-600 hover:bg-blue-700 focus:ring-blue-500 text-white shadow-sm border border-transparent',
   secondary:
-    'bg-gradient-to-r from-gray-100 to-gray-200 hover:from-gray-200 hover:to-gray-300 focus:ring-gray-500/30 text-gray-900 dark:from-gray-700 dark:to-gray-800 dark:hover:from-gray-600 dark:hover:to-gray-700 dark:text-gray-100 shadow-md hover:shadow-lg',
-  danger: 
-    'bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 focus:ring-red-500/30 text-white shadow-lg hover:shadow-xl',
+    'bg-gray-100 hover:bg-gray-200 focus:ring-gray-500 text-gray-900 shadow-sm border border-gray-200 hover:border-gray-300',
+  danger:
+    'bg-red-600 hover:bg-red-700 focus:ring-red-500 text-white shadow-sm border border-transparent',
   outline:
-    'border-2 border-gray-300 hover:border-blue-400 hover:bg-blue-50 focus:ring-blue-500/30 text-gray-700 dark:border-gray-600 dark:hover:border-blue-500 dark:hover:bg-blue-500/10 dark:text-gray-300 shadow-sm hover:shadow-md backdrop-blur-sm',
+    'bg-white hover:bg-gray-50 focus:ring-blue-500 text-gray-700 shadow-sm border border-gray-300 hover:border-gray-400',
   ghost:
-    'hover:bg-gray-100/70 focus:ring-gray-500/30 text-gray-700 dark:hover:bg-gray-800/70 dark:text-gray-300 backdrop-blur-sm',
+    'bg-transparent hover:bg-gray-100 focus:ring-gray-500 text-gray-700 border border-transparent',
 };
 
 const buttonSizes = {
-  sm: 'px-4 py-2 text-sm font-medium rounded-lg',
-  md: 'px-6 py-3 text-sm font-semibold rounded-xl',
-  lg: 'px-8 py-4 text-base font-semibold rounded-xl',
+  sm: 'px-3 py-2 text-sm font-medium rounded-lg',
+  md: 'px-4 py-2.5 text-sm font-semibold rounded-lg',
+  lg: 'px-6 py-3 text-base font-semibold rounded-xl',
 };
 
 export function Button({
@@ -44,9 +44,9 @@ export function Button({
     <button
       className={cn(
         'inline-flex items-center justify-center',
-        'transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2',
+        'transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2',
         'disabled:opacity-50 disabled:cursor-not-allowed disabled:pointer-events-none',
-        'transform hover:scale-[1.02] active:scale-[0.98]',
+        'font-medium relative overflow-hidden',
         buttonVariants[variant],
         buttonSizes[size],
         className
@@ -55,7 +55,13 @@ export function Button({
       {...props}
     >
       {loading && (
-        <LoadingSpinner size={size === 'sm' ? 'sm' : 'md'} className="mr-2" />
+        <LoadingSpinner
+          size={size === 'sm' ? 'sm' : 'md'}
+          className="mr-2"
+          color={
+            variant === 'primary' || variant === 'danger' ? 'white' : 'primary'
+          }
+        />
       )}
       {children}
     </button>

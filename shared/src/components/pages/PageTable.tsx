@@ -2,6 +2,7 @@ import { useTranslation } from 'react-i18next';
 import { cn } from '../../utils/cn';
 import { Button } from '../ui/Button';
 import { LoadingSpinner } from '../ui/LoadingSpinner';
+import { Icon } from '../ui/Icon';
 
 export interface Page {
   id: number;
@@ -21,12 +22,23 @@ export interface PageTableProps {
   className?: string;
 }
 
-const statusColors = {
-  draft: 'bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-200',
-  published:
-    'bg-green-100 text-green-800 dark:bg-green-800 dark:text-green-200',
-  archived: 'bg-red-100 text-red-800 dark:bg-red-800 dark:text-red-200',
-  scheduled: 'bg-blue-100 text-blue-800 dark:bg-blue-800 dark:text-blue-200',
+const statusConfig: Record<string, { color: string; icon: string }> = {
+  draft: {
+    color: 'bg-gray-100 text-gray-800 border-gray-200',
+    icon: 'edit',
+  },
+  published: {
+    color: 'bg-green-100 text-green-800 border-green-200',
+    icon: 'check-circle',
+  },
+  archived: {
+    color: 'bg-red-100 text-red-800 border-red-200',
+    icon: 'archive',
+  },
+  scheduled: {
+    color: 'bg-blue-100 text-blue-800 border-blue-200',
+    icon: 'clock',
+  },
 };
 
 export function PageTable({
@@ -45,106 +57,140 @@ export function PageTable({
     });
   };
 
+  const formatTime = (dateString: string) => {
+    return new Date(dateString).toLocaleTimeString(undefined, {
+      hour: '2-digit',
+      minute: '2-digit',
+    });
+  };
+
   if (loading) {
     return (
-      <div className="flex items-center justify-center py-12">
-        <LoadingSpinner size="lg" />
-        <span className="ml-3 text-gray-600 dark:text-gray-400">
-          {t('pages:loadingPages')}
-        </span>
+      <div className="flex items-center justify-center py-16">
+        <div className="flex items-center space-x-3">
+          <LoadingSpinner size="lg" />
+          <span className="text-gray-600 font-medium">
+            {t('pages:loadingPages')}
+          </span>
+        </div>
       </div>
     );
   }
 
   if (pages.length === 0) {
     return (
-      <div className="text-center py-12">
-        <div className="mx-auto h-24 w-24 text-gray-400 dark:text-gray-600 mb-4">
-          <i className="fas fa-file-alt text-6xl" />
-        </div>
-        <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">
+      <div className="text-center py-16">
+        <h3 className="text-lg font-semibold text-gray-900 mb-2">
           {t('pages:noPages')}
         </h3>
-        <p className="text-gray-600 dark:text-gray-400">{t('pages:noPages')}</p>
+        <p className="text-gray-600">No pages found matching your criteria</p>
       </div>
     );
   }
 
   return (
-    <div
-      className={cn(
-        'overflow-hidden shadow ring-1 ring-black ring-opacity-5 rounded-lg',
-        className
-      )}
-    >
+    <div className={cn('overflow-hidden', className)}>
       <div className="overflow-x-auto">
-        <table className="min-w-full divide-y divide-gray-300 dark:divide-gray-700">
-          <thead className="bg-gray-50 dark:bg-gray-800">
+        <table className="w-full divide-y divide-gray-200">
+          <thead className="bg-gray-50">
             <tr>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                {t('pages:pageName')}
+              <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                <div className="flex items-center space-x-2">
+                  <span>{t('pages:pageName')}</span>
+                </div>
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                {t('pages:pageStatus')}
+              <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                <div className="flex items-center space-x-2">
+                  <span>{t('pages:pageStatus')}</span>
+                </div>
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                {t('pages:pageSlug')}
+              <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                <div className="flex items-center space-x-2">
+                  <span>{t('pages:pageSlug')}</span>
+                </div>
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                {t('pages:updatedAt')}
+              <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                <div className="flex items-center space-x-2">
+                  <span>{t('pages:updatedAt')}</span>
+                </div>
               </th>
-              <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+              <th className="px-6 py-4 text-right text-xs font-semibold text-gray-600 uppercase tracking-wider">
                 {t('pages:actions')}
               </th>
             </tr>
           </thead>
-          <tbody className="bg-white dark:bg-gray-900 divide-y divide-gray-200 dark:divide-gray-700">
-            {pages.map((page) => (
-              <tr
-                key={page.id}
-                className="hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors duration-150"
-              >
-                <td className="px-6 py-4 whitespace-nowrap">
-                  <div>
-                    <div className="text-sm font-medium text-gray-900 dark:text-white">
-                      {page.name}
+          <tbody className="bg-white divide-y divide-gray-200">
+            {pages.map((page) => {
+              const statusStyle =
+                statusConfig[page.status] || statusConfig.draft; // Fallback to draft if status not found
+
+              return (
+                <tr
+                  key={page.id}
+                  className="hover:bg-gray-50 transition-colors duration-150"
+                >
+                  <td className="px-6 py-4">
+                    <div className="flex items-start space-x-3">
+                      <div className="min-w-0 flex-1">
+                        <div className="text-sm  font-semibold text-gray-900 truncate">
+                          {page.name}
+                        </div>
+                        <div className="text-sm  text-gray-500 truncate">
+                          {page.title}
+                        </div>
+                      </div>
                     </div>
-                    <div className="text-sm text-gray-500 dark:text-gray-400">
-                      {page.title}
+                  </td>
+
+                  <td className="px-6 py-4 ">
+                    <div
+                      className={cn(
+                        'inline-flex items-center px-3 py-1  text-xs font-medium'
+                      )}
+                    >
+                      {t(`pages:status.${page.status}`)}
                     </div>
-                  </div>
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap">
-                  <span
-                    className={cn(
-                      'inline-flex px-2 py-1 text-xs font-semibold rounded-full',
-                      statusColors[page.status]
-                    )}
-                  >
-                    {t(`pages:status.${page.status}`)}
-                  </span>
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap">
-                  <div className="text-sm text-gray-900 dark:text-white font-mono">
-                    /{page.slug}
-                  </div>
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
-                  {formatDate(page.updatedAt)}
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                  <Button
-                    variant="primary"
-                    size="sm"
-                    onClick={() => onOpenDesigner(page.id)}
-                    className="inline-flex items-center"
-                  >
-                    <i className="fas fa-paint-brush mr-2" />
-                    {t('pages:openInDesigner')}
-                  </Button>
-                </td>
-              </tr>
-            ))}
+                  </td>
+
+                  <td className="px-6 py-4 text-center">
+                    <div className="flex items-center space-x-2">
+                      <code className="text-sm  px-2 py-1 rounded font-mono text-gray-700">
+                        /{page.slug}
+                      </code>
+                    </div>
+                  </td>
+
+                  <td className="px-6 py-4">
+                    <div className="text-sm text-gray-900">
+                      {formatDate(page.updatedAt)}
+                    </div>
+                    <div className="text-xs text-gray-500">
+                      {formatTime(page.updatedAt)}
+                    </div>
+                  </td>
+
+                  <td className="px-6 py-4 text-right">
+                    <div className="flex items-center justify-center space-x-2">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => onOpenDesigner(page.id)}
+                        className="inline-flex items-center"
+                      >
+                        <Icon name="paint-brush" className="mr-2 text-xs" />
+                        {t('pages:openInDesigner')}
+                      </Button>
+
+                      <div className="relative">
+                        <button className="p-2 text-gray-400 hover:text-gray-600 rounded-lg hover:bg-gray-100 transition-colors">
+                          <Icon name="ellipsis-h" className="text-sm" />
+                        </button>
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+              );
+            })}
           </tbody>
         </table>
       </div>

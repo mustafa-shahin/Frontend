@@ -15,15 +15,20 @@ export function App() {
 
   if (!ready) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <div className="flex items-center space-x-3">
+          <div className="animate-spin rounded-full h-8 w-8 border-2 border-blue-600 border-t-transparent"></div>
+          <span className="text-gray-600 font-medium">
+            Loading application...
+          </span>
+        </div>
       </div>
     );
   }
 
   return (
     <AuthProvider requiredRoles={REQUIRED_ROLES}>
-      <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50/10 to-indigo-50/20 dark:from-gray-900 dark:via-gray-900 dark:to-indigo-950/10">
+      <div className="min-h-screen bg-gray-50">
         <Routes>
           {/* Public routes */}
           <Route path="/login" element={<LoginPage />} />
@@ -43,25 +48,75 @@ export function App() {
             path="/designer/:pageId"
             element={
               <ProtectedRoute requiredRoles={REQUIRED_ROLES}>
-                <div className="min-h-screen flex items-center justify-center px-6 py-12">
-                  <div className="enterprise-card p-12 text-center max-w-2xl w-full">
-                    <div className="h-20 w-20 bg-gradient-to-br from-blue-600 via-indigo-600 to-purple-700 rounded-2xl flex items-center justify-center mx-auto mb-8 shadow-lg">
-                      <i className="fas fa-paint-brush text-white text-3xl" />
-                    </div>
-                    <h1 className="text-4xl font-bold gradient-text mb-6">
-                      Page Designer
-                    </h1>
-                    <p className="text-lg text-gray-600 dark:text-gray-400 font-medium leading-relaxed">
-                      Advanced visual page designer interface will be implemented here. 
-                      Create stunning layouts with drag-and-drop components and real-time editing.
-                    </p>
-                    <div className="mt-8 flex flex-wrap gap-4 justify-center">
-                      <span className="px-4 py-2 bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300 rounded-xl text-sm font-medium">
-                        Coming Soon
-                      </span>
-                      <span className="px-4 py-2 bg-indigo-100 dark:bg-indigo-900/30 text-indigo-800 dark:text-indigo-300 rounded-xl text-sm font-medium">
-                        Enterprise Ready
-                      </span>
+                <div className="min-h-screen bg-gray-50">
+                  <div className="max-w-4xl mx-auto px-6 py-16">
+                    <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-12 text-center">
+                      <div className="h-20 w-20 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-2xl flex items-center justify-center mx-auto mb-8 shadow-md">
+                        <i className="fas fa-paint-brush text-white text-3xl" />
+                      </div>
+
+                      <h1 className="text-4xl font-bold text-gray-900 mb-4">
+                        Page Designer
+                      </h1>
+
+                      <p className="text-lg text-gray-600 mb-8 max-w-2xl mx-auto leading-relaxed">
+                        Advanced visual page designer interface will be
+                        implemented here. Create stunning layouts with
+                        drag-and-drop components and real-time editing.
+                      </p>
+
+                      <div className="flex flex-wrap gap-3 justify-center mb-8">
+                        <span className="inline-flex items-center px-4 py-2 bg-blue-100 text-blue-800 rounded-full text-sm font-medium">
+                          <i className="fas fa-clock mr-2"></i>
+                          Coming Soon
+                        </span>
+                        <span className="inline-flex items-center px-4 py-2 bg-green-100 text-green-800 rounded-full text-sm font-medium">
+                          <i className="fas fa-shield-alt mr-2"></i>
+                          Enterprise Ready
+                        </span>
+                        <span className="inline-flex items-center px-4 py-2 bg-purple-100 text-purple-800 rounded-full text-sm font-medium">
+                          <i className="fas fa-magic mr-2"></i>
+                          Drag & Drop
+                        </span>
+                      </div>
+
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-12">
+                        <div className="p-6 bg-gray-50 rounded-xl">
+                          <div className="h-12 w-12 bg-blue-600 rounded-xl flex items-center justify-center mx-auto mb-4">
+                            <i className="fas fa-mouse-pointer text-white"></i>
+                          </div>
+                          <h3 className="font-semibold text-gray-900 mb-2">
+                            Visual Editor
+                          </h3>
+                          <p className="text-sm text-gray-600">
+                            Drag and drop components to build pages visually
+                          </p>
+                        </div>
+
+                        <div className="p-6 bg-gray-50 rounded-xl">
+                          <div className="h-12 w-12 bg-green-600 rounded-xl flex items-center justify-center mx-auto mb-4">
+                            <i className="fas fa-mobile-alt text-white"></i>
+                          </div>
+                          <h3 className="font-semibold text-gray-900 mb-2">
+                            Responsive
+                          </h3>
+                          <p className="text-sm text-gray-600">
+                            Built-in responsive design tools and preview
+                          </p>
+                        </div>
+
+                        <div className="p-6 bg-gray-50 rounded-xl">
+                          <div className="h-12 w-12 bg-purple-600 rounded-xl flex items-center justify-center mx-auto mb-4">
+                            <i className="fas fa-bolt text-white"></i>
+                          </div>
+                          <h3 className="font-semibold text-gray-900 mb-2">
+                            Real-time
+                          </h3>
+                          <p className="text-sm text-gray-600">
+                            See changes instantly as you design
+                          </p>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>

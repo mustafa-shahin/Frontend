@@ -160,6 +160,54 @@
 .fa-check-circle::before {
   content: '\2713';
 }
+.fa-clock::before {
+  content: '\1f551';
+}
+.fa-archive::before {
+  content: '\1f5c4';
+}
+.fa-shield-alt::before {
+  content: '\1f6e1';
+}
+.fa-lightbulb::before {
+  content: '\1f4a1';
+}
+.fa-book::before {
+  content: '\1f4d6';
+}
+.fa-video::before {
+  content: '\1f4f9';
+}
+.fa-question-circle::before {
+  content: '\2753';
+}
+.fa-magic::before {
+  content: '\2728';
+}
+.fa-mouse-pointer::before {
+  content: '\1f5b1';
+}
+.fa-mobile-alt::before {
+  content: '\1f4f1';
+}
+.fa-bolt::before {
+  content: '\26a1';
+}
+.fa-sync-alt::before {
+  content: '\1f504';
+}
+.fa-refresh::before {
+  content: '\1f504';
+}
+.fa-ellipsis-h::before {
+  content: '\2026';
+}
+.fa-filter::before {
+  content: '\1f4bd';
+}
+.fa-calendar::before {
+  content: '\1f4c5';
+}
 
 /* Animations */
 .fa-spin {
