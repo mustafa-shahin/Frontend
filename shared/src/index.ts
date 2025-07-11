@@ -27,6 +27,7 @@ export { Footer } from './components/layout/Footer';
 export { useForm } from './hooks/useForm';
 export { useLocalStorage } from './hooks/useLocalStorage';
 export { usePages } from './hooks/usePages';
+export { useTranslation } from './hooks/useTranslation';
 
 // Export utilities
 export { cn } from './utils/cn';
@@ -34,5 +35,12 @@ export { validateEmail, validatePassword } from './utils/validation';
 export { getCurrentTheme } from './utils/theme';
 export { initializeTheme, setTheme } from './utils/theme';
 
+// Export i18n
+export { default as i18n } from './utils/i18n';
+
+// Export Pages components
 export { PagesList } from './components/pages/PagesList';
+export { PagesCard } from './components/pages/PagesCard';
+export { PagesFilters } from './components/pages/PagesFilters';
+export { PagesPagination } from './components/pages/PagesPagination';
 export type { PageItem } from './components/pages/PagesList';

@@ -1,0 +1,73 @@
+{
+  "common": {
+    "loading": "Loading",
+    "error": "Error",
+    "search": "Search",
+    "cancel": "Cancel",
+    "save": "Save",
+    "delete": "Delete",
+    "edit": "Edit",
+    "view": "View",
+    "create": "Create",
+    "back": "Back",
+    "next": "Next",
+    "previous": "Previous",
+    "close": "Close",
+    "confirm": "Confirm",
+    "yes": "Yes",
+    "no": "No"
+  },
+  "header": {
+    "title": "CMS Designer",
+    "signOut": "Sign out",
+    "profile": "Profile",
+    "settings": "Settings"
+  },
+  "footer": {
+    "poweredBy": "Powered by",
+    "allRightsReserved": "All rights reserved",
+    "privacyPolicy": "Privacy Policy",
+    "termsOfService": "Terms of Service",
+    "contactSupport": "Contact Support"
+  },
+  "pages": {
+    "title": "Pages",
+    "subtitle": "Manage your website pages and content",
+    "searchPlaceholder": "Search pages by name, title, or slug...",
+    "noPages": "No pages found",
+    "noPagesDescription": "Get started by creating your first page.",
+    "noSearchResults": "No pages match your search criteria.",
+    "createFirstPage": "Create Your First Page",
+    "openInDesigner": "Open in Designer",
+    "lastUpdated": "Last updated",
+    "version": "Version",
+    "versions": "versions",
+    "total": "total",
+    "status": {
+      "published": "Published",
+      "draft": "Draft",
+      "archived": "Archived"
+    },
+    "pagination": {
+      "showing": "Showing",
+      "to": "to",
+      "of": "of",
+      "results": "results",
+      "perPage": "Per page:"
+    },
+    "errors": {
+      "loadingFailed": "Failed to load pages",
+      "loadingDescription": "An error occurred while loading the pages. Please try again."
+    }
+  },
+  "auth": {
+    "signIn": "Sign in",
+    "signOut": "Sign out",
+    "email": "Email",
+    "password": "Password",
+    "rememberMe": "Remember me",
+    "forgotPassword": "Forgot your password?",
+    "loginFailed": "Login failed. Please try again.",
+    "sessionExpired": "Your session has expired. Please sign in again."
+  }
+}

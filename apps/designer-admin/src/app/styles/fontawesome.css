@@ -216,3 +216,15 @@
 .fa-3x {
   font-size: 3em;
 }
+.fa-copy::before {
+  content: '\1f4cb';
+}
+.fa-folder::before {
+  content: '\1f4c1';
+}
+.fa-check-circle::before {
+  content: '\2713';
+}
+.fa-clock::before {
+  content: '\1f550';
+}

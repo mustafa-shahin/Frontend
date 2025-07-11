@@ -25,7 +25,13 @@ export default defineConfig(() => ({
     global: 'globalThis',
   },
   optimizeDeps: {
-    include: ['react', 'react-dom', 'react-router-dom'],
+    include: [
+      'react',
+      'react-dom',
+      'react-router-dom',
+      'i18next',
+      'react-i18next',
+    ],
   },
   build: {
     outDir: './dist',
@@ -39,6 +45,7 @@ export default defineConfig(() => ({
         manualChunks: {
           vendor: ['react', 'react-dom', 'react-router-dom'],
           ui: ['@frontend/shared'],
+          i18n: ['i18next', 'react-i18next'],
         },
       },
     },

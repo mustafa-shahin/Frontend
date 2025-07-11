@@ -17,6 +17,8 @@
     "strict": true,
     "target": "es2022",
     "customConditions": ["development"],
+    "resolveJsonModule": true,
+    "allowSyntheticDefaultImports": true,
     "baseUrl": ".",
     "paths": {
       "@frontend/shared": ["shared/src/index.ts"],

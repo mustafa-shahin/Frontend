@@ -12,6 +12,7 @@ export default defineConfig(() => ({
     dts({
       entryRoot: 'src',
       tsconfigPath: path.join(__dirname, 'tsconfig.lib.json'),
+      include: ['src/**/*.ts', 'src/**/*.tsx', 'src/**/*.json'],
     }),
   ],
   // Uncomment this if you are using workers.

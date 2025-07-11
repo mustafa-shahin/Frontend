@@ -1,0 +1,73 @@
+{
+  "common": {
+    "loading": "Laden",
+    "error": "Fehler",
+    "search": "Suchen",
+    "cancel": "Abbrechen",
+    "save": "Speichern",
+    "delete": "Löschen",
+    "edit": "Bearbeiten",
+    "view": "Anzeigen",
+    "create": "Erstellen",
+    "back": "Zurück",
+    "next": "Weiter",
+    "previous": "Vorherige",
+    "close": "Schließen",
+    "confirm": "Bestätigen",
+    "yes": "Ja",
+    "no": "Nein"
+  },
+  "header": {
+    "title": "CMS Designer",
+    "signOut": "Abmelden",
+    "profile": "Profil",
+    "settings": "Einstellungen"
+  },
+  "footer": {
+    "poweredBy": "Unterstützt von",
+    "allRightsReserved": "Alle Rechte vorbehalten",
+    "privacyPolicy": "Datenschutzrichtlinie",
+    "termsOfService": "Nutzungsbedingungen",
+    "contactSupport": "Support kontaktieren"
+  },
+  "pages": {
+    "title": "Seiten",
+    "subtitle": "Verwalten Sie Ihre Website-Seiten und Inhalte",
+    "searchPlaceholder": "Seiten nach Name, Titel oder Slug durchsuchen...",
+    "noPages": "Keine Seiten gefunden",
+    "noPagesDescription": "Beginnen Sie mit der Erstellung Ihrer ersten Seite.",
+    "noSearchResults": "Keine Seiten entsprechen Ihren Suchkriterien.",
+    "createFirstPage": "Erste Seite erstellen",
+    "openInDesigner": "Im Designer öffnen",
+    "lastUpdated": "Zuletzt aktualisiert",
+    "version": "Version",
+    "versions": "Versionen",
+    "total": "gesamt",
+    "status": {
+      "published": "Veröffentlicht",
+      "draft": "Entwurf",
+      "archived": "Archiviert"
+    },
+    "pagination": {
+      "showing": "Zeige",
+      "to": "bis",
+      "of": "von",
+      "results": "Ergebnissen",
+      "perPage": "Pro Seite:"
+    },
+    "errors": {
+      "loadingFailed": "Fehler beim Laden der Seiten",
+      "loadingDescription": "Beim Laden der Seiten ist ein Fehler aufgetreten. Bitte versuchen Sie es erneut."
+    }
+  },
+  "auth": {
+    "signIn": "Anmelden",
+    "signOut": "Abmelden",
+    "email": "E-Mail",
+    "password": "Passwort",
+    "rememberMe": "Angemeldet bleiben",
+    "forgotPassword": "Passwort vergessen?",
+    "loginFailed": "Anmeldung fehlgeschlagen. Bitte versuchen Sie es erneut.",
+    "sessionExpired": "Ihre Sitzung ist abgelaufen. Bitte melden Sie sich erneut an."
+  }
+}

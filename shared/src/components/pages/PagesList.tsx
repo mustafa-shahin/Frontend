@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { cn } from '../../utils/cn';
 import { Button } from '../ui/Button';
-import { Input } from '../ui/Input';
 import { Icon } from '../ui/Icon';
-import { Card } from '../ui/Card';
 import { LoadingSpinner } from '../ui/LoadingSpinner';
+import { useTranslation } from '../../hooks/useTranslation';
+import { PagesCard } from './PagesCard';
+import { PagesFilters } from './PagesFilters';
+import { PagesPagination } from './PagesPagination';
 
 // Types for the page data
 export interface PageItem {
@@ -12,7 +14,7 @@ export interface PageItem {
   name: string;
   title: string;
   slug: string;
-  status: 'Draft' | 'Published' | 'Archived' | 'Scheduled';
+  status: 'Draft' | 'Published' | 'Archived';
   createdAt: string;
   updatedAt: string;
   publishedOn?: string;
@@ -47,22 +49,10 @@ export interface PagesListProps {
   onPageChange: (page: number) => void;
   onPageSizeChange: (pageSize: number) => void;
   onSearch: (query: string) => void;
-  onEdit?: (page: PageItem) => void;
-  onView?: (page: PageItem) => void;
-  onDelete?: (page: PageItem) => void;
-  onDuplicate?: (page: PageItem) => void;
-  onCreate?: () => void;
+  onOpenDesigner?: (page: PageItem) => void;
   searchQuery?: string;
   className?: string;
-  renderCustomActions?: (page: PageItem) => React.ReactNode;
 }
-
-const statusColors = {
-  Draft: 'bg-gray-100 text-gray-800',
-  Published: 'bg-green-100 text-green-800',
-  Archived: 'bg-yellow-100 text-yellow-800',
-  Scheduled: 'bg-blue-100 text-blue-800',
-};
 
 export function PagesList({
   pages,
@@ -71,367 +61,114 @@ export function PagesList({
   onPageChange,
   onPageSizeChange,
   onSearch,
-  onEdit,
-  onView,
-  onDelete,
-  onDuplicate,
-  onCreate,
+  onOpenDesigner,
   searchQuery = '',
   className,
-  renderCustomActions,
 }: PagesListProps) {
+  const { t } = useTranslation();
   const [localSearchQuery, setLocalSearchQuery] = useState(searchQuery);
 
   useEffect(() => {
     setLocalSearchQuery(searchQuery);
   }, [searchQuery]);
 
-  const handleSearchSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    onSearch(localSearchQuery);
-  };
-
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit',
-    });
-  };
-
-  const getPageUrl = (page: PageItem) => {
-    const baseUrl =
-      process.env.NODE_ENV === 'development'
-        ? 'http://localhost:3000'
-        : window.location.origin;
-    return `${baseUrl}/${page.slug}`;
-  };
-
-  const renderPagination = () => {
-    if (pages.totalPages <= 1) return null;
-
-    const pageNumbers = [];
-    const startPage = Math.max(1, pages.pageNumber - 2);
-    const endPage = Math.min(pages.totalPages, pages.pageNumber + 2);
-
-    for (let i = startPage; i <= endPage; i++) {
-      pageNumbers.push(i);
-    }
-
+  if (error) {
     return (
-      <div className="flex items-center justify-between border-t border-gray-200 px-4 py-3 sm:px-6">
-        <div className="flex flex-1 justify-between sm:hidden">
-          <Button
-            variant="outline"
-            onClick={() => onPageChange(pages.pageNumber - 1)}
-            disabled={!pages.hasPreviousPage}
-          >
-            Previous
-          </Button>
-          <Button
-            variant="outline"
-            onClick={() => onPageChange(pages.pageNumber + 1)}
-            disabled={!pages.hasNextPage}
-          >
-            Next
-          </Button>
-        </div>
-        <div className="hidden sm:flex sm:flex-1 sm:items-center sm:justify-between">
-          <div>
-            <p className="text-sm text-gray-700">
-              Showing{' '}
-              <span className="font-medium">
-                {Math.min(
-                  (pages.pageNumber - 1) * pages.pageSize + 1,
-                  pages.totalCount
-                )}
-              </span>{' '}
-              to{' '}
-              <span className="font-medium">
-                {Math.min(pages.pageNumber * pages.pageSize, pages.totalCount)}
-              </span>{' '}
-              of <span className="font-medium">{pages.totalCount}</span> results
-            </p>
-          </div>
-          <div className="flex items-center space-x-2">
-            <div className="flex items-center space-x-1">
-              <label htmlFor="pageSizeSelect" className="text-sm text-gray-700">
-                Per page:
-              </label>
-              <select
-                id="pageSizeSelect"
-                value={pages.pageSize}
-                onChange={(e) => onPageSizeChange(Number(e.target.value))}
-                className="border border-gray-300 rounded-md px-2 py-1 text-sm bg-white text-gray-900"
-              >
-                <option value={10}>10</option>
-                <option value={25}>25</option>
-                <option value={50}>50</option>
-                <option value={100}>100</option>
-              </select>
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-8">
+          <div className="text-center">
+            <div className="w-16 h-16 mx-auto mb-4 bg-red-50 rounded-full flex items-center justify-center">
+              <Icon
+                name="exclamation-triangle"
+                size="lg"
+                className="text-red-500"
+              />
             </div>
-            <nav className="flex items-center space-x-1">
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => onPageChange(pages.pageNumber - 1)}
-                disabled={!pages.hasPreviousPage}
-              >
-                <Icon name="chevron-left" size="sm" />
-              </Button>
-              {pageNumbers.map((number) => (
-                <Button
-                  key={number}
-                  variant={number === pages.pageNumber ? 'primary' : 'outline'}
-                  size="sm"
-                  onClick={() => onPageChange(number)}
-                >
-                  {number}
-                </Button>
-              ))}
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => onPageChange(pages.pageNumber + 1)}
-                disabled={!pages.hasNextPage}
-              >
-                <Icon name="chevron-right" size="sm" />
-              </Button>
-            </nav>
+            <h3 className="text-lg font-semibold text-slate-900 mb-2">
+              {t('pages.errors.loadingFailed')}
+            </h3>
+            <p className="text-slate-600">
+              {t('pages.errors.loadingDescription')}
+            </p>
           </div>
         </div>
       </div>
-    );
-  };
-
-  if (error) {
-    return (
-      <Card className={cn('p-6', className)}>
-        <div className="text-center">
-          <Icon
-            name="exclamation-triangle"
-            size="2xl"
-            className="text-red-500 mb-4"
-          />
-          <h3 className="text-lg font-medium text-gray-900 mb-2">
-            Error Loading Pages
-          </h3>
-          <p className="text-gray-600">{error}</p>
-        </div>
-      </Card>
     );
   }
 
   return (
-    <div className={cn('space-y-6', className)}>
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <div>
-          <h1 className="text-2xl font-bold text-gray-900">Pages</h1>
-          <p className="text-gray-600">Manage your website pages and content</p>
+    <div className={cn('max-w-7xl mx-auto', className)}>
+      <div className="space-y-8">
+        {/* Header */}
+        <div className="text-center">
+          <h1 className="text-3xl font-bold text-slate-900 mb-2">
+            {t('pages.title')}
+          </h1>
+          <p className="text-lg text-slate-600 max-w-2xl mx-auto">
+            {t('pages.subtitle')}
+          </p>
         </div>
-        {onCreate && (
-          <Button
-            onClick={onCreate}
-            className="bg-blue-600 hover:bg-blue-700 text-white"
-          >
-            <Icon name="plus" size="sm" className="mr-2" />
-            Create Page
-          </Button>
-        )}
-      </div>
 
-      {/* Search */}
-      <Card className="p-4">
-        <form onSubmit={handleSearchSubmit} className="flex gap-4">
-          <div className="flex-1">
-            <Input
-              type="search"
-              placeholder="Search pages by name, title, or slug..."
-              value={localSearchQuery}
-              onChange={(e) => setLocalSearchQuery(e.target.value)}
-              leftIcon={<Icon name="search" />}
-            />
-          </div>
-          <Button type="submit" disabled={loading}>
-            Search
-          </Button>
-        </form>
-      </Card>
+        {/* Filters */}
+        <PagesFilters
+          searchQuery={localSearchQuery}
+          onSearchChange={setLocalSearchQuery}
+          onSearch={onSearch}
+          loading={loading}
+        />
 
-      {/* Pages List */}
-      <Card>
+        {/* Content */}
         {loading ? (
-          <div className="flex items-center justify-center py-12">
-            <LoadingSpinner size="lg" />
-            <span className="ml-3 text-gray-600">Loading pages...</span>
+          <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-12">
+            <div className="flex flex-col items-center justify-center text-center">
+              <LoadingSpinner size="lg" className="mb-4" />
+              <span className="text-slate-600">{t('common.loading')}...</span>
+            </div>
           </div>
         ) : pages.data.length === 0 ? (
-          <div className="text-center py-12">
-            <Icon name="file-alt" size="3xl" className="text-gray-400 mb-4" />
-            <h3 className="text-lg font-medium text-gray-900 mb-2">
-              No pages found
-            </h3>
-            <p className="text-gray-600 mb-6">
-              {searchQuery
-                ? 'No pages match your search criteria.'
-                : 'Get started by creating your first page.'}
-            </p>
-            {onCreate && !searchQuery && (
-              <Button
-                onClick={onCreate}
-                className="bg-blue-600 hover:bg-blue-700 text-white"
-              >
-                <Icon name="plus" size="sm" className="mr-2" />
-                Create Your First Page
-              </Button>
-            )}
+          <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-12">
+            <div className="text-center">
+              <div className="w-20 h-20 mx-auto mb-6 bg-slate-50 rounded-full flex items-center justify-center">
+                <Icon name="file-alt" size="2xl" className="text-slate-400" />
+              </div>
+              <h3 className="text-xl font-semibold text-slate-900 mb-2">
+                {t('pages.noPages')}
+              </h3>
+              <p className="text-slate-600 mb-8 max-w-md mx-auto">
+                {searchQuery
+                  ? t('pages.noSearchResults')
+                  : t('pages.noPagesDescription')}
+              </p>
+              {!searchQuery && (
+                <Button className="bg-blue-600 hover:bg-blue-700 text-white shadow-sm">
+                  <Icon name="plus" size="sm" className="mr-2" />
+                  {t('pages.createFirstPage')}
+                </Button>
+              )}
+            </div>
           </div>
         ) : (
-          <div className="overflow-hidden">
-            <div className="overflow-x-auto">
-              <table className="min-w-full divide-y divide-gray-200">
-                <thead className="bg-gray-50">
-                  <tr>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Page
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Status
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      URL
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Last Updated
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Versions
-                    </th>
-                    <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Actions
-                    </th>
-                  </tr>
-                </thead>
-                <tbody className="bg-white divide-y divide-gray-200">
-                  {pages.data.map((page) => (
-                    <tr key={page.id} className="hover:bg-gray-50">
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="flex items-center">
-                          <div className="flex-shrink-0">
-                            {page.hasChildren && (
-                              <Icon
-                                name="folder"
-                                size="sm"
-                                className="text-blue-500"
-                              />
-                            )}
-                          </div>
-                          <div
-                            className={cn('ml-2', page.hasChildren && 'ml-1')}
-                          >
-                            <div className="text-sm font-medium text-gray-900">
-                              {page.title}
-                            </div>
-                            <div className="text-sm text-gray-500">
-                              {page.name}
-                            </div>
-                          </div>
-                        </div>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <span
-                          className={cn(
-                            'inline-flex px-2 py-1 text-xs font-semibold rounded-full',
-                            statusColors[page.status]
-                          )}
-                        >
-                          {page.status}
-                        </span>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm text-gray-900">
-                          <a
-                            href={getPageUrl(page)}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="hover:text-blue-600 flex items-center"
-                          >
-                            /{page.slug}
-                            <Icon
-                              name="external-link-alt"
-                              size="xs"
-                              className="ml-1"
-                            />
-                          </a>
-                        </div>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        {formatDate(page.updatedAt)}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        v{page.currentVersion} ({page.versionCount} total)
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                        <div className="flex items-center justify-end space-x-2">
-                          {/* Custom actions first */}
-                          {renderCustomActions && renderCustomActions(page)}
-
-                          {/* Standard actions */}
-                          {onView && (
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              onClick={() => onView(page)}
-                              title="View Page"
-                            >
-                              <Icon name="eye" size="sm" />
-                            </Button>
-                          )}
-                          {onEdit && (
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              onClick={() => onEdit(page)}
-                              title="Edit Page"
-                            >
-                              <Icon name="edit" size="sm" />
-                            </Button>
-                          )}
-                          {onDuplicate && (
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              onClick={() => onDuplicate(page)}
-                              title="Duplicate Page"
-                            >
-                              <Icon name="copy" size="sm" />
-                            </Button>
-                          )}
-                          {onDelete && (
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              onClick={() => onDelete(page)}
-                              title="Delete Page"
-                              className="text-red-600 hover:text-red-700"
-                            >
-                              <Icon name="trash" size="sm" />
-                            </Button>
-                          )}
-                        </div>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+          <>
+            {/* Pages Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+              {pages.data.map((page) => (
+                <PagesCard
+                  key={page.id}
+                  page={page}
+                  onOpenDesigner={onOpenDesigner}
+                />
+              ))}
             </div>
-            {renderPagination()}
-          </div>
+
+            {/* Pagination */}
+            <PagesPagination
+              pages={pages}
+              onPageChange={onPageChange}
+              onPageSizeChange={onPageSizeChange}
+            />
+          </>
         )}
-      </Card>
+      </div>
     </div>
   );
 }

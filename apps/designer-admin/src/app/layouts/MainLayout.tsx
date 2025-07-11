@@ -1,10 +1,11 @@
-import React from 'react';
 import { Outlet, useNavigate } from 'react-router-dom';
 import { useAuth, Header, Footer } from '@frontend/shared';
+import { useTranslation } from '@frontend/shared';
 
 export function MainLayout() {
   const navigate = useNavigate();
   const { logout, user } = useAuth();
+  const { t, changeLanguage, currentLanguage } = useTranslation();
 
   const handleLogout = async () => {
     try {
@@ -24,16 +25,35 @@ export function MainLayout() {
       }
     : undefined;
 
+  const handleLanguageChange = () => {
+    const newLanguage = currentLanguage === 'en' ? 'de' : 'en';
+    changeLanguage(newLanguage);
+  };
+
+  const headerActions = (
+    <div className="flex items-center gap-2">
+      <button
+        onClick={handleLanguageChange}
+        className="px-3 py-1.5 text-sm bg-white/10 hover:bg-white/20 text-slate-600 hover:text-slate-900 rounded-md transition-colors duration-200 border border-slate-200 hover:border-slate-300"
+        title={
+          currentLanguage === 'en' ? 'Switch to German' : 'Switch to English'
+        }
+      >
+        {currentLanguage === 'en' ? 'DE' : 'EN'}
+      </button>
+    </div>
+  );
+
   return (
-    <div className="min-h-screen flex flex-col bg-gray-50">
+    <div className="min-h-screen flex flex-col bg-slate-50">
       {/* Header */}
       <Header
-        title="Page Management"
-        subtitle="Manage your website pages and content"
+        showLogo={true}
+        logoText={t('header.title')}
         user={headerUser}
         onLogout={handleLogout}
-        logoText="CMS Designer Admin"
         variant="default"
+        actions={headerActions}
       />
 
       {/* Main content */}
@@ -46,8 +66,8 @@ export function MainLayout() {
         companyName="CMS Designer"
         variant="minimal"
         showPoweredBy={true}
-        poweredByText="CMS Designer"
-        className="mt-auto"
+        poweredByText={t('footer.poweredBy')}
+        className="mt-auto bg-white border-t border-slate-200"
       />
     </div>
   );
