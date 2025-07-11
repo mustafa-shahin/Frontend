@@ -19,6 +19,10 @@ export { Card } from './components/ui/Card';
 export { LoadingSpinner } from './components/ui/LoadingSpinner';
 export { Icon } from './components/ui/Icon';
 
+// Export Layout components
+export { Header } from './components/layout/Header';
+export { Footer } from './components/layout/Footer';
+
 // Export hooks
 export { useForm } from './hooks/useForm';
 export { useLocalStorage } from './hooks/useLocalStorage';

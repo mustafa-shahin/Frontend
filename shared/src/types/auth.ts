@@ -1,4 +1,3 @@
-// shared/src/types/auth.ts
 import { z } from 'zod';
 
 // Enums

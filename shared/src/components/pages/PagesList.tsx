@@ -54,15 +54,14 @@ export interface PagesListProps {
   onCreate?: () => void;
   searchQuery?: string;
   className?: string;
+  renderCustomActions?: (page: PageItem) => React.ReactNode;
 }
 
 const statusColors = {
-  Draft: 'bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-300',
-  Published:
-    'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300',
-  Archived:
-    'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300',
-  Scheduled: 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300',
+  Draft: 'bg-gray-100 text-gray-800',
+  Published: 'bg-green-100 text-green-800',
+  Archived: 'bg-yellow-100 text-yellow-800',
+  Scheduled: 'bg-blue-100 text-blue-800',
 };
 
 export function PagesList({
@@ -79,6 +78,7 @@ export function PagesList({
   onCreate,
   searchQuery = '',
   className,
+  renderCustomActions,
 }: PagesListProps) {
   const [localSearchQuery, setLocalSearchQuery] = useState(searchQuery);
 
@@ -121,7 +121,7 @@ export function PagesList({
     }
 
     return (
-      <div className="flex items-center justify-between border-t border-gray-200 dark:border-gray-700 px-4 py-3 sm:px-6">
+      <div className="flex items-center justify-between border-t border-gray-200 px-4 py-3 sm:px-6">
         <div className="flex flex-1 justify-between sm:hidden">
           <Button
             variant="outline"
@@ -140,7 +140,7 @@ export function PagesList({
         </div>
         <div className="hidden sm:flex sm:flex-1 sm:items-center sm:justify-between">
           <div>
-            <p className="text-sm text-gray-700 dark:text-gray-300">
+            <p className="text-sm text-gray-700">
               Showing{' '}
               <span className="font-medium">
                 {Math.min(
@@ -157,13 +157,14 @@ export function PagesList({
           </div>
           <div className="flex items-center space-x-2">
             <div className="flex items-center space-x-1">
-              <label className="text-sm text-gray-700 dark:text-gray-300">
+              <label htmlFor="pageSizeSelect" className="text-sm text-gray-700">
                 Per page:
               </label>
               <select
+                id="pageSizeSelect"
                 value={pages.pageSize}
                 onChange={(e) => onPageSizeChange(Number(e.target.value))}
-                className="border border-gray-300 dark:border-gray-600 rounded-md px-2 py-1 text-sm bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100"
+                className="border border-gray-300 rounded-md px-2 py-1 text-sm bg-white text-gray-900"
               >
                 <option value={10}>10</option>
                 <option value={25}>25</option>
@@ -214,10 +215,10 @@ export function PagesList({
             size="2xl"
             className="text-red-500 mb-4"
           />
-          <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100 mb-2">
+          <h3 className="text-lg font-medium text-gray-900 mb-2">
             Error Loading Pages
           </h3>
-          <p className="text-gray-600 dark:text-gray-400">{error}</p>
+          <p className="text-gray-600">{error}</p>
         </div>
       </Card>
     );
@@ -228,15 +229,14 @@ export function PagesList({
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
-            Pages
-          </h1>
-          <p className="text-gray-600 dark:text-gray-400">
-            Manage your website pages and content
-          </p>
+          <h1 className="text-2xl font-bold text-gray-900">Pages</h1>
+          <p className="text-gray-600">Manage your website pages and content</p>
         </div>
         {onCreate && (
-          <Button onClick={onCreate} className="btn-gradient">
+          <Button
+            onClick={onCreate}
+            className="bg-blue-600 hover:bg-blue-700 text-white"
+          >
             <Icon name="plus" size="sm" className="mr-2" />
             Create Page
           </Button>
@@ -252,7 +252,7 @@ export function PagesList({
               placeholder="Search pages by name, title, or slug..."
               value={localSearchQuery}
               onChange={(e) => setLocalSearchQuery(e.target.value)}
-              leftIcon="search"
+              leftIcon={<Icon name="search" />}
             />
           </div>
           <Button type="submit" disabled={loading}>
@@ -266,23 +266,24 @@ export function PagesList({
         {loading ? (
           <div className="flex items-center justify-center py-12">
             <LoadingSpinner size="lg" />
-            <span className="ml-3 text-gray-600 dark:text-gray-400">
-              Loading pages...
-            </span>
+            <span className="ml-3 text-gray-600">Loading pages...</span>
           </div>
         ) : pages.data.length === 0 ? (
           <div className="text-center py-12">
             <Icon name="file-alt" size="3xl" className="text-gray-400 mb-4" />
-            <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100 mb-2">
+            <h3 className="text-lg font-medium text-gray-900 mb-2">
               No pages found
             </h3>
-            <p className="text-gray-600 dark:text-gray-400 mb-6">
+            <p className="text-gray-600 mb-6">
               {searchQuery
                 ? 'No pages match your search criteria.'
                 : 'Get started by creating your first page.'}
             </p>
             {onCreate && !searchQuery && (
-              <Button onClick={onCreate} className="btn-gradient">
+              <Button
+                onClick={onCreate}
+                className="bg-blue-600 hover:bg-blue-700 text-white"
+              >
                 <Icon name="plus" size="sm" className="mr-2" />
                 Create Your First Page
               </Button>
@@ -291,35 +292,32 @@ export function PagesList({
         ) : (
           <div className="overflow-hidden">
             <div className="overflow-x-auto">
-              <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-                <thead className="bg-gray-50 dark:bg-gray-800">
+              <table className="min-w-full divide-y divide-gray-200">
+                <thead className="bg-gray-50">
                   <tr>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                       Page
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                       Status
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                       URL
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                       Last Updated
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                       Versions
                     </th>
-                    <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
                       Actions
                     </th>
                   </tr>
                 </thead>
-                <tbody className="bg-white dark:bg-gray-900 divide-y divide-gray-200 dark:divide-gray-700">
+                <tbody className="bg-white divide-y divide-gray-200">
                   {pages.data.map((page) => (
-                    <tr
-                      key={page.id}
-                      className="hover:bg-gray-50 dark:hover:bg-gray-800"
-                    >
+                    <tr key={page.id} className="hover:bg-gray-50">
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="flex items-center">
                           <div className="flex-shrink-0">
@@ -334,10 +332,10 @@ export function PagesList({
                           <div
                             className={cn('ml-2', page.hasChildren && 'ml-1')}
                           >
-                            <div className="text-sm font-medium text-gray-900 dark:text-gray-100">
+                            <div className="text-sm font-medium text-gray-900">
                               {page.title}
                             </div>
-                            <div className="text-sm text-gray-500 dark:text-gray-400">
+                            <div className="text-sm text-gray-500">
                               {page.name}
                             </div>
                           </div>
@@ -354,12 +352,12 @@ export function PagesList({
                         </span>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm text-gray-900 dark:text-gray-100">
+                        <div className="text-sm text-gray-900">
                           <a
                             href={getPageUrl(page)}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="hover:text-blue-600 dark:hover:text-blue-400 flex items-center"
+                            className="hover:text-blue-600 flex items-center"
                           >
                             /{page.slug}
                             <Icon
@@ -370,14 +368,18 @@ export function PagesList({
                           </a>
                         </div>
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                         {formatDate(page.updatedAt)}
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                         v{page.currentVersion} ({page.versionCount} total)
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                         <div className="flex items-center justify-end space-x-2">
+                          {/* Custom actions first */}
+                          {renderCustomActions && renderCustomActions(page)}
+
+                          {/* Standard actions */}
                           {onView && (
                             <Button
                               variant="ghost"
@@ -414,7 +416,7 @@ export function PagesList({
                               size="sm"
                               onClick={() => onDelete(page)}
                               title="Delete Page"
-                              className="text-red-600 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300"
+                              className="text-red-600 hover:text-red-700"
                             >
                               <Icon name="trash" size="sm" />
                             </Button>

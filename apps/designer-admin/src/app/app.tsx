@@ -7,7 +7,7 @@ import { LoginPage } from './pages/LoginPage';
 import { RegisterPage } from './pages/RegisterPage';
 import { ForgotPasswordPage } from './pages/ForgotPasswordPage';
 import { ResetPasswordPage } from './pages/ResetPasswordPage';
-import { PagesPage } from './pages//PagesPage';
+import { PagesPage } from './pages/PagesPage';
 import { ErrorBoundary } from './components/ErrorBoundary';
 import './styles/fontawesome.css';
 
@@ -17,7 +17,7 @@ export function App() {
   return (
     <ErrorBoundary>
       <AuthProvider requiredRoles={REQUIRED_ROLES}>
-        <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+        <div className="min-h-screen bg-gray-50">
           <Routes>
             {/* Authentication routes */}
             <Route
@@ -65,23 +65,11 @@ export function App() {
               {/* Redirect root to pages */}
               <Route index element={<Navigate to="/pages" replace />} />
 
-              {/* Pages management */}
+              {/* Pages management - the only route */}
               <Route path="pages" element={<PagesPage />} />
-
-              {/* Future routes */}
-              <Route
-                path="media"
-                element={
-                  <div className="p-8">Media management coming soon...</div>
-                }
-              />
-              <Route
-                path="settings"
-                element={<div className="p-8">Settings coming soon...</div>}
-              />
             </Route>
 
-            {/* Catch all route */}
+            {/* Catch all route - redirect to pages */}
             <Route path="*" element={<Navigate to="/pages" replace />} />
           </Routes>
         </div>

@@ -1,6 +1,12 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { PagesList, usePages, type PageItem } from '@frontend/shared';
+import {
+  PagesList,
+  usePages,
+  type PageItem,
+  Button,
+  Icon,
+} from '@frontend/shared';
 
 export function PagesPage() {
   const navigate = useNavigate();
@@ -39,7 +45,10 @@ export function PagesPage() {
   };
 
   const handleEdit = (page: PageItem) => {
-    navigate(`/pages/${page.id}/edit`);
+    // TODO: Implement designer mode redirect
+    console.log('Edit page in designer mode:', page.id);
+    // For now, just log - designer mode will be implemented later
+    alert(`Designer mode for page "${page.title}" will be implemented soon.`);
   };
 
   const handleView = (page: PageItem) => {
@@ -82,7 +91,9 @@ export function PagesPage() {
   };
 
   const handleCreate = () => {
-    navigate('/pages/create');
+    // TODO: Implement page creation modal or redirect to designer
+    console.log('Create new page');
+    alert('Page creation will be implemented soon.');
   };
 
   const handlePublishToggle = async (page: PageItem) => {
@@ -96,6 +107,41 @@ export function PagesPage() {
       console.error('Failed to toggle publish status:', error);
     }
   };
+
+  // Custom actions for the page list
+  const customActions = (page: PageItem) => (
+    <>
+      <Button
+        variant="ghost"
+        size="sm"
+        onClick={() => handleEdit(page)}
+        title="Edit in Designer"
+        className="text-blue-600 hover:text-blue-700 hover:bg-blue-50"
+      >
+        <Icon name="paint-brush" size="sm" />
+        <span className="ml-1 hidden sm:inline">Designer</span>
+      </Button>
+      <Button
+        variant="ghost"
+        size="sm"
+        onClick={() => handlePublishToggle(page)}
+        title={page.status === 'Published' ? 'Unpublish' : 'Publish'}
+        className={
+          page.status === 'Published'
+            ? 'text-orange-600 hover:text-orange-700 hover:bg-orange-50'
+            : 'text-green-600 hover:text-green-700 hover:bg-green-50'
+        }
+      >
+        <Icon
+          name={page.status === 'Published' ? 'eye-slash' : 'globe'}
+          size="sm"
+        />
+        <span className="ml-1 hidden sm:inline">
+          {page.status === 'Published' ? 'Unpublish' : 'Publish'}
+        </span>
+      </Button>
+    </>
+  );
 
   return (
     <div className="px-4 sm:px-6 lg:px-8 py-8">
@@ -112,6 +158,7 @@ export function PagesPage() {
         onDuplicate={handleDuplicate}
         onCreate={handleCreate}
         searchQuery={searchQuery}
+        renderCustomActions={customActions}
       />
     </div>
   );
