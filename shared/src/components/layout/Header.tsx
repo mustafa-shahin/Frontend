@@ -1,3 +1,4 @@
+// shared/src/components/layout/Header.tsx
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../contexts/AuthContext';
@@ -41,69 +42,76 @@ export function Header({
   return (
     <header
       className={cn(
-        'bg-white dark:bg-gray-900', // Clean background
-        'border-b border-gray-100 dark:border-gray-800', // Subtle border
-        'shadow-sm', // Light shadow for depth
+        'bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700',
+        'shadow-sm backdrop-blur-sm sticky top-0 z-50',
         className
       )}
     >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-20">
-          {' '}
-          {/* Increased height for more breathing room */}
-          {/* Logo and Title - Aligned left, with good spacing */}
+      <div className="max-w-7xl mx-auto px-6 lg:px-8">
+        <div className="flex justify-between items-center h-16">
+          {/* Logo and Brand */}
           <div className="flex items-center flex-shrink-0">
             <button
               onClick={onLogoClick}
-              className="flex items-center gap-3 text-gray-900 dark:text-white transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-white dark:focus:ring-offset-gray-900 rounded-md"
+              className="flex items-center gap-3 group focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-white dark:focus:ring-offset-gray-900 rounded-lg p-2 -m-2 transition-all duration-200"
               aria-label={onLogoClick ? `Go to ${title} homepage` : undefined}
             >
               {logo ? (
-                <img src={logo} alt={logoAlt} className="h-10 w-auto" />
+                <img src={logo} alt={logoAlt} className="h-8 w-auto" />
               ) : (
-                <div className="h-10 w-10 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-lg flex items-center justify-center shadow-lg">
-                  {' '}
-                  {/* Gradient background for default logo */}
-                  <i className="fas fa-paint-brush text-white text-xl" />{' '}
-                  {/* Larger, more prominent icon */}
+                <div className="h-8 w-8 bg-gradient-to-br from-blue-600 to-indigo-700 rounded-lg flex items-center justify-center shadow-md group-hover:shadow-lg transition-shadow duration-200">
+                  <i className="fas fa-paint-brush text-white text-sm" />
                 </div>
               )}
-              <span className="text-2xl font-extrabold tracking-tight text-gray-900 dark:text-white">
-                {title}
-              </span>
+              <div className="flex flex-col">
+                <span className="text-xl font-bold tracking-tight text-gray-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors duration-200">
+                  {title}
+                </span>
+                <span className="text-xs text-gray-500 dark:text-gray-400 -mt-1">
+                  Admin Panel
+                </span>
+              </div>
             </button>
           </div>
-          {/* Desktop Navigation - Centered for main content */}
-          {/* The `children` prop will typically contain navigation links. */}
-          <nav className="hidden md:flex flex-grow justify-center items-center">
-            {/* Added a flex container with gap for spacing between nav items */}
-            <ul className="flex items-center gap-8 text-lg font-medium text-gray-700 dark:text-gray-300">
-              {/* Assuming children are li or components that can be styled as such */}
-              {children}
-            </ul>
-          </nav>
-          {/* Right-aligned Utility/Auth Section for Desktop */}
-          <div className="hidden md:flex items-center gap-6 flex-shrink-0">
-            {' '}
-            {/* Increased gap for better spacing */}
+
+          {/* Desktop Navigation */}
+          {children && (
+            <nav className="hidden md:flex flex-1 justify-center">
+              <div className="flex items-center space-x-8">{children}</div>
+            </nav>
+          )}
+
+          {/* Desktop Right Section */}
+          <div className="hidden md:flex items-center space-x-4">
             {showLanguageSelector && <LanguageSelector />}
+
             {showAuth && (
-              <div className="flex items-center gap-4">
-                {' '}
-                {/* Good spacing between elements */}
+              <div className="flex items-center space-x-4">
                 {isAuthenticated ? (
-                  <div className="flex items-center gap-3">
-                    <span className="text-base font-medium text-gray-700 dark:text-gray-300">
-                      {t('auth:welcomeBack')},{' '}
-                      <span className="font-semibold text-gray-900 dark:text-white">
-                        {user?.firstName}
-                      </span>
-                    </span>
+                  <div className="flex items-center space-x-4">
+                    {/* User Avatar and Name */}
+                    <div className="flex items-center space-x-3 px-3 py-2 rounded-lg bg-gray-50 dark:bg-gray-800">
+                      <div className="h-8 w-8 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center">
+                        <span className="text-white text-sm font-medium">
+                          {user?.firstName?.charAt(0)}
+                          {user?.lastName?.charAt(0)}
+                        </span>
+                      </div>
+                      <div className="flex flex-col">
+                        <span className="text-sm font-medium text-gray-900 dark:text-white">
+                          {user?.firstName} {user?.lastName}
+                        </span>
+                        <span className="text-xs text-gray-500 dark:text-gray-400">
+                          {user?.roleName}
+                        </span>
+                      </div>
+                    </div>
+
                     <Button
                       variant="outline"
-                      size="md"
+                      size="sm"
                       onClick={handleLogout}
-                      className="rounded-full px-5 py-2.5 text-sm font-semibold transition-all duration-200" // Pill shape, slightly more padding
+                      className="border-gray-200 hover:border-gray-300 hover:bg-gray-50 dark:border-gray-700 dark:hover:border-gray-600 dark:hover:bg-gray-800"
                     >
                       <i className="fas fa-sign-out-alt mr-2" />
                       {t('auth:logout')}
@@ -112,8 +120,8 @@ export function Header({
                 ) : (
                   <Button
                     variant="primary"
-                    size="md"
-                    className="rounded-full px-6 py-2.5 text-sm font-semibold shadow-md hover:shadow-lg transition-all duration-200" // Pill shape, slightly more padding, subtle shadow
+                    size="sm"
+                    className="shadow-sm hover:shadow-md transition-shadow duration-200"
                   >
                     <i className="fas fa-sign-in-alt mr-2" />
                     {t('auth:login')}
@@ -122,69 +130,69 @@ export function Header({
               </div>
             )}
           </div>
-          {/* Mobile menu button - Always visible on mobile, right-aligned */}
+
+          {/* Mobile menu button */}
           <div className="md:hidden">
             <button
               onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="p-3 rounded-md text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-white dark:focus:ring-offset-gray-900 transition-colors duration-200"
+              className="p-2 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-white dark:focus:ring-offset-gray-900 transition-colors duration-200"
               aria-label={t('navigation:mainNavigation')}
             >
               <i
                 className={cn(
-                  'fas text-xl',
-                  isMenuOpen ? 'fa-times' : 'fa-bars'
+                  'fas text-lg transition-transform duration-200',
+                  isMenuOpen ? 'fa-times rotate-90' : 'fa-bars'
                 )}
               />
             </button>
           </div>
         </div>
 
-        {/* Mobile menu - Collapsible, full-width, with distinct sections and better padding */}
+        {/* Mobile menu */}
         {isMenuOpen && (
-          <div className="md:hidden bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-700 py-6">
-            {' '}
-            {/* Increased vertical padding */}
-            <div className="space-y-6">
-              {' '}
-              {/* Generous spacing between mobile sections */}
-              {/* Children (Navigation Links) */}
-              <nav className="px-4">
-                {' '}
-                {/* Padding for content within sections */}
-                <ul className="flex flex-col gap-4 text-base font-medium text-gray-700 dark:text-gray-300">
-                  {' '}
-                  {/* Vertical layout for links, with spacing */}
-                  {children}
-                </ul>
-              </nav>
-              {/* Language Selector */}
+          <div className="md:hidden border-t border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 py-4 animate-fade-in">
+            <div className="space-y-4">
+              {/* Mobile Navigation */}
+              {children && (
+                <nav className="px-2">
+                  <div className="space-y-2">{children}</div>
+                </nav>
+              )}
+
+              {/* Mobile Language Selector */}
               {showLanguageSelector && (
-                <div className="px-4 pt-4 border-t border-gray-100 dark:border-gray-800">
-                  {' '}
-                  {/* Clear separation line */}
+                <div className="px-2 pt-4 border-t border-gray-100 dark:border-gray-800">
                   <LanguageSelector />
                 </div>
               )}
-              {/* Auth Section */}
+
+              {/* Mobile Auth Section */}
               {showAuth && (
-                <div className="px-4 pt-4 border-t border-gray-100 dark:border-gray-800">
-                  {' '}
-                  {/* Clear separation line */}
+                <div className="px-2 pt-4 border-t border-gray-100 dark:border-gray-800">
                   {isAuthenticated ? (
-                    <div className="flex flex-col gap-4">
-                      {' '}
-                      {/* Vertical layout for auth elements */}
-                      <span className="text-base text-gray-700 dark:text-gray-300 font-medium">
-                        {t('auth:welcomeBack')},{' '}
-                        <span className="font-semibold text-gray-900 dark:text-white">
-                          {user?.firstName}
-                        </span>
-                      </span>
+                    <div className="space-y-3">
+                      <div className="flex items-center space-x-3 p-3 rounded-lg bg-gray-50 dark:bg-gray-800">
+                        <div className="h-10 w-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center">
+                          <span className="text-white font-medium">
+                            {user?.firstName?.charAt(0)}
+                            {user?.lastName?.charAt(0)}
+                          </span>
+                        </div>
+                        <div className="flex-1">
+                          <div className="text-sm font-medium text-gray-900 dark:text-white">
+                            {user?.firstName} {user?.lastName}
+                          </div>
+                          <div className="text-xs text-gray-500 dark:text-gray-400">
+                            {user?.roleName}
+                          </div>
+                        </div>
+                      </div>
+
                       <Button
                         variant="outline"
-                        size="md"
+                        size="sm"
                         onClick={handleLogout}
-                        className="w-full justify-center rounded-full px-5 py-2.5 text-base font-semibold transition-all duration-200"
+                        className="w-full justify-center"
                       >
                         <i className="fas fa-sign-out-alt mr-2" />
                         {t('auth:logout')}
@@ -193,8 +201,8 @@ export function Header({
                   ) : (
                     <Button
                       variant="primary"
-                      size="md"
-                      className="w-full justify-center rounded-full px-6 py-2.5 text-base font-semibold shadow-md hover:shadow-lg transition-all duration-200"
+                      size="sm"
+                      className="w-full justify-center"
                     >
                       <i className="fas fa-sign-in-alt mr-2" />
                       {t('auth:login')}
