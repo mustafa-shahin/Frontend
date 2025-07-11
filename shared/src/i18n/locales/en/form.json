@@ -1,0 +1,23 @@
+{
+  "validation": {
+    "required": "This field is required",
+    "email": "Please enter a valid email address",
+    "minLength": "Minimum {{count}} characters required",
+    "maxLength": "Maximum {{count}} characters allowed",
+    "pattern": "Invalid format",
+    "passwordMismatch": "Passwords do not match",
+    "invalidPassword": "Password must contain at least one lowercase letter, one uppercase letter, and one number"
+  },
+  "placeholder": {
+    "email": "Enter your email",
+    "password": "Enter your password",
+    "search": "Search...",
+    "firstName": "Enter your first name",
+    "lastName": "Enter your last name",
+    "username": "Enter your username"
+  },
+  "helper": {
+    "passwordRequirements": "Password must be at least 8 characters with uppercase, lowercase, and number",
+    "emailFormat": "We'll never share your email with anyone else"
+  }
+}

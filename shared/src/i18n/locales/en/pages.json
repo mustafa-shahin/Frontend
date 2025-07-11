@@ -1,0 +1,29 @@
+{
+  "title": "Pages",
+  "pageManagement": "Page Management",
+  "createPage": "Create Page",
+  "editPage": "Edit Page",
+  "deletePage": "Delete Page",
+  "pageName": "Page Name",
+  "pageTitle": "Page Title",
+  "pageSlug": "Page Slug",
+  "pageStatus": "Page Status",
+  "pageDescription": "Page Description",
+  "openInDesigner": "Open in Designer",
+  "designMode": "Design Mode",
+  "status": {
+    "draft": "Draft",
+    "published": "Published",
+    "archived": "Archived",
+    "scheduled": "Scheduled"
+  },
+  "noPages": "No pages found",
+  "loadingPages": "Loading pages...",
+  "searchPages": "Search pages...",
+  "filterByStatus": "Filter by status",
+  "allStatuses": "All Statuses",
+  "createdAt": "Created",
+  "updatedAt": "Last Updated",
+  "publishedOn": "Published On",
+  "actions": "Actions"
+}
