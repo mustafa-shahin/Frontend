@@ -8,13 +8,13 @@ module.exports = {
       __dirname,
       '{src,pages,components,app}/**/*!(*.stories|*.spec).{ts,tsx,html}'
     ),
+    join(__dirname, '../../shared/**/*.{ts,tsx,html}'),
     ...createGlobPatternsForDependencies(__dirname),
   ],
-  darkMode: 'class', // Enable class-based dark mode
+  darkMode: 'class',
   theme: {
     extend: {
       colors: {
-        // Custom colors for better dark mode support
         gray: {
           750: '#374151',
           850: '#1f2937',
@@ -38,36 +38,6 @@ module.exports = {
   },
   plugins: [],
   safelist: [
-    // Safelist dynamic color classes used in components
-    'bg-blue-100',
-    'bg-blue-900',
-    'bg-green-100',
-    'bg-green-900',
-    'bg-yellow-100',
-    'bg-yellow-900',
-    'bg-purple-100',
-    'bg-purple-900',
-    'bg-gray-100',
-    'bg-gray-900',
-    'text-blue-600',
-    'text-blue-400',
-    'text-green-600',
-    'text-green-400',
-    'text-yellow-600',
-    'text-yellow-400',
-    'text-purple-600',
-    'text-purple-400',
-    'text-gray-600',
-    'text-gray-400',
-    'hover:bg-blue-200',
-    'hover:bg-green-200',
-    'hover:bg-yellow-200',
-    'hover:bg-purple-200',
-    'hover:bg-gray-200',
-    'dark:hover:bg-blue-800',
-    'dark:hover:bg-green-800',
-    'dark:hover:bg-yellow-800',
-    'dark:hover:bg-purple-800',
-    'dark:hover:bg-gray-800',
+    // your safelist...
   ],
 };

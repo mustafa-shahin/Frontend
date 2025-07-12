@@ -47,7 +47,7 @@ export function LanguageSelector() {
         aria-label={t('languageSelector')}
       >
         <span className="text-sm">{currentLanguage.flag}</span>
-        <span className="hidden sm:block">{currentLanguage.name}</span>
+        {/* <span className="hidden sm:block">{currentLanguage.name}</span> */}
         <Icon
           name="chevron-down"
           className={cn(

@@ -18,6 +18,17 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+.far {
+  font-family: 'Font Awesome 6 Free';
+  font-weight: 400;
+  font-style: normal;
+  font-variant: normal;
+  text-rendering: auto;
+  line-height: 1;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
 /* Basic Icons */
 .fa-plus::before {
   content: '\2b';
@@ -209,10 +220,368 @@
   content: '\1f4c5';
 }
 
+/* Notification and Communication Icons */
+.fa-bell::before {
+  content: '\1f514';
+}
+.fa-bell-slash::before {
+  content: '\1f515';
+}
+.fa-comment::before {
+  content: '\1f4ac';
+}
+.fa-comments::before {
+  content: '\1f4ac';
+}
+.fa-share::before {
+  content: '\1f4e4';
+}
+.fa-phone::before {
+  content: '\1f4de';
+}
+
+/* Rating and Feedback Icons */
+.fa-star::before {
+  content: '\2605';
+}
+.fa-star-half-alt::before {
+  content: '\2606';
+}
+.fa-heart::before {
+  content: '\2665';
+}
+.fa-thumbs-up::before {
+  content: '\1f44d';
+}
+.fa-thumbs-down::before {
+  content: '\1f44e';
+}
+
+/* Media Control Icons */
+.fa-play::before {
+  content: '\25b6';
+}
+.fa-pause::before {
+  content: '\23f8';
+}
+.fa-stop::before {
+  content: '\23f9';
+}
+.fa-forward::before {
+  content: '\23e9';
+}
+.fa-backward::before {
+  content: '\23ea';
+}
+.fa-step-forward::before {
+  content: '\23ed';
+}
+.fa-step-backward::before {
+  content: '\23ee';
+}
+
+/* Volume Icons */
+.fa-volume-up::before {
+  content: '\1f50a';
+}
+.fa-volume-down::before {
+  content: '\1f509';
+}
+.fa-volume-mute::before {
+  content: '\1f507';
+}
+
+/* File and Document Icons */
+.fa-download::before {
+  content: '\1f4e5';
+}
+.fa-upload::before {
+  content: '\1f4e4';
+}
+.fa-print::before {
+  content: '\1f5a8';
+}
+.fa-paperclip::before {
+  content: '\1f4ce';
+}
+
+/* Navigation and Layout Icons */
+.fa-expand::before {
+  content: '\1f5d6';
+}
+.fa-compress::before {
+  content: '\1f5d5';
+}
+.fa-maximize::before {
+  content: '\26f6';
+}
+.fa-minimize::before {
+  content: '\26f7';
+}
+.fa-window-restore::before {
+  content: '\1f5d7';
+}
+.fa-fullscreen::before {
+  content: '\26f6';
+}
+
+/* Technology Icons */
+.fa-wifi::before {
+  content: '\1f4f6';
+}
+.fa-bluetooth::before {
+  content: '\1f5b8';
+}
+.fa-signal::before {
+  content: '\1f4f6';
+}
+.fa-microphone::before {
+  content: '\1f3a4';
+}
+.fa-microphone-slash::before {
+  content: '\1f3a4';
+}
+.fa-camera::before {
+  content: '\1f4f7';
+}
+.fa-video-camera::before {
+  content: '\1f4f9';
+}
+
+/* Location Icons */
+.fa-map-marker::before {
+  content: '\1f4cd';
+}
+.fa-map::before {
+  content: '\1f5fa';
+}
+.fa-compass::before {
+  content: '\1f9ed';
+}
+.fa-location-arrow::before {
+  content: '\1f4cd';
+}
+
+/* Organization Icons */
+.fa-flag::before {
+  content: '\1f3f4';
+}
+.fa-tag::before {
+  content: '\1f3f7';
+}
+.fa-tags::before {
+  content: '\1f3f7';
+}
+.fa-bookmark::before {
+  content: '\1f516';
+}
+
+/* Security Icons */
+.fa-key::before {
+  content: '\1f511';
+}
+.fa-unlock::before {
+  content: '\1f513';
+}
+.fa-lock-open::before {
+  content: '\1f513';
+}
+.fa-shield::before {
+  content: '\1f6e1';
+}
+.fa-fingerprint::before {
+  content: '\1f4f1';
+}
+
+/* Code and Technical Icons */
+.fa-qrcode::before {
+  content: '\1f4f1';
+}
+.fa-barcode::before {
+  content: '\1f4ca';
+}
+.fa-code::before {
+  content: '\1f4bb';
+}
+.fa-terminal::before {
+  content: '\1f5a5';
+}
+.fa-desktop::before {
+  content: '\1f5a5';
+}
+.fa-laptop::before {
+  content: '\1f4bb';
+}
+.fa-tablet::before {
+  content: '\1f4f1';
+}
+.fa-mobile::before {
+  content: '\1f4f1';
+}
+.fa-server::before {
+  content: '\1f5a5';
+}
+.fa-database::before {
+  content: '\1f5c3';
+}
+.fa-cloud::before {
+  content: '\2601';
+}
+.fa-cloud-upload::before {
+  content: '\2601';
+}
+.fa-cloud-download::before {
+  content: '\2601';
+}
+
+/* Tools Icons */
+.fa-tools::before {
+  content: '\1f527';
+}
+.fa-wrench::before {
+  content: '\1f527';
+}
+.fa-hammer::before {
+  content: '\1f528';
+}
+.fa-screwdriver::before {
+  content: '\1f527';
+}
+.fa-sliders-h::before {
+  content: '\1f39a';
+}
+
+/* Power and System Icons */
+.fa-power-off::before {
+  content: '\23fb';
+}
+.fa-plug::before {
+  content: '\1f50c';
+}
+.fa-battery-full::before {
+  content: '\1f50b';
+}
+.fa-battery-half::before {
+  content: '\1f50b';
+}
+.fa-battery-quarter::before {
+  content: '\1f50b';
+}
+.fa-battery-empty::before {
+  content: '\1f50b';
+}
+
+/* User Management Icons */
+.fa-user-plus::before {
+  content: '\1f464';
+}
+.fa-user-minus::before {
+  content: '\1f464';
+}
+.fa-user-check::before {
+  content: '\1f464';
+}
+.fa-user-times::before {
+  content: '\1f464';
+}
+.fa-user-edit::before {
+  content: '\1f464';
+}
+.fa-user-friends::before {
+  content: '\1f465';
+}
+.fa-user-cog::before {
+  content: '\1f464';
+}
+.fa-user-shield::before {
+  content: '\1f464';
+}
+.fa-user-secret::before {
+  content: '\1f464';
+}
+.fa-user-tie::before {
+  content: '\1f464';
+}
+
+/* Text Formatting Icons */
+.fa-bold::before {
+  content: '\1f5d6';
+}
+.fa-italic::before {
+  content: '\1f5d6';
+}
+.fa-underline::before {
+  content: '\1f5d6';
+}
+.fa-strikethrough::before {
+  content: '\1f5d6';
+}
+.fa-align-left::before {
+  content: '\1f5d6';
+}
+.fa-align-center::before {
+  content: '\1f5d6';
+}
+.fa-align-right::before {
+  content: '\1f5d6';
+}
+.fa-align-justify::before {
+  content: '\1f5d6';
+}
+.fa-indent::before {
+  content: '\1f5d6';
+}
+.fa-outdent::before {
+  content: '\1f5d6';
+}
+.fa-list-ul::before {
+  content: '\1f4cb';
+}
+.fa-list-ol::before {
+  content: '\1f4cb';
+}
+.fa-paragraph::before {
+  content: '\1f5d6';
+}
+.fa-quote-left::before {
+  content: '\201c';
+}
+.fa-quote-right::before {
+  content: '\201d';
+}
+
+/* Emotions Icons */
+.fa-smile::before {
+  content: '\1f642';
+}
+.fa-frown::before {
+  content: '\1f641';
+}
+.fa-meh::before {
+  content: '\1f610';
+}
+.fa-laugh::before {
+  content: '\1f602';
+}
+.fa-grin::before {
+  content: '\1f600';
+}
+.fa-angry::before {
+  content: '\1f620';
+}
+.fa-sad-tear::before {
+  content: '\1f622';
+}
+
 /* Animations */
 .fa-spin {
   -webkit-animation: fa-spin 2s infinite linear;
   animation: fa-spin 2s infinite linear;
+}
+
+.fa-pulse {
+  -webkit-animation: fa-spin 1s infinite steps(8);
+  animation: fa-spin 1s infinite steps(8);
 }
 
 @-webkit-keyframes fa-spin {
@@ -263,4 +632,104 @@
 
 .fa-3x {
   font-size: 3em;
+}
+
+.fa-4x {
+  font-size: 4em;
+}
+
+.fa-5x {
+  font-size: 5em;
+}
+
+.fa-6x {
+  font-size: 6em;
+}
+
+.fa-7x {
+  font-size: 7em;
+}
+
+.fa-8x {
+  font-size: 8em;
+}
+
+.fa-9x {
+  font-size: 9em;
+}
+
+.fa-10x {
+  font-size: 10em;
+}
+
+/* Rotation and flip utilities */
+.fa-rotate-90 {
+  -webkit-transform: rotate(90deg);
+  transform: rotate(90deg);
+}
+
+.fa-rotate-180 {
+  -webkit-transform: rotate(180deg);
+  transform: rotate(180deg);
+}
+
+.fa-rotate-270 {
+  -webkit-transform: rotate(270deg);
+  transform: rotate(270deg);
+}
+
+.fa-flip-horizontal {
+  -webkit-transform: scale(-1, 1);
+  transform: scale(-1, 1);
+}
+
+.fa-flip-vertical {
+  -webkit-transform: scale(1, -1);
+  transform: scale(1, -1);
+}
+
+.fa-flip-both {
+  -webkit-transform: scale(-1, -1);
+  transform: scale(-1, -1);
+}
+
+/* Stack utilities */
+.fa-stack {
+  display: inline-block;
+  height: 2em;
+  line-height: 2em;
+  position: relative;
+  vertical-align: middle;
+  width: 2em;
+}
+
+.fa-stack-1x,
+.fa-stack-2x {
+  left: 0;
+  position: absolute;
+  text-align: center;
+  width: 100%;
+}
+
+.fa-stack-1x {
+  line-height: inherit;
+}
+
+.fa-stack-2x {
+  font-size: 2em;
+}
+
+/* Accessibility improvements */
+.sr-only {
+  border: 0 !important;
+  clip: rect(1px, 1px, 1px, 1px) !important;
+  -webkit-clip-path: inset(50%) !important;
+  clip-path: inset(50%) !important;
+  height: 1px !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  padding: 0 !important;
+  position: absolute !important;
+  width: 1px !important;
+  white-space: nowrap !important;
 }

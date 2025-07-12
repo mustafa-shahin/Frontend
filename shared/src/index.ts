@@ -1,4 +1,3 @@
-// Export API service
 export { apiService, ApiService } from './services/api';
 export { pagesService, PagesService } from './services/pages';
 
@@ -8,7 +7,12 @@ export { AuthProvider, useAuth } from './contexts/AuthContext';
 export { Button } from './components/ui/Button';
 export { Input } from './components/ui/Input';
 export { Alert } from './components/ui/Alert';
-export { LoadingSpinner } from './components/ui/LoadingSpinner';
+export {
+  LoadingSpinner,
+  LoadingOverlay,
+  InlineSpinner,
+  ButtonSpinner,
+} from './components/ui/LoadingSpinner';
 export { Icon } from './components/ui/Icon';
 
 // Export layout components
@@ -58,6 +62,14 @@ export { storageService } from './utils/storage';
 
 // Export i18n
 export { default as i18n } from './i18n';
+
+// Export types
+export type { IconName, IconProps } from './components/ui/Icon';
+export type { InputProps } from './components/ui/Input';
+export type { HeaderProps, HeaderNavItem } from './components/layout/Header';
+export type { ButtonProps } from './components/ui/Button';
+export type { AlertProps } from './components/ui/Alert';
+export type { LoadingSpinnerProps } from './components/ui/LoadingSpinner';
 
 // Re-export commonly used types from react-hook-form and zod
 export type {

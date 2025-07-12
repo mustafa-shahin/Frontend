@@ -33,8 +33,10 @@ export function LoginPage() {
               </h1>
 
               <p className="text-xl text-gray-600 mb-8 leading-relaxed">
-                Professional content management for modern websites. Create,
-                manage, and publish content with our enterprise-grade platform.
+                Lorem ipsum dolor sit amet consectetur adipisicing elit. Maxime
+                facere qui recusandae similique dolores eveniet excepturi
+                accusantium, id tempora hic blanditiis repudiandae laborum et
+                architecto. Corrupti nemo omnis culpa ut?
               </p>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-8">
@@ -104,7 +106,7 @@ export function LoginPage() {
 
       <Footer
         title="CMS Designer"
-        description="Professional content management for modern websites"
+        description=""
         showCopyright={true}
         showPoweredBy={true}
         sections={[

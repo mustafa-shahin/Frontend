@@ -114,7 +114,7 @@ export function PageTable({
                   <span>{t('pages:updatedAt')}</span>
                 </div>
               </th>
-              <th className="px-6 py-4 text-right text-xs font-semibold text-gray-600 uppercase tracking-wider">
+              <th className="px-6 py-4 text-right text-xs font-semibold text-gray-600 uppercase tracking-wider ">
                 {t('pages:actions')}
               </th>
             </tr>
@@ -170,22 +170,15 @@ export function PageTable({
                   </td>
 
                   <td className="px-6 py-4 text-right">
-                    <div className="flex items-center justify-center space-x-2">
+                    <div className="flex justify-end space-x-2">
                       <Button
-                        variant="outline"
+                        variant="ghost"
                         size="sm"
                         onClick={() => onOpenDesigner(page.id)}
-                        className="inline-flex items-center"
+                        className="inline-flex items-center text-3xl"
                       >
-                        <Icon name="paint-brush" className="mr-2 text-xs" />
-                        {t('pages:openInDesigner')}
+                        <Icon name="chevron-right" className="mr-2 text-3xl" />
                       </Button>
-
-                      <div className="relative">
-                        <button className="p-2 text-gray-400 hover:text-gray-600 rounded-lg hover:bg-gray-100 transition-colors">
-                          <Icon name="ellipsis-h" className="text-sm" />
-                        </button>
-                      </div>
                     </div>
                   </td>
                 </tr>
