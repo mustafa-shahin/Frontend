@@ -1,0 +1,20 @@
+{
+  "home": "Startseite",
+  "pages": "Seiten",
+  "dashboard": "Dashboard",
+  "settings": "Einstellungen",
+  "profile": "Profil",
+  "admin": "Admin",
+  "help": "Hilfe",
+  "about": "Über uns",
+  "contact": "Kontakt",
+  "privacy": "Datenschutz",
+  "terms": "Nutzungsbedingungen",
+  "copyright": "© {{year}} Alle Rechte vorbehalten",
+  "poweredBy": "Powered by CMS Designer",
+  "languageSelector": "Sprache",
+  "themeToggle": "Design umschalten",
+  "userMenu": "Benutzermenü",
+  "mainNavigation": "Hauptnavigation",
+  "footerNavigation": "Footer-Navigation"
+}

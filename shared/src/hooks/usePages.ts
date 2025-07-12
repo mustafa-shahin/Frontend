@@ -1,191 +1,151 @@
 import { useState, useEffect, useCallback } from 'react';
 import {
   pagesService,
-  type PageSearchParams,
-  type CreatePageData,
-  type UpdatePageData,
+  PageSearchParams,
+  PagedResult,
+  PageListItem,
 } from '../services/pages';
-import type { PageItem, PagesData } from '../components/pages/PagesList';
 
-interface UsePagesOptions {
-  initialParams?: PageSearchParams;
+export interface UsePagesOptions {
+  pageSize?: number;
   autoFetch?: boolean;
 }
 
-interface UsePagesReturn {
-  pages: PagesData;
+export interface UsePagesReturn {
+  pages: PageListItem[];
   loading: boolean;
   error: string | null;
-  refetch: () => Promise<void>;
-  setSearchParams: (params: PageSearchParams) => void;
-  createPage: (data: CreatePageData) => Promise<PageItem>;
-  updatePage: (id: number, data: Partial<UpdatePageData>) => Promise<PageItem>;
-  deletePage: (id: number) => Promise<void>;
-  publishPage: (id: number) => Promise<PageItem>;
-  unpublishPage: (id: number) => Promise<PageItem>;
-  duplicatePage: (id: number, newName: string) => Promise<PageItem>;
+  pagination: {
+    currentPage: number;
+    totalPages: number;
+    totalCount: number;
+    pageSize: number;
+    hasNextPage: boolean;
+    hasPreviousPage: boolean;
+  };
+  filters: {
+    searchTerm: string;
+    statusFilter: string;
+  };
+  actions: {
+    fetchPages: (params?: PageSearchParams) => Promise<void>;
+    setPage: (page: number) => void;
+    setSearchTerm: (term: string) => void;
+    setStatusFilter: (status: string) => void;
+    refresh: () => Promise<void>;
+  };
 }
 
-const defaultPagesData: PagesData = {
-  data: [],
-  pageNumber: 1,
-  pageSize: 10,
-  totalCount: 0,
-  totalPages: 0,
-  hasNextPage: false,
-  hasPreviousPage: false,
-};
-
 export function usePages(options: UsePagesOptions = {}): UsePagesReturn {
-  const { initialParams = {}, autoFetch = true } = options;
+  const { pageSize = 20, autoFetch = true } = options;
 
-  const [pages, setPages] = useState<PagesData>(defaultPagesData);
+  const [pages, setPages] = useState<PageListItem[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [searchParams, setSearchParams] = useState<PageSearchParams>({
-    pageNumber: 1,
-    pageSize: 10,
-    ...initialParams,
+  const [currentPage, setCurrentPage] = useState(1);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [statusFilter, setStatusFilter] = useState('');
+
+  // Initialize pagination state
+  const [pagination, setPagination] = useState({
+    currentPage: 1,
+    totalPages: 0,
+    totalCount: 0,
+    pageSize,
+    hasNextPage: false,
+    hasPreviousPage: false,
   });
 
   const fetchPages = useCallback(
-    async (params?: PageSearchParams) => {
+    async (params: PageSearchParams = {}) => {
       try {
         setLoading(true);
         setError(null);
 
-        const finalParams = params || searchParams;
-        const result = await pagesService.getPages(finalParams);
+        const searchParams = {
+          pageNumber: currentPage,
+          pageSize,
+          search: searchTerm || undefined,
+          status: statusFilter || undefined,
+          sortBy: 'updatedAt',
+          sortDirection: 'desc',
+          ...params,
+        };
 
-        setPages(result);
-      } catch (err: unknown) {
-        const errorMessage = err instanceof Error ? err.message : 'Failed to fetch pages';
+        const result = await pagesService.getPages(searchParams);
+
+        setPages(result.data);
+        setPagination({
+          currentPage: result.pageNumber,
+          totalPages: result.totalPages,
+          totalCount: result.totalCount,
+          pageSize: result.pageSize,
+          hasNextPage: result.hasNextPage,
+          hasPreviousPage: result.hasPreviousPage,
+        });
+      } catch (err) {
+        const errorMessage =
+          err instanceof Error ? err.message : 'Failed to fetch pages';
         setError(errorMessage);
-        console.error('Error fetching pages:', err);
+        console.error('Failed to fetch pages:', err);
       } finally {
         setLoading(false);
       }
     },
-    [searchParams]
+    [currentPage, pageSize, searchTerm, statusFilter]
   );
 
-  const updateSearchParams = useCallback((newParams: PageSearchParams) => {
-    setSearchParams((prev) => ({ ...prev, ...newParams }));
+  const setPage = useCallback((page: number) => {
+    setCurrentPage(page);
   }, []);
 
-  const createPage = useCallback(
-    async (data: CreatePageData): Promise<PageItem> => {
-      try {
-        setError(null);
-        const newPage = await pagesService.createPage(data);
-        await fetchPages(); // Refresh the list
-        return newPage;
-      } catch (err: unknown) {
-        const errorMessage = err instanceof Error ? err.message : 'Failed to create page';
-        setError(errorMessage);
-        throw err;
-      }
-    },
-    [fetchPages]
-  );
+  const handleSetSearchTerm = useCallback((term: string) => {
+    setSearchTerm(term);
+    setCurrentPage(1); // Reset to first page when searching
+  }, []);
 
-  const updatePage = useCallback(
-    async (id: number, data: Partial<UpdatePageData>): Promise<PageItem> => {
-      try {
-        setError(null);
-        const updatedPage = await pagesService.updatePage(id, data);
-        await fetchPages(); // Refresh the list
-        return updatedPage;
-      } catch (err: unknown) {
-        const errorMessage = err instanceof Error ? err.message : 'Failed to update page';
-        setError(errorMessage);
-        throw err;
-      }
-    },
-    [fetchPages]
-  );
+  const handleSetStatusFilter = useCallback((status: string) => {
+    setStatusFilter(status);
+    setCurrentPage(1); // Reset to first page when filtering
+  }, []);
 
-  const deletePage = useCallback(
-    async (id: number): Promise<void> => {
-      try {
-        setError(null);
-        await pagesService.deletePage(id);
-        await fetchPages(); // Refresh the list
-      } catch (err: unknown) {
-        const errorMessage = err instanceof Error ? err.message : 'Failed to delete page';
-        setError(errorMessage);
-        throw err;
-      }
-    },
-    [fetchPages]
-  );
+  const refresh = useCallback(async () => {
+    await fetchPages();
+  }, [fetchPages]);
 
-  const publishPage = useCallback(
-    async (id: number): Promise<PageItem> => {
-      try {
-        setError(null);
-        const publishedPage = await pagesService.publishPage(id);
-        await fetchPages(); // Refresh the list
-        return publishedPage;
-      } catch (err: unknown) {
-        const errorMessage = err instanceof Error ? err.message : 'Failed to publish page';
-        setError(errorMessage);
-        throw err;
-      }
-    },
-    [fetchPages]
-  );
-
-  const unpublishPage = useCallback(
-    async (id: number): Promise<PageItem> => {
-      try {
-        setError(null);
-        const unpublishedPage = await pagesService.unpublishPage(id);
-        await fetchPages(); // Refresh the list
-        return unpublishedPage;
-      } catch (err: unknown) {
-        const errorMessage = err instanceof Error ? err.message : 'Failed to unpublish page';
-        setError(errorMessage);
-        throw err;
-      }
-    },
-    [fetchPages]
-  );
-
-  const duplicatePage = useCallback(
-    async (id: number, newName: string): Promise<PageItem> => {
-      try {
-        setError(null);
-        const duplicatedPage = await pagesService.duplicatePage(id, newName);
-        await fetchPages(); // Refresh the list
-        return duplicatedPage;
-      } catch (err: unknown) {
-        const errorMessage = err instanceof Error ? err.message : 'Failed to duplicate page';
-        setError(errorMessage);
-        throw err;
-      }
-    },
-    [fetchPages]
-  );
-
-  // Auto-fetch when search params change
+  // Auto-fetch on dependency changes
   useEffect(() => {
     if (autoFetch) {
-      fetchPages(searchParams);
+      fetchPages();
     }
-  }, [searchParams, autoFetch, fetchPages]);
+  }, [fetchPages, autoFetch]);
+
+  // Debounce search term
+  useEffect(() => {
+    if (!autoFetch) return;
+
+    const timeoutId = setTimeout(() => {
+      fetchPages();
+    }, 300);
+
+    return () => clearTimeout(timeoutId);
+  }, [searchTerm, statusFilter, fetchPages, autoFetch]);
 
   return {
     pages,
     loading,
     error,
-    refetch: () => fetchPages(),
-    setSearchParams: updateSearchParams,
-    createPage,
-    updatePage,
-    deletePage,
-    publishPage,
-    unpublishPage,
-    duplicatePage,
+    pagination,
+    filters: {
+      searchTerm,
+      statusFilter,
+    },
+    actions: {
+      fetchPages,
+      setPage,
+      setSearchTerm: handleSetSearchTerm,
+      setStatusFilter: handleSetStatusFilter,
+      refresh,
+    },
   };
 }

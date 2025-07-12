@@ -1,0 +1,28 @@
+{
+  "title": "Seiten",
+  "pageManagement": "Seiten",
+  "pageName": "Name",
+  "pageTitle": "Titel",
+  "pageSlug": "Seiten-Slug",
+  "pageStatus": "Status",
+  "pageDescription": "Seitenbeschreibung",
+  "openInDesigner": "Im Designer öffnen",
+  "designMode": "Design-Modus",
+  "status": {
+    "draft": "Entwurf",
+    "published": "Veröffentlicht",
+    "archived": "Archiviert",
+    "scheduled": "Geplant"
+  },
+  "totalPages": "Gesamtanzahl Seiten",
+  "Search&Filter": "Suchen & Filtern",
+  "noPages": "Keine Seiten gefunden",
+  "loadingPages": "Seiten werden geladen...",
+  "searchPages": "Seiten suchen...",
+  "filterByStatus": "Nach Status filtern",
+  "allStatuses": "Alle Status",
+  "createdAt": "Erstellt",
+  "updatedAt": "Zuletzt aktualisiert",
+  "publishedOn": "Veröffentlicht am",
+  "actions": "Aktionen"
+}
